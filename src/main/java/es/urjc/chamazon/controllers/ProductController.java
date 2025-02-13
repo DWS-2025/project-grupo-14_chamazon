@@ -2,6 +2,7 @@ package es.urjc.chamazon.controllers;
 import es.urjc.chamazon.models.Category;
 
 import es.urjc.chamazon.models.Product;
+import es.urjc.chamazon.services.CategoryService;
 import es.urjc.chamazon.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,17 +19,20 @@ import java.util.List;
 
 @Controller
 public class ProductController {
-    private final ProductService productService;
+    @Autowired
+    private ProductService productService;
     private static final Path IMAGES_FOLDER = Paths.get(System.getProperty("user.dir"), "images");
 
     private List<Product> products = new ArrayList<>();
+    @Autowired
+    private CategoryService categoryService;
 
     @Autowired
     public ProductController(ProductService productService) {
         this.productService = productService;
-        products.add(new Product(1, "Producto 1", "Descripción del producto 1", 10.0, null, null));
-        products.add(new Product(2, "Producto 2", "Descripción del producto 2", 20.0, null, null));
-        products.add(new Product(3, "Producto 3", "Descripción del producto 3", 30.0, null, null));
+        products.add(new Product(1, "Producto 1", "Descripción del producto 1", 10.0, null, new Category("Electronica")));
+        products.add(new Product(2, "Producto 2", "Descripción del producto 2", 20.0, null, new Category("Ropa")));
+        products.add(new Product(3, "Producto 3", "Descripción del producto 3", 30.0, null, new Category("Ropa")));
         products.addAll(productService.getAllProducts());
     }
 
@@ -45,18 +49,27 @@ public class ProductController {
         if (product == null) {
             return "redirect:/products";
         }
-
         model.addAttribute("product", product);
-
         return "product_detail";
+    }
+
+    @GetMapping("/products/add")
+    public String addProduct(Model model) {
+        model.addAttribute("product", new Product());
+        model.addAttribute("categories", categoryService.getAllCategories());
+        return "addProduct";
     }
 
     @PostMapping("/products/add")
     public String createProduct(@RequestParam String name,
                                 @RequestParam String description,
                                 @RequestParam double price,
-                                @RequestParam Category category,
+                                @RequestParam String categoryName,
                                 @RequestParam(required = false) MultipartFile imageFile) throws IOException {
+        Category category = categoryService.getCategoryByName(categoryName);
+        if (category == null) {
+            return "redirect:/products";
+        }
         Product product = new Product();
         product.setName(name);
         product.setDescription(description);
@@ -71,7 +84,7 @@ public class ProductController {
         }
 
         productService.createProduct(product);
-        return "redirect:/products";
+        return "redirect:/products}";
     }
 
     @PutMapping("/products/{id}")
@@ -83,7 +96,7 @@ public class ProductController {
     public boolean deleteProduct(@PathVariable int id) {
         return productService.deleteProduct(id);
     }
-    @GetMapping("/{id}/image")
+    @GetMapping("products/{id}/image")
     public byte[] getProductImage(@PathVariable int id) {
         return productService.getProductImage(id);
     }

@@ -1,43 +1,38 @@
 package es.urjc.chamazon.models;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Category {
-    private int id;
     private String name;
-    private Map<Integer, Product> products;
+    private List<Product> products;
 
-    public Category(int id, String name) {
-        this.id = id;
+    public Category(String name) {
         this.name = name;
-        this.products = new HashMap<>();
+        this.products = new ArrayList<>();
     }
 
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
     public String getName() {
         return name;
     }
     public void setName(String name) {
         this.name = name;
     }
-    public Map<Integer, Product> getAllProducts(){
+    public List<Product> getAllProducts(){
         return products;
     }
-
     public Product getProduct(int id){
         return products.get(id);
     }
+
     public void addProduct(Product product){
-        products.put(getId(), product);
+        products.add(product);
     }
-    public void removeProduct(int id){
-        products.remove(id);
+
+    public void removeProduct(Product product){
+        products.remove(product);
     }
 
 

@@ -3,7 +3,6 @@ package es.urjc.chamazon.services;
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,8 +14,13 @@ import java.util.List;
 @Service
 public class ProductService {
 
-    private List<Product> products = new ArrayList<>();
+    private static List<Product> products = new ArrayList<>();
+    private final CategoryService categoryService;
     private int id = 1;
+
+    public ProductService(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
     public List<Product> getAllProducts() {
         return products;
@@ -31,7 +35,7 @@ public class ProductService {
         return null;
     }
 
-    public Product createProduct(Product product) {
+    public void createProduct(Product product) {
         Product newProduct = new Product(id, product.getName(), product.getDescription(), product.getPrice(), product.getImage(), product.getCategory());
 
         newProduct.setId(id);
@@ -63,11 +67,9 @@ public class ProductService {
         if (image != null) {
             newProduct.setImage(image);
         }
-
+        categoryService.addProductToCategory(newProduct, category);
         id++;
         products.add(newProduct);
-
-        return newProduct;
     }
 
     public Product updateProduct(int id, Product productDetails) {
