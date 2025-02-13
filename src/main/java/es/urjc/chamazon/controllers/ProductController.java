@@ -84,7 +84,7 @@ public class ProductController {
         }
 
         productService.createProduct(product);
-        return "redirect:/products}";
+        return "redirect:/products";
     }
 
     @PutMapping("/products/{id}")
