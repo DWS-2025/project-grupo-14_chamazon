@@ -11,9 +11,8 @@
     <h2>{{name}}</h2>
     <p>Descripción: <span>{{description}}</span></p>
     <p>Precio: <span>{{price}}</span></p>
-    {{#image}}
-    <img src="/products/{{id}}/image" alt="Product Image">
-    {{/image}}
+    <p>Image : {{image}}</p>
+    <!-- <img src="/products/images/{{path}}" alt="Product Image">-->
   </li>
   {{/productsEachCategory}}
   {{^productsEachCategory}}

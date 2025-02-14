@@ -5,6 +5,7 @@ import es.urjc.chamazon.models.Product;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ public class ProductService {
         }
         newProduct.setCategory(category);
 
-        byte[] image = product.getImage();
+        String image = product.getImage();
         if (image != null) {
             newProduct.setImage(image);
         }
@@ -101,7 +102,7 @@ public class ProductService {
                 }
 
 
-                byte[] newImage = productDetails.getImage();
+                String newImage = productDetails.getImage();
                 if (newImage != null) {
                     existingProduct.setImage(newImage);
                 }

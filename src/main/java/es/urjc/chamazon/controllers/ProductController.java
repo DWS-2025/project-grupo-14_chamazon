@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,23 +24,13 @@ public class ProductController {
     private ProductService productService;
     private static final Path IMAGES_FOLDER = Paths.get(System.getProperty("user.dir"), "images");
 
-    private List<Product> products = new ArrayList<>();
     @Autowired
     private CategoryService categoryService;
 
-    @Autowired
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-        products.add(new Product(1, "Producto 1", "Descripción del producto 1", 10.0, null, new Category("Electronica")));
-        products.add(new Product(2, "Producto 2", "Descripción del producto 2", 20.0, null, new Category("Ropa")));
-        products.add(new Product(3, "Producto 3", "Descripción del producto 3", 30.0, null, new Category("Ropa")));
-        products.addAll(productService.getAllProducts());
-    }
 
     @GetMapping("/products")
     public String getAllProducts(Model model) {
         model.addAttribute("products", productService.getAllProducts());
-//        model.addAttribute("categories", categories);
         return "products_list";
     }
 
@@ -78,13 +69,14 @@ public class ProductController {
 
         if (imageFile != null && !imageFile.isEmpty()) {
             Files.createDirectories(IMAGES_FOLDER);
-            Path imagePath = IMAGES_FOLDER.resolve("product_" + System.currentTimeMillis() + ".jpg");
-            imageFile.transferTo(imagePath);
-            product.setImage(Files.readAllBytes(imagePath));
+            String imagePath = String.valueOf(IMAGES_FOLDER.resolve(product.getName() + System.currentTimeMillis() + ".jpg"));
+            imageFile.transferTo(new File(imagePath));
+            product.setImage(imagePath);
+            //product.setImage(Files.readAllBytes(imagePath));
         }
 
         productService.createProduct(product);
-        return "redirect:/products";
+        return "redirect:/categories/" + product.getCategory().getName();
     }
 
     @PutMapping("/products/{id}")
