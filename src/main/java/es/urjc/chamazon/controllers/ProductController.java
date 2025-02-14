@@ -30,7 +30,8 @@ public class ProductController {
 
     @GetMapping("/products")
     public String getAllProducts(Model model) {
-        model.addAttribute("products", productService.getAllProducts());
+        List<Product> products = productService.getAllProducts();
+        model.addAttribute("products", products);
         return "products_list";
     }
 
@@ -89,7 +90,7 @@ public class ProductController {
         return productService.deleteProduct(id);
     }
     @GetMapping("products/{id}/image")
-    public byte[] getProductImage(@PathVariable int id) {
+    public String getProductImage(@PathVariable int id) {
         return productService.getProductImage(id);
     }
 }

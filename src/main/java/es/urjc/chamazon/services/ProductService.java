@@ -118,15 +118,11 @@ public class ProductService {
     }
 
 
-    public byte[] getProductImage(int id) {
+    public String getProductImage(int id) {
         Product product = getProductById(id);
         if (product != null) {
             String imagePath = "src/main/es.urjc.chamazon/images/" + product.getImage();
-            try {
-                return Files.readAllBytes(Paths.get(imagePath));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            return imagePath;
         }
         return null;
     }

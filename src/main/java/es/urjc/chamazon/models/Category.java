@@ -35,5 +35,4 @@ public class Category {
         products.remove(product);
     }
 
-
 }
