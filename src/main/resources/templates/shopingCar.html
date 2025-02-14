@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+</head>
+<body>
+    <h1>Welcome to {{title}}</h1>
+
+    <!--FORM-->
+    <form method="post" action="shopingCar/add">
+    <input type="text" name="idUser">
+
+
+    <input type="submit" value="send">
+    </form>
+
+    <h2>List of Shoping Car</h2>
+    <ul>
+    {{#listShopingCar}}
+        <li><p>ID: </p>{{id}}</li>
+        <li><p>ID User: </p>{{idUser}}</li>
+        <li><p>Products</p>
+            {{#products}}
+            <ul>
+                <li>{{.}}</li>
+            </ul>
+            {{/products}}
+        </li>
+    {{/listShopingCar}}
+        <br>
+        <br>
+    </ul>
+
+</body>
+</html>
