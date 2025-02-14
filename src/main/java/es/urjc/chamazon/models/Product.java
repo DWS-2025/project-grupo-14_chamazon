@@ -1,19 +1,22 @@
 package es.urjc.chamazon.models;
 
 
+import java.nio.file.Path;
+
 public class Product {
 
     private int id;
     private String name;
     private String description;
     private double price;
-    private byte[] image;
+    private String image;
     private Category category;
 
     public Product() {
+
     }
 
-    public Product(int id, String name, String description, double price, byte[] image, Category category) {
+    public Product(int id, String name, String description, double price, String image, Category category) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -55,11 +58,11 @@ public class Product {
         this.price = price;
     }
 
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
         this.image = image;
     }
 

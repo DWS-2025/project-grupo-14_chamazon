@@ -48,6 +48,6 @@ public class CategoryController {
 
     @GetMapping("/")
     public String home() {
-        return "redirect:/categories";
+        return "main";
     }
 }

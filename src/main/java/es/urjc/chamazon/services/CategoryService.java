@@ -18,7 +18,7 @@ public class CategoryService {
         Category hogar = new Category("Hogar");
 
         // Crear productos de prueba y asociarlos a categorías
-        Product p1 = new Product(1, "Laptop", "Laptop de alta gama", 1000.0, null, electronica);
+        Product p1 = new Product(1, "Laptop", "Laptop de alta gama", 1000.0,null , electronica);
         Product p2 = new Product(2, "Camiseta", "Camiseta de algodón", 20.0, null, ropa);
         Product p3 = new Product(3, "Sofá", "Sofá cómodo", 500.0, null, hogar);
 
