@@ -16,7 +16,7 @@ public class ShopingCarService {
     /*Accedemos al unico objeto chamazon*/
     private final ChamazonBDD chamazonBDD;
 
-    @Autowired
+
     public ShopingCarService(ChamazonBDD chamazonBDD) {
         this.chamazonBDD = chamazonBDD;
     }

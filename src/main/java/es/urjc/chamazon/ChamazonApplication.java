@@ -20,6 +20,7 @@ public class ChamazonApplication {
 
     /*Create unique chamazon object*/
     /*Crear al unico objeto chamazon*/
+/*
     @Bean
     public ChamazonBDD chamazonBDD(){
         Object product = new Object();
@@ -32,6 +33,7 @@ public class ChamazonApplication {
         return chamazonBDD;
     }
 
+*/
 
 
 }

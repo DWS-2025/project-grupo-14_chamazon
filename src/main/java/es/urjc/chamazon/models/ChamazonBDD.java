@@ -1,17 +1,28 @@
 package es.urjc.chamazon.models;
 
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Service
 public class ChamazonBDD {
 
-        private List<ShopingCar> ListShopingCar;
+
+
+    private List<ShopingCar> ListShopingCar;
 
         public ChamazonBDD() {
-            this.ListShopingCar = new ArrayList<>();
+            List<ShopingCar> listShopingCar = new ArrayList<>();
+
+                Object product = new Object();
+                List<Object> products = new ArrayList<>();
+                ShopingCar shopingCar = new ShopingCar(1,products);
+                listShopingCar.add(shopingCar);
+
+                this.ListShopingCar = listShopingCar;
+
         }
 
         public void addShopingCar(ShopingCar car) {
