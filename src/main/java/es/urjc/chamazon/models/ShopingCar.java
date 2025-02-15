@@ -17,21 +17,23 @@ public class ShopingCar {
     private static int idCounter = 1;
 
     public ShopingCar(int idUser, List<Object> products) {
-        this.id = idCounter;
+        this.id = generateNextId();
         this.idUser = idUser;
         this.products = products;
         this.dateSold = null;
-
-        idCounter++;
     }
 
     public ShopingCar() {
-        this.id = idCounter;
+        this.id = generateNextId();
         this.idUser = 0;
         this.products = null;
         this.dateSold = null;
+    }
 
-        idCounter++;
+    /*Generate a sequence id for the new registers*/
+    /*Genera un id secuencial para los nuevos registros*/
+    private static synchronized int generateNextId() {
+        return idCounter++;
     }
 
     /*GETTERS - SETTERS*/
