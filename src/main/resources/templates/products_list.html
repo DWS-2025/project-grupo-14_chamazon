@@ -21,7 +21,10 @@
       <button type="submit">Eliminar producto</button>
     </form>
 
-    <a href="/products/{{id}}/edit" type="button">Modificar producto</a>
+
+  <form action="/products/{{id}}/edit" method="GET" style="display: inline;">
+  <button type="submit">Modificar producto</button>
+  </form>
 
   </li>
   {{/productsEachCategory}}

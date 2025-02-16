@@ -116,7 +116,7 @@ public class ProductController {
     public String deleteProduct(@PathVariable int id) {
     Product product = productService.getProductById(id);
     if (product != null) {
-        int categoryId = product.getCategory().getId(); // Store category ID before deletion
+        int categoryId = product.getCategory().getId(); 
         categoryService.removeProductFromCategory(id, categoryId);
         productService.deleteProduct(id);
         return "redirect:/categories/" + categoryId;
