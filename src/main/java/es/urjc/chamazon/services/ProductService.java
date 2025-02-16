@@ -72,43 +72,28 @@ public class ProductService {
     }
 
     public Product updateProduct(int id, Product productDetails) {
-        for (int i = 0; i < products.size(); i++) {
-            if (products.get(i).getId() == id) {
-                Product existingProduct = products.get(i);
-
-                String newName = productDetails.getName();
-                if (newName != null && !newName.trim().isEmpty()) {
-                    existingProduct.setName(newName);
-                }
-
-
-                String newDescription = productDetails.getDescription();
-                if (newDescription != null) {
-                    existingProduct.setDescription(newDescription);
-                }
-
-
-                double newPrice = productDetails.getPrice();
-                if (newPrice >= 0) {
-                    existingProduct.setPrice(newPrice);
-                }
-
-
-                Category newCategory = productDetails.getCategory();
-                if (newCategory != null) {
-                    existingProduct.setCategory(newCategory);
-                }
-
-
-                String newImage = productDetails.getImage();
-                if (newImage != null) {
-                    existingProduct.setImage(newImage);
-                }
-
-                return existingProduct;
-            }
+        Product product = products.get(id);
+        if (product == null) {
+            throw new IllegalArgumentException("Product not found");
         }
-        return null;
+
+        Category oldCategory = product.getCategory();
+        if (oldCategory != null) {
+        categoryService.removeProductFromCategory(product.getId(), oldCategory.getId());
+        }
+
+        product.setName(productDetails.getName());
+        product.setDescription(productDetails.getDescription());
+        product.setPrice(productDetails.getPrice());
+        product.setCategory(productDetails.getCategory());
+        if (productDetails.getImage() != null) {
+            product.setImage(productDetails.getImage());
+        }
+
+        categoryService.addProductToCategory(product, productDetails.getCategory().getId());
+
+        products.put(id, product);
+        return product;
     }
 
     public void deleteProduct(int id)

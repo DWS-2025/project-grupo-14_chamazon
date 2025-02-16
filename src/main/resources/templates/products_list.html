@@ -13,7 +13,9 @@
     <h2>{{name}}</h2>
     <p>Descripción: <span>{{description}}</span></p>
     <p>Precio: <span>{{price}}</span></p>
-    <p>Image: <span>{{image}}</span></p>
+    {{#image}}
+    <p>Imagen: <img src="/images/{{image}}" alt="{{name}}"></p>
+    {{/image}}
 
     <form action="/products/{{id}}/delete" method="POST">
       <button type="submit">Eliminar producto</button>

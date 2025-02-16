@@ -82,17 +82,34 @@ public class ProductController {
     }
 
     @PostMapping("/products/{id}/edit")
-    public String updateProduct(@PathVariable int id, @RequestBody Product productDetails, Model model) {
-        Product product = productService.updateProduct(id, productDetails);
-        model.addAttribute("product", product);
-        return "redirect:/categories/" + product.getCategory().getId();
+    public String updateProduct(@PathVariable int id, @RequestParam String name, 
+                          @RequestParam String description, @RequestParam double price,
+                          @RequestParam int categoryId, Model model) {
+    try {
+        Product productDetails = new Product();
+        productDetails.setName(name);
+        productDetails.setDescription(description);
+        productDetails.setPrice(price);
+        Category category = categoryService.getCategoryById(categoryId);
+        productDetails.setCategory(category);
+        
+        Product updatedProduct = productService.updateProduct(id, productDetails);
+        return "redirect:/categories/" + category.getId();
+    } catch (IllegalArgumentException e) {
+        model.addAttribute("error", e.getMessage());
+        return "error";
     }
+}
 
     @GetMapping("/products/{id}/edit")
     public String updateProducts(Model model, @PathVariable int id) {
-        model.addAttribute("product", productService.getProductById(id));
-        model.addAttribute("categories", categoryService.getAllCategories());
-        return "editProduct";
+    Product product = productService.getProductById(id);
+    if (product == null) {
+        return "error";
+    }
+    model.addAttribute("product", product);
+    model.addAttribute("categories", categoryService.getAllCategories());
+    return "editProduct";
     }
 
     @PostMapping("/products/{id}/delete")
