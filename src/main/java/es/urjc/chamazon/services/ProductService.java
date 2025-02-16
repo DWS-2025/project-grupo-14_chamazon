@@ -9,37 +9,35 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 
 @Service
 public class ProductService {
 
-    private static List<Product> products = new ArrayList<>();
+    private ConcurrentMap<Integer, Product> products = new ConcurrentHashMap();
     private final CategoryService categoryService;
-    private int id = 1;
+    private int productId = 1;
 
     public ProductService(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
-    public List<Product> getAllProducts() {
-        return products;
+    public Collection<Product> getAllProducts() {
+        return products.values();
     }
 
     public Product getProductById(int id) {
-        for (Product product : products) {
-            if (product.getId() == id) {
-                return product;
-            }
-        }
-        return null;
+        return products.get(id);
     }
 
     public void createProduct(Product product) {
-        Product newProduct = new Product(id, product.getName(), product.getDescription(), product.getPrice(), product.getImage(), product.getCategory());
+        Product newProduct = new Product(productId, product.getName(), product.getDescription(), product.getPrice(), product.getImage(), product.getCategory());
 
-        newProduct.setId(id);
+        newProduct.setId(productId);
 
         String name = product.getName();
         if (name == null || name.trim().isEmpty()) {
@@ -68,9 +66,9 @@ public class ProductService {
         if (image != null) {
             newProduct.setImage(image);
         }
-        categoryService.addProductToCategory(newProduct, category);
-        id++;
-        products.add(newProduct);
+        categoryService.addProductToCategory(newProduct, newProduct.getCategory().getId());
+        products.put(productId, newProduct);
+        productId++;
     }
 
     public Product updateProduct(int id, Product productDetails) {
@@ -113,8 +111,9 @@ public class ProductService {
         return null;
     }
 
-    public boolean deleteProduct(int id) {
-        return products.removeIf(p -> p.getId() == id);
+    public void deleteProduct(int id)
+    {
+        products.remove(id);
     }
 
 
