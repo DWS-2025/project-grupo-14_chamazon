@@ -114,13 +114,14 @@ public class ProductController {
 
     @PostMapping("/products/{id}/delete")
     public String deleteProduct(@PathVariable int id) {
-
-        if (productService.getProductById(id) != null) {
-            categoryService.removeProductFromCategory(id, categoryService.getCategoryIdByProductId(id));
-            productService.deleteProduct(id);
-            return "redirect:/categories/" + categoryService.getCategoryIdByProductId(id);
-        }
-        return "redirect:/products";
+    Product product = productService.getProductById(id);
+    if (product != null) {
+        int categoryId = product.getCategory().getId(); // Store category ID before deletion
+        categoryService.removeProductFromCategory(id, categoryId);
+        productService.deleteProduct(id);
+        return "redirect:/categories/" + categoryId;
+    }
+    return "redirect:/products";
     }
 
     @GetMapping("products/{id}/image")
