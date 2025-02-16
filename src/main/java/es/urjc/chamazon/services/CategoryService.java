@@ -2,79 +2,77 @@ package es.urjc.chamazon.services;
 
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
-import org.springframework.beans.AbstractNestablePropertyAccessor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Service
 public class CategoryService {
-    private static List<Category> categories = new ArrayList<>();
-    static{
-        // Crear categorías
-        Category electronica = new Category("Electronica");
-        Category ropa = new Category("Ropa");
-        Category hogar = new Category("Hogar");
+    private int categoryId = 1;
+    private ConcurrentMap<Integer, Category> categories = new ConcurrentHashMap<>();
 
-        // Crear productos de prueba y asociarlos a categorías
-        Product p1 = new Product(1, "Laptop", "Laptop de alta gama", 1000.0,null , electronica);
-        Product p2 = new Product(2, "Camiseta", "Camiseta de algodón", 20.0, null, ropa);
-        Product p3 = new Product(3, "Sofá", "Sofá cómodo", 500.0, null, hogar);
-
-        // Asociar productos a categorías
-        electronica.addProduct(p1);
-        ropa.addProduct(p2);
-        hogar.addProduct(p3);
-
-        // Agregar categorías a la lista
-        categories.add(electronica);
-        categories.add(ropa);
-        categories.add(hogar);
+    public Collection<Category> getAllCategories() {
+        return categories.values();
     }
 
-    public List<Category> getAllCategories() {
-        return categories;
-    }
-
-    public void addCategory(String categoryName) {
-        categories.add(new Category(categoryName));
-    }
-
-    public void removeCategory(String category) {
-        categories.removeIf(c -> c.getName().equals(category));
-    }
-
-    public void addProductToCategory(Product product, Category category) {
-        for (Category c : categories) {
-            if (c.equals(category)){
-                c.addProduct(product);
-            }
-        }
-    }
-
-    public void removeProductFromCategory(Product product, Category category) {
-        for (Category c : categories) {
-            if (c.equals(category)){
-                c.removeProduct(product);
-            }
-        }
-    }
-    public List<Product> getProductsFromCategory(String category) {
-        for (Category c : categories) {
-            if (c.getName().equalsIgnoreCase(category)){
-                return c.getAllProducts();
-            }
-        }
-        return new ArrayList<>();
+    public Category getCategoryById(int categoryId) {
+        return categories.get(categoryId);
     }
 
     public Category getCategoryByName(String categoryName) {
-        for (Category c : categories) {
+        for (Category c : categories.values()) {
             if (c.getName().equalsIgnoreCase(categoryName)){
                 return c;
             }
         }
         return null;
     }
+
+
+    public void addCategory(String categoryName) {
+        Category newCategory = new Category(categoryName);
+        newCategory.setId(categoryId++);
+        categories.put(newCategory.getId(), newCategory);
+    }
+
+    public void deleteCategory(int category) {
+        categories.remove(category);
+    }
+
+    public void addProductToCategory(Product product, int categoryId) {
+        Category categoryToAdd = categories.get(categoryId);
+        if (categoryToAdd != null) {
+            categoryToAdd.addProduct(product);
+        }
+    }
+
+    public void removeProductFromCategory(int productId, int categoryId) {
+        Category categoryToDelete = categories.get(categoryId);
+        if (categoryToDelete != null) {
+            categoryToDelete.removeProduct(productId);
+        }
+    }
+
+    public Collection<Product> getProductsFromCategory(int category) {
+        Category categoryToSearch = categories.get(category);
+        if (categoryToSearch != null) {
+            return categoryToSearch.getAllProducts();
+        }
+        return Collections.emptyList();
+    }
+
+    public Integer getCategoryIdByProductId(int productId) {
+        for (Category category : categories.values()) {
+            System.out.println("Revisando categoría " + category.getId());
+            if (category.getProduct(productId) != null) {
+                System.out.println("Producto " + productId + " encontrado en categoría " + category.getId());
+                return category.getId();
+            }
+        }
+        System.out.println("Producto " + productId + " no encontrado en ninguna categoría");
+        return null;
+    }
+
 }

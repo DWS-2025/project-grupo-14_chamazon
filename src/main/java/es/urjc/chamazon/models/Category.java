@@ -1,17 +1,18 @@
 package es.urjc.chamazon.models;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Category {
     private String name;
-    private List<Product> products;
+    private int id;
+    private ConcurrentMap<Integer, Product> products;
 
     public Category(String name) {
         this.name = name;
-        this.products = new ArrayList<>();
+        this.products = new ConcurrentHashMap<>();
     }
 
     public String getName() {
@@ -20,20 +21,27 @@ public class Category {
     public void setName(String name) {
         this.name = name;
     }
-    public List<Product> getAllProducts(){
-        return products;
+    public void setId(int id){
+        this.id = id;
     }
+    public int getId(){
+        return id;
+    }
+
+    public Collection<Product> getAllProducts(){
+        return products.values();
+    }
+
     public Product getProduct(int id){
         return products.get(id);
     }
 
-    public void addProduct(Product product){
-        products.add(product);
+    public void addProduct(Product productToAdd){
+        products.put(productToAdd.getId(), productToAdd);
     }
 
-    public void removeProduct(Product product){
-        products.remove(product);
+    public void removeProduct(int productId){
+        products.remove(productId);
     }
-
 
 }

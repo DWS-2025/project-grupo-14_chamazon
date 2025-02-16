@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Controller
@@ -30,7 +31,8 @@ public class ProductController {
 
     @GetMapping("/products")
     public String getAllProducts(Model model) {
-        model.addAttribute("products", productService.getAllProducts());
+        Collection<Product> products = productService.getAllProducts();
+        model.addAttribute("products", products);
         return "products_list";
     }
 
@@ -76,20 +78,36 @@ public class ProductController {
         }
 
         productService.createProduct(product);
-        return "redirect:/categories/" + product.getCategory().getName();
+        return "redirect:/categories/" + product.getCategory().getId();
     }
 
-    @PutMapping("/products/{id}")
-    public Product updateProduct(@PathVariable int id, @RequestBody Product productDetails) {
-        return productService.updateProduct(id, productDetails);
+    @PostMapping("/products/{id}/edit")
+    public String updateProduct(@PathVariable int id, @RequestBody Product productDetails, Model model) {
+        Product product = productService.updateProduct(id, productDetails);
+        model.addAttribute("product", product);
+        return "redirect:/categories/" + product.getCategory().getId();
     }
 
-    @DeleteMapping("/products/{id}")
-    public boolean deleteProduct(@PathVariable int id) {
-        return productService.deleteProduct(id);
+    @GetMapping("/products/{id}/edit")
+    public String updateProducts(Model model, @PathVariable int id) {
+        model.addAttribute("product", productService.getProductById(id));
+        model.addAttribute("categories", categoryService.getAllCategories());
+        return "editProduct";
     }
+
+    @PostMapping("/products/{id}/delete")
+    public String deleteProduct(@PathVariable int id) {
+
+        if (productService.getProductById(id) != null) {
+            categoryService.removeProductFromCategory(id, categoryService.getCategoryIdByProductId(id));
+            productService.deleteProduct(id);
+            return "redirect:/categories/" + categoryService.getCategoryIdByProductId(id);
+        }
+        return "redirect:/products";
+    }
+
     @GetMapping("products/{id}/image")
-    public byte[] getProductImage(@PathVariable int id) {
+    public String getProductImage(@PathVariable int id) {
         return productService.getProductImage(id);
     }
 }

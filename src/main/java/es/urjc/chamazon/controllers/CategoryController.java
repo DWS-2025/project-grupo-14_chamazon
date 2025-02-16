@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
 
-import java.util.List;
+import java.util.Collection;
 
 @Controller
 public class CategoryController {
@@ -20,7 +20,7 @@ public class CategoryController {
 
     @GetMapping("/categories")
     public String getAllCategories(Model model) {
-        List<Category> categories = categoryService.getAllCategories();
+        Collection<Category> categories = categoryService.getAllCategories();
         model.addAttribute("categories", categories);
         return "categories";
 
@@ -32,19 +32,45 @@ public class CategoryController {
         return "redirect:/categories";
     }
 
+    /*@PostMapping("/categories/delete")
+    public String deleteCategory(Model model,@RequestParam int categoryId){
+        Category category = categoryService.getCategoryById(categoryId);
+        if (category != null) {
+            categoryService.deleteCategory(categoryId);
+        } else {
+            return "error";
+        }
+        return "redirect:/categories";
+    }*/
 
     @PostMapping("/categories/delete")
-    public String removeCategory(@RequestParam String categoryName) {
-        categoryService.removeCategory(categoryName);
+    public String deleteCategory(@RequestParam int categoryId) {
+        categoryService.deleteCategory(categoryId);
         return "redirect:/categories";
     }
 
-    @GetMapping("/categories/{category}")
-    public String showProductsEachCategory(Model model, @PathVariable String category) {
-        List<Product> productsEachCategory = categoryService.getProductsFromCategory(category);
+    @GetMapping("/categories/{id}")
+    public String showProductsEachCategory(Model model,  @PathVariable int id) {
+        Collection<Product> productsEachCategory = categoryService.getProductsFromCategory(id);
         model.addAttribute("productsEachCategory", productsEachCategory);
         return "products_list";
     }
+
+    @GetMapping("/categories/edit")
+    public String editCategory(@RequestParam int categoryId, Model model) {
+        Category category = categoryService.getCategoryById(categoryId);
+        model.addAttribute("category", category);
+        return "editCategory";
+    }
+
+    @PostMapping("/categories/edit")
+    public String editCategory(@RequestParam int categoryId, @RequestParam String categoryName, Model model) {
+        Category category = categoryService.getCategoryById(categoryId);
+        category.setName(categoryName);
+        return "redirect:/categories";
+    }
+
+
 
     @GetMapping("/")
     public String home() {

@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Lista de Productos</title>
 </head>
+
 <body>
 <ul>
   {{#productsEachCategory}}
@@ -11,16 +13,25 @@
     <h2>{{name}}</h2>
     <p>Descripción: <span>{{description}}</span></p>
     <p>Precio: <span>{{price}}</span></p>
-    <p>Image : {{image}}</p>
-    <!-- <img src="/products/images/{{path}}" alt="Product Image">-->
+    <p>Image: <span>{{image}}</span></p>
+
+    <form action="/products/{{id}}/delete" method="POST">
+      <button type="submit">Eliminar producto</button>
+    </form>
+
+    <a href="/products/{{id}}/edit" type="button">Modificar producto</a>
+
   </li>
   {{/productsEachCategory}}
   {{^productsEachCategory}}
   <p>No hay producto disponible</p>
   {{/productsEachCategory}}
+
 </ul>
 
 <a href="/products/add" class="button">Añadir nuevo producto</a>
+<p><a href="/categories/edit?categoryId={{id}}" class="button">Modificar categoría</a></p>
 
 </body>
+
 </html>
