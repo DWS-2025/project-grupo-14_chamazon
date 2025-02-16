@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar categoría</title>
+</head>
+<body>
+    <h1>Edita el nombre de la categoría</h1>
+    <form action="/categories/edit" method="post">
+        <input type="hidden" name="categoryId" value="{{category.id}}">
+        <label>Nombre:</label>
+        <input type="text" name="categoryName" value="{{category.name}}" required>
+        <button type="submit">Modificar</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalles de los productos </title>
+</head>
+<body>
+<div class="product-details">
+    {{#product}}
+    <h2>{{name}}</h2>
+    <div class="product-info">
+        <p>ID: <span>{{id}}</span></p>
+        <p>Descriptcion: <span>{{description}}</span></p>
+        <p>Precip: <span>{{price}}</span></p>
+        <p>Categoria: <span>{{category.name}}</span></p>
+        {{#image}}
+        <img src="/products/{{id}}/image" alt="Product Image">
+        {{/image}}
+    </div>
+    {{/product}}
+    {{^product}}
+    <p>Product not found</p>
+    {{/product}}
+</div>
+
+<a href="/products">Volver a Productos</a>
+</body>
+</html>

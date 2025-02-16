@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Categorías</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Lista de Categorías</h1>
+
+{{#categories}}
+<p> <a href="categories/{{id}}" class="button">{{name}}</a></p>
+{{/categories}}
+
+<h2>Agregar nueva categoría</h2>
+<form action="/categories/add" method="post">
+    <input type="text" name="categoryName" placeholder="Nombre de la categoría" required>
+    <button type="submit">Agregar</button>
+</form>
+
+<h2>Eliminar categoría</h2>
+<form action="/categories/delete" method="post">
+    <label for="categoryId">Selecciona una categoría para eliminar:</label>
+    <select name="categoryId" id="categoryId" required>
+        <option value="categoryId" disabled selected>Selecciona una categoría para eliminar</option>
+        {{#categories}}
+        <option value="{{id}}">{{name}}</option>
+        {{/categories}}
+    </select>
+    <button type="submit">Eliminar</button>
+</form>
+
+</body>
+</html>
