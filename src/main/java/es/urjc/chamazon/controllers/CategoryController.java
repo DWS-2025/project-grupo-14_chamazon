@@ -50,10 +50,13 @@ public class CategoryController {
     }
 
     @GetMapping("/categories/{id}")
-    public String showProductsEachCategory(Model model,  @PathVariable int id) {
-        Collection<Product> productsEachCategory = categoryService.getProductsFromCategory(id);
-        model.addAttribute("productsEachCategory", productsEachCategory);
-        return "products_list";
+    public String showProductsEachCategory(Model model, @PathVariable int id) {
+    Collection<Product> productsEachCategory = categoryService.getProductsFromCategory(id);
+    Category category = categoryService.getCategoryById(id);
+    model.addAttribute("productsEachCategory", productsEachCategory);
+    model.addAttribute("selectedCategoryId", id);
+    model.addAttribute("selectedCategoryName", category.getName());
+    return "products_list";
     }
 
     @GetMapping("/categories/edit")

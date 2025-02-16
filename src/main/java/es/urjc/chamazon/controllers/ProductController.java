@@ -47,19 +47,20 @@ public class ProductController {
     }
 
     @GetMapping("/products/add")
-    public String addProduct(Model model) {
-        model.addAttribute("product", new Product());
-        model.addAttribute("categories", categoryService.getAllCategories());
-        return "addProduct";
+    public String addProduct(@RequestParam int selectedCategoryId, @RequestParam String selectedCategoryName, Model model) {
+    model.addAttribute("product", new Product());
+    model.addAttribute("selectedCategoryId", selectedCategoryId);
+    model.addAttribute("selectedCategoryName", selectedCategoryName);
+    return "addProduct";
     }
 
     @PostMapping("/products/add")
     public String createProduct(@RequestParam String name,
                                 @RequestParam String description,
                                 @RequestParam double price,
-                                @RequestParam String categoryName,
+                                @RequestParam int categoryId,
                                 @RequestParam(required = false) MultipartFile imageFile) throws IOException {
-        Category category = categoryService.getCategoryByName(categoryName);
+        Category category = categoryService.getCategoryById(categoryId);
         if (category == null) {
             return "redirect:/products";
         }
@@ -74,7 +75,6 @@ public class ProductController {
             String imagePath = String.valueOf(IMAGES_FOLDER.resolve(product.getName() + System.currentTimeMillis() + ".jpg"));
             imageFile.transferTo(new File(imagePath));
             product.setImage(imagePath);
-            //product.setImage(Files.readAllBytes(imagePath));
         }
 
         productService.createProduct(product);
