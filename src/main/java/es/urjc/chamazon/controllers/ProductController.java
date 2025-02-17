@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,7 +24,7 @@ import java.util.List;
 public class ProductController {
     @Autowired
     private ProductService productService;
-    private static final Path IMAGES_FOLDER = Paths.get(System.getProperty("user.dir"), "images");
+    private static final Path IMAGES_FOLDER = Paths.get("images");
 
     @Autowired
     private CategoryService categoryService;
@@ -71,10 +72,11 @@ public class ProductController {
         product.setCategory(category);
 
         if (imageFile != null && !imageFile.isEmpty()) {
+            String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
             Files.createDirectories(IMAGES_FOLDER);
-            String imagePath = String.valueOf(IMAGES_FOLDER.resolve(product.getName() + System.currentTimeMillis() + ".jpg"));
-            imageFile.transferTo(new File(imagePath));
-            product.setImage(imagePath);
+            Path imagePath = IMAGES_FOLDER.resolve(fileName);
+            Files.copy(imageFile.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
+            product.setImage(fileName); // Guardamos solo el nombre del archivo
         }
 
         productService.createProduct(product);
