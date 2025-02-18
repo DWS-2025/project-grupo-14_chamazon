@@ -7,19 +7,36 @@ import org.springframework.web.context.annotation.SessionScope;
 
 @SessionScope
 public class User {
-    private String name;
+    private int id = 1;
+    private String username;
     private String email;
 
-    public String getName() {
-        return name;
+    public User(String username, String email) {
+        this.username = username;
+        this.email = email;
     }
-    public void setName(String name) {
-        this.name = name;
+
+    public String getName() {
+        return username;
+    }
+    public void setName(String providedUsername) {
+        this.username = providedUsername;
     }
     public String getEmail() {
         return email;
     }
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmail(String providedEmail) {
+        this.email = providedEmail;
+    }
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getShoppingCart() {
+        return "ShoppingCart";
     }
 }
