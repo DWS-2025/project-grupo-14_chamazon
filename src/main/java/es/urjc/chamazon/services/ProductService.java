@@ -3,24 +3,23 @@ package es.urjc.chamazon.services;
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.Paths;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-
 @Service
 public class ProductService {
-
-    private ConcurrentMap<Integer, Product> products = new ConcurrentHashMap();
-    private final CategoryService categoryService;
     private int productId = 1;
+    private final CategoryService categoryService;
+    private final ConcurrentMap<Integer, Product> products = new ConcurrentHashMap<>();
+    private static final Path IMAGES_FOLDER = Paths.get("images");
 
     public ProductService(CategoryService categoryService) {
         this.categoryService = categoryService;
@@ -30,84 +29,85 @@ public class ProductService {
         return products.values();
     }
 
-    public Product getProductById(int id) {
-        return products.get(id);
+    public Product getProduct(int id) {
+    return products.get(id);
     }
 
-    public void createProduct(Product product) {
-        Product newProduct = new Product(productId, product.getName(), product.getDescription(), product.getPrice(), product.getImage(), product.getCategory());
 
-        newProduct.setId(productId);
-
-        String name = product.getName();
-        if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre del producto no puede estar vacío");
+    public String processImage(MultipartFile imageFile) throws IOException {
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+            Files.createDirectories(IMAGES_FOLDER);
+            Path imagePath = IMAGES_FOLDER.resolve(fileName);
+            Files.copy(imageFile.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
+            return fileName;
         }
-        newProduct.setName(name);
+        return null;
+    }
 
-        String description = product.getDescription();
-        if (description != null) {
-            newProduct.setDescription(description);
-        }
+    public void validateProduct(Product product) {
+    if (product.getName() == null || product.getName().trim().isEmpty()) {
+        throw new IllegalArgumentException("El nombre del producto no puede estar vacío");
+    }
+    
+    if (product.getDescription() == null || product.getDescription().trim().isEmpty()) {
+        throw new IllegalArgumentException("La descripción del producto no puede estar vacía");
+    }
 
-        double price = product.getPrice();
-        if (price < 0) {
-            throw new IllegalArgumentException("El precio no puede ser negativo");
-        }
-        newProduct.setPrice(price);
+    if (product.getPrice() < 0) {
+        throw new IllegalArgumentException("El precio no puede ser negativo");
+    }
 
-        Category category = product.getCategory();
-        if (category == null) {
-            throw new IllegalArgumentException("La categoría no puede ser nula");
-        }
-        newProduct.setCategory(category);
+    if (product.getCategory() == null) {
+        throw new IllegalArgumentException("La categoría no puede ser nula");
+    }
+    }
 
-        String image = product.getImage();
-        if (image != null) {
-            newProduct.setImage(image);
-        }
-        categoryService.addProductToCategory(newProduct, newProduct.getCategory().getId());
-        products.put(productId, newProduct);
+    public void addProduct(String name, String description, double price, Category category, String imageFile) throws IOException {
+        String imageName = processImage(imageFile);
+        
+        Product product = new Product();
+        product.setId(productId);
+        product.setName(name);
+        product.setDescription(description);
+        product.setPrice(price);
+        product.setCategory(category);
+        product.setImage(imageName);
+
+        validateProduct(product);
+        
+        products.put(productId, product);
+        categoryService.addProductToCategory(product, category.getId());
         productId++;
     }
 
-    public Product updateProduct(int id, Product productDetails) {
-        Product product = products.get(id);
-        if (product == null) {
+    public void updateProduct(int id, String name, String description, double price, Category category, String imageFile) throws IOException {
+        Product existingProduct = products.get(id);
+        if (existingProduct == null) {
             throw new IllegalArgumentException("Product not found");
         }
 
-        Category oldCategory = product.getCategory();
+        String imageName = processImage(imageFile);
+
+        // Remove from old category
+        Category oldCategory = existingProduct.getCategory();
         if (oldCategory != null) {
-        categoryService.removeProductFromCategory(product.getId(), oldCategory.getId());
+            categoryService.removeProductFromCategory(id, oldCategory.getId());
         }
 
-        product.setName(productDetails.getName());
-        product.setDescription(productDetails.getDescription());
-        product.setPrice(productDetails.getPrice());
-        product.setCategory(productDetails.getCategory());
-        if (productDetails.getImage() != null) {
-            product.setImage(productDetails.getImage());
+        // Update product
+        existingProduct.setName(name);
+        existingProduct.setDescription(description);
+        existingProduct.setPrice(price);
+        existingProduct.setCategory(category);
+        if (imageName != null) {
+            existingProduct.setImage(imageName);
         }
 
-        categoryService.addProductToCategory(product, productDetails.getCategory().getId());
+        validateProduct(existingProduct);
 
-        products.put(id, product);
-        return product;
-    }
-
-    public void deleteProduct(int id)
-    {
-        products.remove(id);
-    }
-
-
-    public String getProductImage(int id) {
-        Product product = getProductById(id);
-        if (product != null) {
-            String imagePath = "src/main/es.urjc.chamazon/images/" + product.getImage();
-            return imagePath;
-        }
-        return null;
+        
+        categoryService.addProductToCategory(existingProduct, category.getId());
+        products.put(id, existingProduct);
     }
 }

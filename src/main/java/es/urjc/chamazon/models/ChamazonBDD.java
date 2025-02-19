@@ -42,8 +42,8 @@ public class ChamazonBDD {
             Product smartphone = new Product(2, "Smartphone", "High-end smartphone", 499.99, "smartphone.jpg", electronics);
             Product tshirt = new Product(3, "T-shirt", "Comfortable cotton t-shirt", 19.99, "tshirt.jpg", clothing);
 
-            productService.createProduct(smartphone);
-            productService.createProduct(tshirt);
+            productService.addProduct(smartphone);
+            productService.addProduct(tshirt);
 
             // 🔹 Asignar productos a las categorías
             categoryService.addProductToCategory(smartphone, electronics.getId());
