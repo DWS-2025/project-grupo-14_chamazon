@@ -46,21 +46,16 @@ public class ProductController {
 
     @PostMapping("/products/add")
     public String addProduct(@RequestParam String name,
-                           @RequestParam String description,
-                           @RequestParam double price,
-                           @RequestParam int categoryId,
-                           @RequestParam(required = false) MultipartFile imageFile) throws IOException {
+                            @RequestParam String description,
+                            @RequestParam double price,
+                            @RequestParam int categoryId,
+                            @RequestParam(required = false) MultipartFile imageFile) throws IOException {
         Category category = categoryService.getCategoryById(categoryId);
         if (category == null) {
             return "redirect:/products";
         }
-
-        String imageName = null;
-        if (imageFile != null && !imageFile.isEmpty()) {
-            imageName = productService.processImage(imageFile);
-        }
-
-        productService.addProduct(name, description, price, category, imageName);
+    
+        productService.addProduct(name, description, price, category, imageFile);
         return "redirect:/categories/" + category.getId();
     }
 
@@ -75,13 +70,12 @@ public class ProductController {
         if (category == null) {
             return "redirect:/products";
         }
-
-        String imageName = null;
+    
         if (imageFile != null && !imageFile.isEmpty()) {
-            imageName = productService.processImage(imageFile);
+            productService.processMultipartFile(imageFile); 
         }
-
-        productService.updateProduct(id, name, description, price, category, imageName);
+    
+        productService.updateProduct(id, name, description, price, category, imageFile);
         return "redirect:/categories/" + category.getId();
     }
 }

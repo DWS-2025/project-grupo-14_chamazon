@@ -34,7 +34,7 @@ public class ProductService {
     }
 
 
-    public String processImage(MultipartFile imageFile) throws IOException {
+    public String processMultipartFile(MultipartFile imageFile) throws IOException {
         if (imageFile != null && !imageFile.isEmpty()) {
             String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
             Files.createDirectories(IMAGES_FOLDER);
@@ -44,6 +44,7 @@ public class ProductService {
         }
         return null;
     }
+
 
     public void validateProduct(Product product) {
     if (product.getName() == null || product.getName().trim().isEmpty()) {
@@ -63,9 +64,7 @@ public class ProductService {
     }
     }
 
-    public void addProduct(String name, String description, double price, Category category, String imageFile) throws IOException {
-        String imageName = processImage(imageFile);
-        
+    public Product addProduct(String name, String description, double price, Category category, String imageName) {
         Product product = new Product();
         product.setId(productId);
         product.setName(name);
@@ -79,15 +78,21 @@ public class ProductService {
         products.put(productId, product);
         categoryService.addProductToCategory(product, category.getId());
         productId++;
+        return product;
     }
 
-    public void updateProduct(int id, String name, String description, double price, Category category, String imageFile) throws IOException {
+    public Product addProduct(String name, String description, double price, Category category, MultipartFile imageFile) throws IOException {
+        String imageName = processMultipartFile(imageFile);
+        return addProduct(name, description, price, category, imageName);
+    }
+
+    public void updateProduct(int id, String name, String description, double price, Category category, MultipartFile imageFile) throws IOException {
         Product existingProduct = products.get(id);
         if (existingProduct == null) {
             throw new IllegalArgumentException("Product not found");
         }
 
-        String imageName = processImage(imageFile);
+        String imageName = processMultipartFile(imageFile);
 
         // Remove from old category
         Category oldCategory = existingProduct.getCategory();
