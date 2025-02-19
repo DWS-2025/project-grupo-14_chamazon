@@ -59,6 +59,18 @@ public class ProductController {
         return "redirect:/categories/" + category.getId();
     }
 
+    @GetMapping("/products/{id}/edit")
+    public String showEditForm(@PathVariable int id, Model model) {
+        Product product = productService.getProduct(id);
+        if (product == null) {
+            return "redirect:/products";
+        }
+        
+        model.addAttribute("product", product);
+        model.addAttribute("categories", categoryService.getAllCategories());
+        return "editProduct";
+    }
+
     @PostMapping("/products/{id}/edit")
     public String updateProduct(@PathVariable int id,
                               @RequestParam String name,
@@ -78,4 +90,19 @@ public class ProductController {
         productService.updateProduct(id, name, description, price, category, imageFile);
         return "redirect:/categories/" + category.getId();
     }
+
+    @PostMapping("/products/{id}/delete")
+    public String deleteProduct(@PathVariable int id) {
+        Product product = productService.getProduct(id);
+        if (product == null) {
+            return "redirect:/products";
+        }
+    
+        Category category = product.getCategory();
+        productService.deleteProduct(id);
+        return "redirect:/categories/" + category.getId();
+    }
+
+
+
 }

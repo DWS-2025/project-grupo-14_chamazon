@@ -115,4 +115,15 @@ public class ProductService {
         categoryService.addProductToCategory(existingProduct, category.getId());
         products.put(id, existingProduct);
     }
+
+    public void deleteProduct(int id) {
+        Product product = products.get(id);
+        if (product != null) {
+            products.remove(id);
+            Category category = product.getCategory();
+            if (category != null) {
+                categoryService.removeProductFromCategory(id, category.getId());
+            }
+        }
+    }
 }
