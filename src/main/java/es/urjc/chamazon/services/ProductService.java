@@ -19,10 +19,11 @@ public class ProductService {
     private int productId = 1;
     private final CategoryService categoryService;
     private final ConcurrentMap<Integer, Product> products = new ConcurrentHashMap<>();
-    private static final Path IMAGES_FOLDER = Paths.get("images");
+    private final ImageService imageService;
 
-    public ProductService(CategoryService categoryService) {
+    public ProductService(CategoryService categoryService, ImageService imageService) {
         this.categoryService = categoryService;
+        this.imageService = imageService;
     }
 
     public Collection<Product> getAllProducts() {
@@ -34,7 +35,7 @@ public class ProductService {
     }
 
 
-    public String processMultipartFile(MultipartFile imageFile) throws IOException {
+    /*public String processMultipartFile(MultipartFile imageFile) throws IOException {
         if (imageFile != null && !imageFile.isEmpty()) {
             String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
             Files.createDirectories(IMAGES_FOLDER);
@@ -43,7 +44,7 @@ public class ProductService {
             return fileName;
         }
         return null;
-    }
+    }*/
 
 
     public void validateProduct(Product product) {
@@ -82,7 +83,7 @@ public class ProductService {
     }
 
     public Product addProduct(String name, String description, double price, Category category, MultipartFile imageFile) throws IOException {
-        String imageName = processMultipartFile(imageFile);
+        String imageName = imageService.saveImage(imageFile);
         return addProduct(name, description, price, category, imageName);
     }
 
@@ -92,7 +93,7 @@ public class ProductService {
             throw new IllegalArgumentException("Product not found");
         }
 
-        String imageName = processMultipartFile(imageFile);
+        String imageName = imageService.saveImage(imageFile);
 
         // Remove from old category
         Category oldCategory = existingProduct.getCategory();
