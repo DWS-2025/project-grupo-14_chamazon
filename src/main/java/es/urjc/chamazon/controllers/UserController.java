@@ -1,12 +1,12 @@
 package es.urjc.chamazon.controllers;
 
-
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -19,15 +19,23 @@ public class UserController {
 
     @GetMapping("/users")
     public String users(Model model) {
-        Collection<User> users = userService.getUsers();
+        Collection<User> users = userService.getAllUsers();
+        System.out.println(users.toString());
         model.addAttribute("users", users);
-        return "users";
+       return "users";
+    }
+
+    @GetMapping("/users/add")
+    public String addUser(Model model) {
+        Collection<User> users = userService.getAllUsers();
+        model.addAttribute("user", users.iterator().next());
+        return "addUser";
     }
 
     @PostMapping("/users/add")
-    public String addUser(@RequestParam String name,@RequestParam String password, @RequestParam String email) {
-        User user = new User(name, password, email);
-        userService.addUser(user);
+    public String addUser(@RequestParam String userName, @RequestParam String userEmail, @RequestParam String password) {
+        User newUser = new User(userName, userEmail, password);
+        userService.addUser(newUser);
         return "redirect:/users";
     }
 
@@ -43,9 +51,9 @@ public class UserController {
         model.addAttribute("user", user);
         return "editUser";}
 
-    @GetMapping("/")
+   /* @GetMapping("/")
     public String home() {
         return "main";
     }
-
+*/
 }

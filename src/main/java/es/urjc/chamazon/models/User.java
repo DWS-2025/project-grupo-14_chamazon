@@ -1,7 +1,11 @@
 package es.urjc.chamazon.models;
 
+import org.springframework.web.context.annotation.SessionScope;
+
 import java.util.Objects;
 
+
+@SessionScope
 public class User {
     private int id;
     private String userName;
@@ -27,7 +31,7 @@ public class User {
         this.address = address;
     }
 
-    public User(String userName, String password, String email) {
+    public User(String userName, String email, String password) {
         this.id = generateNextId();
         this.userName = userName;
         this.password = password;
