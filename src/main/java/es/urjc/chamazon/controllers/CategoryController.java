@@ -56,6 +56,7 @@ public class CategoryController {
     model.addAttribute("productsEachCategory", productsEachCategory);
     model.addAttribute("selectedCategoryId", id);
     model.addAttribute("selectedCategoryName", category.getName());
+    model.addAttribute("title", "Lista de Productos");
     return "products_list";
     }
 

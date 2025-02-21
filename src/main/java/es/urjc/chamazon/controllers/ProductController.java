@@ -31,6 +31,8 @@ public class ProductController {
     public String products(Model model) {
         Collection<Product> products = productService.getAllProducts();
         model.addAttribute("products", products);
+        model.addAttribute("title", "Lista de Productos");
+
         return "products_list";
     }
 
@@ -83,7 +85,7 @@ public class ProductController {
             return "redirect:/products";
         }
     
-        if (imageFile != null && !imageFile.isEmpty()) {
+        if (!imageFile.isEmpty()) {
             productService.processMultipartFile(imageFile); 
         }
     
