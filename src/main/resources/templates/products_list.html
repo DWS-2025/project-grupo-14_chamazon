@@ -10,67 +10,57 @@
 
 {{>header}}
 
-<ul>
-  {{#productsEachCategory}}
-  <li>
-    <h2>{{name}}</h2>
-    <p>Descripción: <span>{{description}}</span></p>
-    <p>Precio: <span>{{price}}</span></p>
-    {{#image}}
-    <div class="product-image">
-      <img src="/images/{{.}}" alt="{{name}}" style="max-width: 200px;">
-    </div>
-    {{/image}}
+<div class="container py-5">
+  <div class="row">
+      {{#productsEachCategory}}
+      <div class="col-md-4 mb-4">
+          <div class="card h-100">
+              {{#image}}
+              <img src="/images/{{.}}" class="card-img-top img-thumbnail" alt="{{name}}" style="height: 200px; object-fit: cover;">
+              {{/image}}
+              {{^image}}
+              <img src="/images/default-product.jpg" class="card-img-top img-thumbnail" alt="No image available" style="height: 200px; object-fit: cover;">
+              {{/image}}
+              
+              <div class="card-body">
+                  <h5 class="card-title">{{name}}</h5>
+                  <p class="card-text">{{description}}</p>
+                  <h6 class="card-subtitle mb-2 text-primary">{{price}}</h6>
+              </div>
+              
+              <div class="card-footer bg-white border-top-0">
+                  <div class="d-flex justify-content-between">
+                      <form action="/products/{{id}}/edit" method="GET">
+                          <button type="submit" class="btn btn-outline-secondary btn-sm">
+                              <i class="fas fa-edit"></i> Editar
+                          </button>
+                      </form>
+                      
+                      <form action="/products/{{id}}/delete" method="POST" class="ms-2">
+                          <button type="submit" class="btn btn-outline-danger btn-sm">
+                              <i class="fas fa-trash"></i> Eliminar
+                          </button>
+                      </form>
+                    </div>
+              </div>
+          </div>
+      </div>
+      {{/productsEachCategory}}
+  </div>
 
-    <form action="/products/{{id}}/delete" method="POST">
-      <button type="submit">Eliminar producto</button>
-    </form>
-
-
-  <form action="/products/{{id}}/edit" method="GET" style="display: inline;">
-  <button type="submit">Modificar producto</button>
-  </form>
-
-  </li>
-  {{/productsEachCategory}}
   {{^productsEachCategory}}
-  <p>No hay producto disponible</p>
+  <div class="alert alert-info text-center" role="alert">
+      <i class="fas fa-info-circle"></i> No hay productos disponibles
+  </div>
   {{/productsEachCategory}}
 
-</ul>
-
-<a href="/products/add?selectedCategoryId={{selectedCategoryId}}&selectedCategoryName={{selectedCategoryName}}" class="button">Añadir Producto</a>
-
-
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
-      <th scope="col">Handle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td colspan="2">Larry the Bird</td>
-      <td>@twitter</td>
-    </tr>
-  </tbody>
-</table>
+  <div class="text-center mt-4">
+      <a href="/products/add?selectedCategoryId={{selectedCategoryId}}&selectedCategoryName={{selectedCategoryName}}" 
+         class="btn btn-success">
+          <i class="fas fa-plus"></i> Añadir Producto
+      </a>
+  </div>
+</div>
 
 {{>footer}}
 <!-- </body>
