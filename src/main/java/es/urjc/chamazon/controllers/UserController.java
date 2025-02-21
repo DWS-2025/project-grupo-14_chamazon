@@ -33,9 +33,27 @@ public class UserController {
     }
 
     @PostMapping("/users/add")
-    public String addUser(@RequestParam String userName, @RequestParam String userEmail) {
-        User newUser = new User(userName, userEmail);
+    public String addUser(@RequestParam String userName, @RequestParam String userEmail, @RequestParam String password) {
+        User newUser = new User(userName, userEmail, password);
         userService.addUser(newUser);
         return "redirect:/users";
     }
+
+    @PostMapping("user/delete")
+    public String deleteUser(@RequestParam int id) {
+        userService.deleteUser(id);
+        return "redirect:/users";
+    }
+
+    @GetMapping("users/edit")
+    public String editUser(@RequestParam int id, Model model) {
+        User user = userService.getUserById(id);
+        model.addAttribute("user", user);
+        return "editUser";}
+
+   /* @GetMapping("/")
+    public String home() {
+        return "main";
+    }
+*/
 }

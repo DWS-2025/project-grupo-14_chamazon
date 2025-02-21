@@ -1,5 +1,6 @@
 package es.urjc.chamazon.controllers;
 
+import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.ShopingCar;
 import es.urjc.chamazon.services.ShopingCarService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Controller
 public class ShopingCarController {
@@ -21,12 +24,12 @@ public class ShopingCarController {
     @GetMapping("/shopingCar")
     public String shopingCar (Model model) {
         model.addAttribute("title", "Shoping Car");
-        model.addAttribute("listShopingCar", shopingCarService.getShopingCars());
+        //model.addAttribute("listShopingCar", shopingCarService.getShopingCars());
         return "shopingCar";
     }
 
     @PostMapping("/shopingCar/add")
-    public String createShopingCar (@RequestParam int idUser, @RequestParam List<Object> products, Model model) {
+    public String createShopingCar (@RequestParam int idUser, @RequestParam ConcurrentMap<Integer, Product> products, Model model) {
 
         ShopingCar shopingCar = new ShopingCar(idUser, products);
         shopingCarService.addShopingCar(shopingCar);
