@@ -2,33 +2,31 @@ package es.urjc.chamazon.models;
 
 import es.urjc.chamazon.services.CategoryService;
 import es.urjc.chamazon.services.ProductService;
+import es.urjc.chamazon.services.ShopingCarService;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Service
 public class ChamazonBDD {
 
-
-
-    private List<ShopingCar> ListShopingCar;
+    private final ShopingCarService shopingCarService;
     private final CategoryService categoryService;
     private final ProductService productService;
 
 
-        public ChamazonBDD(ProductService productService, CategoryService categoryService) {
-            List<ShopingCar> listShopingCar = new ArrayList<>();
+        public ChamazonBDD(ShopingCarService shopingCarService, ProductService productService, CategoryService categoryService) {
+            this.shopingCarService = shopingCarService;
             this.categoryService = categoryService;
             this.productService = productService;
 
-                Object product = new Object();
-                List<Object> products = new ArrayList<>();
-                ShopingCar shopingCar = new ShopingCar(1,products);
-                listShopingCar.add(shopingCar);
+            //listShopingCar.add(shopingCar.getId(),shopingCar);
 
-                this.ListShopingCar = listShopingCar;
+            //this.ListShopingCar = listShopingCar;
                 // 🔹 Inicializar Categorías
             Category electronics = new Category("Electronics");
             Category clothing = new Category("Clothing");
@@ -50,10 +48,10 @@ public class ChamazonBDD {
         }
 
         public void addShopingCar(ShopingCar car) {
-            this.ListShopingCar.add(car);
+            //this.ListShopingCar.add(car);
         }
 
-        public List<ShopingCar> getListShopingCar() {
+/*        public List<ShopingCar> getListShopingCar() {
             return ListShopingCar;
-        }
+        }*/
 }

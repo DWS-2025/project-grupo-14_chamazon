@@ -4,19 +4,20 @@ package es.urjc.chamazon.models;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentMap;
 
 public class ShopingCar {
 
     private int id;
     private int idUser;
-    private List<Object> products;
+    private ConcurrentMap<Integer, Product> products;
     private DateTimeFormatter dateSold;
 
     /*Generate a sequence id for the new registers*/
     /*Genera un id secuencial para los nuevos registros*/
     private static int idCounter = 1;
 
-    public ShopingCar(int idUser, List<Object> products) {
+    public ShopingCar(int idUser, ConcurrentMap<Integer, Product> products) {
         this.id = generateNextId();
         this.idUser = idUser;
         this.products = products;
@@ -53,11 +54,11 @@ public class ShopingCar {
         this.idUser = idUser;
     }
 
-    public List<Object> getProducts() {
+    public ConcurrentMap<Integer, Product> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Object> products) {
+    public void setProducts(ConcurrentMap<Integer, Product> products) {
         this.products = products;
     }
 

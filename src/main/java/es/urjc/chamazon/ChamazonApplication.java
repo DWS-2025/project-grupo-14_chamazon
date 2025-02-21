@@ -1,13 +1,8 @@
 package es.urjc.chamazon;
 
-import es.urjc.chamazon.models.ChamazonBDD;
-import es.urjc.chamazon.models.ShopingCar;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 
-import java.util.ArrayList;
-import java.util.List;
 
 
 @SpringBootApplication

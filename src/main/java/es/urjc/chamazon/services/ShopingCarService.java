@@ -1,31 +1,23 @@
 package es.urjc.chamazon.services;
 
-
-import es.urjc.chamazon.models.ChamazonBDD;
 import es.urjc.chamazon.models.ShopingCar;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 @Service
 public class ShopingCarService {
 
-    /*Acces to unique chamazon object*/
-    /*Accedemos al unico objeto chamazon*/
-    private final ChamazonBDD chamazonBDD;
+    private ConcurrentHashMap<Integer, ShopingCar> shopingCars = new ConcurrentHashMap<>();
+
+    public ShopingCar getShopingCarByIdUser(int idUser) {
 
 
-    public ShopingCarService(ChamazonBDD chamazonBDD) {
-        this.chamazonBDD = chamazonBDD;
+        return shopingCars.get(idUser);
     }
 
     public void addShopingCar(ShopingCar shopingCar) {
-        chamazonBDD.addShopingCar(shopingCar);
-    }
-
-    public List<ShopingCar> getShopingCars() {
-        return chamazonBDD.getListShopingCar();
     }
 }
