@@ -1,31 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+{{>header}}
 </head>
 <body>
-<h1>Lista de usuarios</h1>
+{{>navBar}}
 
-<table>
-  <tr>
-    <th>ID</th>
-    <th>Nombre</th>
-    <th>Email</th>
-    <th>Acciones</th>
-  </tr>
-  {{#users}}
-  <tr>
-    <td>{{id}}</td>
-    <td>{{userName}}</td>
-    <td>{{email}}</td>
-  </tr>
-  {{/users}}
-</table>
+  <h1>Lista de usuarios</h1>
 
-<h2>Añadir nuevo usuario</h2>
-<form action="/users/add" method="get">
-  <button type="submit">Añadir</button>
-</form>
-</body>
-</html>
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Email</th>
+      <th>Acciones</th>
+    </tr>
+    {{#users}}
+    <tr>
+      <td>{{id}}</td>
+      <td>{{userName}}</td>
+      <td>{{email}}</td>
+    </tr>
+    {{/users}}
+  </table>
+
+  <h2>Añadir nuevo usuario</h2>
+  <form action="/users/add" method="get">
+    <button type="submit">Añadir</button>
+  </form>
+
+{{>footer}}
