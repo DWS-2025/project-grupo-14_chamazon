@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <title>Lista de Productos</title>
+{{>header}}
 </head>
-
 <body>
+{{>navBar}}
+
 <ul>
   {{#productsEachCategory}}
   <li>
@@ -36,8 +32,9 @@
 
 </ul>
 
+{{#selectedCategoryId}}
 <a href="/products/add?selectedCategoryId={{selectedCategoryId}}&selectedCategoryName={{selectedCategoryName}}" class="button">Añadir Producto</a>
+{{/selectedCategoryId}}
 
-</body>
 
-</html>
+{{>footer}}

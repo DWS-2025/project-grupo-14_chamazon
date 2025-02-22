@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Editar categoría</title>
+{{>header}}
 </head>
 <body>
+{{>navBar}}
+
     <h1>Edita el nombre de la categoría</h1>
     <form action="/categories/edit" method="post">
         <input type="hidden" name="categoryId" value="{{category.id}}">
@@ -13,4 +11,5 @@
         <button type="submit">Modificar</button>
     </form>
 </body>
-</html>
+
+{{>footer}}

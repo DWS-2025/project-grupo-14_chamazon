@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Editar producto</title>
+{{>header}}
 </head>
 <body>
+{{>navBar}}
+
     <h1>Editar producto</h1>
     <form action="/products/{{product.id}}/edit" method="post">
         <label>Nombre:</label>
@@ -26,4 +24,5 @@
         <button type="submit">Actualizar</button>
     </form>
 </body>
-</html>
+
+{{>footer}}
