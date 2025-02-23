@@ -38,9 +38,6 @@ public class UserService {
 
     }
 
-    public void removeUser(int id) {
-        users.remove(id);
-    }
     public void removeAllUsers() {
         users.clear();
     }

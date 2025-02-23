@@ -10,7 +10,6 @@
       <th>ID</th>
       <th>Nombre</th>
       <th>Email</th>
-      <th>Acciones</th>
     </tr>
     {{#users}}
     <tr>
@@ -28,6 +27,18 @@
   <h2>Añadir nuevo usuario</h2>
   <form action="/users/add" method="get">
     <button type="submit">Añadir</button>
+  </form>
+
+  <h2>Eliminar usuario</h2>
+  <form action="user/delete" method="post">
+    <label for="userId">Selecciona un usuario para eliminar:</label>
+    <select name="id" id="userId" required>
+      <option value="userId" disabled selected>Selecciona un usuario para eliminar</option>
+      {{#users}}
+      <option value="{{id}}">{{userName}}</option>
+      {{/users}}
+    </select>
+    <button type="submit">Eliminar</button>
   </form>
 
 {{>footer}}
