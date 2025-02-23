@@ -1,0 +1,31 @@
+{{>header}}
+</head>
+<body>
+{{>navBar}}
+
+    <h1>2. Welcome to {{title}}</h1>
+
+
+
+    <!--FORM-->
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Acciones</th>
+    </tr>
+    {{#users}}
+    <tr>
+        <td>{{id}}</td>
+        <td>{{userName}}</td>
+        <td>{{email}}</td>
+        <td>
+            <a type="button"  title="Carrito" href="/shoppingCar">Carrito</a>
+
+        </td>
+    </tr>
+    {{/users}}
+</table>
+
+{{>footer}}

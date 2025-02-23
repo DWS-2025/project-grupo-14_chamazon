@@ -1,13 +1,18 @@
 package es.urjc.chamazon.models;
 
+import es.urjc.chamazon.services.ShoppingCarService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
 import java.util.Objects;
 
 
+
 @SessionScope
 public class User {
     private int id;
+    private int type;
     private String userName;
     private String name;
     private String surname;
@@ -20,8 +25,12 @@ public class User {
     /*Genera un id secuencial para los nuevos registros*/
     private static int idCounter = 1;
 
-    public User(String userName, String name, String surname, String password, String email, String phone, String address) {
+
+
+
+    public User(String userName, int type, String name, String surname, String password, String email, String phone, String address) {
         this.id = generateNextId();
+        this.type=type;
         this.userName = userName;
         this.name = name;
         this.surname = surname;
@@ -51,6 +60,14 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public String getAddress() {
@@ -114,18 +131,19 @@ public class User {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && Objects.equals(userName, user.userName) && Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(phone, user.phone) && Objects.equals(address, user.address);
+        return id == user.id && type == user.type && Objects.equals(userName, user.userName) && Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(phone, user.phone) && Objects.equals(address, user.address);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userName, name, surname, password, email, phone, address);
+        return Objects.hash(id, type, userName, name, surname, password, email, phone, address);
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
+                ", type=" + type +
                 ", userName='" + userName + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +

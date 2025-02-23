@@ -20,10 +20,10 @@ public class ChamazonApplication {
     public ChamazonBDD chamazonBDD(){
         Object product = new Object();
         List<Object> products = new ArrayList<>();
-        ShopingCar shopingCar = new ShopingCar(1,products);
+        ShoppingCar shoppingCar = new ShoppingCar(1,products);
 
         ChamazonBDD chamazonBDD = new ChamazonBDD();
-        chamazonBDD.addShopingCar(shopingCar);
+        chamazonBDD.addShoppingCar(shoppingCar);
 
         return chamazonBDD;
     }
