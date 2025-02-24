@@ -6,25 +6,25 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentMap;
 
-public class ShopingCar {
+public class ShoppingCar {
 
     private int id;
     private int idUser;
-    private ConcurrentMap<Integer, Product> products;
+    private List<Integer> products;
     private DateTimeFormatter dateSold;
 
     /*Generate a sequence id for the new registers*/
     /*Genera un id secuencial para los nuevos registros*/
     private static int idCounter = 1;
 
-    public ShopingCar(int idUser, ConcurrentMap<Integer, Product> products) {
+    public ShoppingCar(int idUser, List<Integer> products) {
         this.id = generateNextId();
         this.idUser = idUser;
         this.products = products;
         this.dateSold = null;
     }
 
-    public ShopingCar() {
+    public ShoppingCar() {
         this.id = generateNextId();
         this.idUser = 0;
         this.products = null;
@@ -54,11 +54,11 @@ public class ShopingCar {
         this.idUser = idUser;
     }
 
-    public ConcurrentMap<Integer, Product> getProducts() {
+    public List<Integer> getProducts() {
         return products;
     }
 
-    public void setProducts(ConcurrentMap<Integer, Product> products) {
+    public void setProducts(List<Integer> products) {
         this.products = products;
     }
 
@@ -74,7 +74,7 @@ public class ShopingCar {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        ShopingCar that = (ShopingCar) o;
+        ShoppingCar that = (ShoppingCar) o;
         return id == that.id && idUser == that.idUser && Objects.equals(products, that.products) && Objects.equals(dateSold, that.dateSold);
     }
 
@@ -85,7 +85,7 @@ public class ShopingCar {
 
     @Override
     public String toString() {
-        return "ShopingCar{" +
+        return "ShoppingCar{" +
                 "id=" + id +
                 ", idUser=" + idUser +
                 ", products=" + products +

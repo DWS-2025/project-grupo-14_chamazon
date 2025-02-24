@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentMap;
 public class UserService {
 
     @Autowired
-    private ShopingCarService shopingCarService;
+    private ShoppingCarService shoppingCarService;
 
 
     private int userId = 1;
@@ -29,6 +29,7 @@ public class UserService {
 
     public void addUser(User user) {
         users.put(user.getId(), user);
+        shoppingCarService.addNewSoppingCarToUser(user.getId());
     }
 
     public void removeAllUsers() {
@@ -38,12 +39,12 @@ public class UserService {
     public void getShoppingFromUser(int id) {
         User user = users.get(id);
         if (user != null) {
-            System.out.println("Carrito de " + user.getName() + ": " + shopingCarService.getShopingCarByIdUser(user.getId()));
+            System.out.println("Carrito de " + user.getName() + ": " + shoppingCarService.getActualShoppingCarByIdUser(user.getId()));
         } else {
             System.out.println("Usuario no encontrado.");
         }
     }
-    public void addShopingToUser(int id, Product product) {
+    public void addShoppingToUser(int id, Product product) {
         User user = users.get(id);
         if (user != null) {
             //user.getShoppingCart().add(product);

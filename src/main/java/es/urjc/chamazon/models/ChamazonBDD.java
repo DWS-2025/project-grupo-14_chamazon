@@ -2,36 +2,29 @@ package es.urjc.chamazon.models;
 
 import es.urjc.chamazon.services.CategoryService;
 import es.urjc.chamazon.services.ProductService;
-import es.urjc.chamazon.services.ShopingCarService;
+import es.urjc.chamazon.services.ShoppingCarService;
 import es.urjc.chamazon.services.UserService;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 @Service
 public class ChamazonBDD {
 
-    private final ShopingCarService shopingCarService;
+    private final ShoppingCarService shoppingCarService;
     private final CategoryService categoryService;
     private final ProductService productService;
     private final UserService userService;
 
 
         public ChamazonBDD(ProductService productService, CategoryService categoryService, UserService userService,
-                            ShopingCarService shopingCarService) {
-            List<ShopingCar> listShopingCar = new ArrayList<>();
-            this.shopingCarService = shopingCarService;
+                            ShoppingCarService shoppingCarService) {
+            this.shoppingCarService = shoppingCarService;
             this.categoryService = categoryService;
             this.productService = productService;
             this.userService = userService ;
 
-            //listShopingCar.add(shopingCar.getId(),shopingCar);
-
-                //this.ListShopingCar = listShopingCar;
 
                 // 🔹 Inicializar Categorías
             Category electronics = new Category("Electronics");
@@ -56,11 +49,4 @@ public class ChamazonBDD {
 
         }
 
-        public void addShopingCar(ShopingCar car) {
-            //this.ListShopingCar.add(car);
-        }
-
-/*        public List<ShopingCar> getListShopingCar() {
-            return ListShopingCar;
-        }*/
 }
