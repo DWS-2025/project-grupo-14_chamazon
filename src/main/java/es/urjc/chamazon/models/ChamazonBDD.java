@@ -20,15 +20,11 @@ public class ChamazonBDD {
 
         public ChamazonBDD(ProductService productService, CategoryService categoryService, UserService userService,
                             ShoppingCarService shoppingCarService) {
-            List<ShoppingCar> listShoppingCar = new ArrayList<>();
             this.shoppingCarService = shoppingCarService;
             this.categoryService = categoryService;
             this.productService = productService;
             this.userService = userService ;
 
-            //listShoppingCar.add(shoppingCar.getId(),shoppingCar);
-
-                //this.ListShoppingCar = listShoppingCar;
 
                 // 🔹 Inicializar Categorías
             Category electronics = new Category("Electronics");
@@ -56,11 +52,4 @@ public class ChamazonBDD {
 
         }
 
-        public void addShoppingCar(ShoppingCar car) {
-            //this.ListShoppingCar.add(car);
-        }
-
-/*        public List<ShoppingCar> getListShoppingCar() {
-            return ListShoppingCar;
-        }*/
 }

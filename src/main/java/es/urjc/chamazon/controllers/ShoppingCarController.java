@@ -26,12 +26,12 @@ public class ShoppingCarController {
         return "shoppingCar";
     }
 
-    @PostMapping("/shoppingCar/add")
+/*    @PostMapping("/shoppingCar/add")
     public String createShoppingCar (@RequestParam int idUser, @RequestParam ConcurrentMap<Integer, Product> products, Model model) {
 
         shoppingCarService.addShoppingCarToUser(idUser);
 
         return "redirect:/shoppingCar";
-    }
+    }*/
 
 }

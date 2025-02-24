@@ -29,13 +29,7 @@ public class UserService {
 
     public void addUser(User user) {
         users.put(user.getId(), user);
-        if (shoppingCarService.getShoppingCarByIdUser(user.getId()) == null && shoppingCarService.getShoppingCarByIdUser(user.getId()).getDateSold() == null) {
-            addUser(user);
-
-        }else{
-            shoppingCarService.addShoppingCarToUser(user.getId());
-        }
-
+        shoppingCarService.addNewSoppingCarToUser(user.getId());
     }
 
     public void removeAllUsers() {
@@ -45,7 +39,7 @@ public class UserService {
     public void getShoppingFromUser(int id) {
         User user = users.get(id);
         if (user != null) {
-            System.out.println("Carrito de " + user.getName() + ": " + shoppingCarService.getShoppingCarByIdUser(user.getId()));
+            System.out.println("Carrito de " + user.getName() + ": " + shoppingCarService.getActualShoppingCarByIdUser(user.getId()));
         } else {
             System.out.println("Usuario no encontrado.");
         }

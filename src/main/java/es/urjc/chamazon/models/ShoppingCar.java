@@ -10,14 +10,14 @@ public class ShoppingCar {
 
     private int id;
     private int idUser;
-    private List<Product> products;
+    private List<Integer> products;
     private DateTimeFormatter dateSold;
 
     /*Generate a sequence id for the new registers*/
     /*Genera un id secuencial para los nuevos registros*/
     private static int idCounter = 1;
 
-    public ShoppingCar(int idUser, List<Product> products) {
+    public ShoppingCar(int idUser, List<Integer> products) {
         this.id = generateNextId();
         this.idUser = idUser;
         this.products = products;
@@ -54,11 +54,11 @@ public class ShoppingCar {
         this.idUser = idUser;
     }
 
-    public List<Product> getProducts() {
+    public List<Integer> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(List<Integer> products) {
         this.products = products;
     }
 

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -79,7 +79,7 @@ public class ShoppingCarService {
 
     public ShoppingCar addProductFromShoppingCarByIdUser(int idUser, Product product) {
         ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-        sc.getProducts().add(product);
+        sc.getProducts().add(product.getId());
 
         this.deleteActualShoppingCarByIdUser(idUser);
         this.shoppingCars.get(idUser).add(sc);
@@ -90,15 +90,13 @@ public class ShoppingCarService {
 
     public ShoppingCar removeProductsFromShoppingCar(int idUser, int idProduct, boolean dellAll) {
         ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-        List<Integer> idProductList = this.getIdProductListFromActualShoppingCar(idUser);
-        if (idProductList.contains(idProduct)) {
+        if (sc.getProducts().contains(idProduct)) {
 
             if (dellAll) {
-                sc.getProducts().removeIf(p -> p.getId() == idProduct);
+                sc.getProducts().removeIf(p -> p == idProduct);
             }else{
                 sc.getProducts().remove(idProduct);
             }
-
             this.deleteActualShoppingCarByIdUser(idUser);
             this.shoppingCars.get(idUser).add(sc);
             return sc;
@@ -107,12 +105,18 @@ public class ShoppingCarService {
         return sc;
     }
 
-
+    public List<Product> getProductListFromActualShoppingCar(int idUser) {
+        List<Product> productList = new ArrayList<>();
+        ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
+        for (Integer idP : sc.getProducts()) {
+            productList.add(productService.getProductById(idP));
+        }
+        return productList;
+    }
 
     //Create a new List shoppingCar for idUser
     private List<ShoppingCar> addListShoppingCarToUser(int idUser) {
-        List<ShoppingCar> shoppingCarList = new LinkedList<>();
-        shoppingCarList.add(this.addShoppingCarToUserList(idUser));
+        List<ShoppingCar> shoppingCarList = new ArrayList<>();
         shoppingCars.put(idUser, shoppingCarList);
         return shoppingCarList;
     }
@@ -126,14 +130,6 @@ public class ShoppingCarService {
         newList.add(sc);
         shoppingCars.put(idUser,newList);*/
         return sc;
-    }
-    private List<Integer> getIdProductListFromActualShoppingCar(int idUser) {
-        List<Integer> productList = new LinkedList<>();
-        ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-        for (Product p : sc.getProducts()) {
-            productList.add(p.getId());
-        }
-        return productList;
     }
 
 }
