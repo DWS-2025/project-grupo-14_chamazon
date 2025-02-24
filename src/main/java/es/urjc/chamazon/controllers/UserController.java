@@ -51,6 +51,18 @@ public class UserController {
         model.addAttribute("user", user);
         return "editUser";}
 
+    @PostMapping("/users/edit")
+    public String editUser(@ModelAttribute("user") User user, Model model) {
+        User existingUser = userService.getUserById(user.getId());
+        existingUser.setUserName(user.getUserName());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setAddress(user.getAddress() != null ? user.getAddress() : "");
+        existingUser.setPassword(user.getPassword());
+        existingUser.setPhone(user.getPhone() != null ? user.getPhone() : "");
+        userService.updateUser(existingUser);
+        return "redirect:/users";
+    }
+
    /* @GetMapping("/")
     public String home() {
         return "main";

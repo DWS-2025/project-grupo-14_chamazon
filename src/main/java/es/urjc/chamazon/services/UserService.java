@@ -61,4 +61,8 @@ public class UserService {
     public User getUserById(int id) {
         return users.get(id);
     }
+
+    public void updateUser(User existingUser) {
+        users.put(existingUser.getId(), existingUser);
+    }
 }

@@ -75,4 +75,7 @@ public class CategoryService {
         return null;
     }
 
+    public void updateCategory(Category category) {
+        categories.put(category.getId(), category);
+    }
 }

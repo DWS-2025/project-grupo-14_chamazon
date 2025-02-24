@@ -71,9 +71,9 @@ public class CategoryController {
     public String editCategory(@RequestParam int categoryId, @RequestParam String categoryName, Model model) {
         Category category = categoryService.getCategoryById(categoryId);
         category.setName(categoryName);
+        categoryService.updateCategory(category);
         return "redirect:/categories";
     }
-
 
 
     @GetMapping("/")
