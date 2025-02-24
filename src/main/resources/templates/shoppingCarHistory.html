@@ -1,0 +1,46 @@
+{{>header}}
+</head>
+<body>
+{{>navBar}}
+
+    <h1>Historial de Carritos de {{userName}}</h1>
+
+
+
+    <!--FORM-->
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Usuario</th>
+        <th>Productos</th>
+        <th>Fecha de compra</th>
+    </tr>
+    {{#listShoppingCar}}
+    <tr>
+        <td>{{id}}</td>
+        <td>{{userName}}</td>
+
+        {{#productLengthMap}}
+        <td>aa.id</td>
+        {{/productLengthMap}}
+        {{^productLengthMap}}
+        <td>EMPTY</td>
+        {{/productLengthMap}}
+
+        {{#dateSold}}
+            <td>{{dateSold}}</td>
+        {{/dateSold}}
+        {{^dateSold}}
+        <td>ACTUAL</td>
+        {{/dateSold}}
+
+
+        <td>
+            <a type="button"  title="VerCarrito" href="/shoppingCar/{{id}}">Ver Carrito</a>
+        </td>
+    </tr>
+    {{/listShoppingCar}}
+</table>
+
+
+{{>footer}}
