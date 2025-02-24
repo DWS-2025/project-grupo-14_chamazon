@@ -109,7 +109,7 @@ public class ShoppingCarService {
         List<Product> productList = new ArrayList<>();
         ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
         for (Integer idP : sc.getProducts()) {
-            productList.add(productService.getProductById(idP));
+            productList.add(productService.getProduct(idP));
         }
         return productList;
     }
