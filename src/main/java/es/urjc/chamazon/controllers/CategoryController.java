@@ -25,6 +25,10 @@ public class CategoryController {
         return "categories";
 
     }
+    @GetMapping("/categories/add")
+    public String addCategory(Model model) {
+        return "addCategory";
+    }
 
     @PostMapping("/categories/add")
     public String addCategory(@RequestParam String categoryName) {
@@ -45,6 +49,11 @@ public class CategoryController {
 
     @PostMapping("/categories/delete")
     public String deleteCategory(@RequestParam int categoryId) {
+        categoryService.deleteCategory(categoryId);
+        return "redirect:/categories";
+    }
+    @GetMapping("/categories/delete")
+    public String deleteCategory(@RequestParam int categoryId, Model model) {
         categoryService.deleteCategory(categoryId);
         return "redirect:/categories";
     }
