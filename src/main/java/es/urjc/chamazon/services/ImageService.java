@@ -1,57 +1,61 @@
 package es.urjc.chamazon.services;
 
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.nio.file.Files;
+import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.util.UUID;
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
-public class ImageService {
-    private static final Path IMAGES_FOLDER = Paths.get("src/main/resources/static/images");
-    private static final String IMAGES_URL_PATH = "/images/";
+public class ImageService{
+    
+    private static final Path IMAGES_FOLDER = Paths.get(System.getProperty("user.dir"), "images");
 
-    public ImageService() {
-        createImagesDirectory();
-    }
+    public String createImage(MultipartFile multiPartFile) {
 
-    private void createImagesDirectory() {
-        try {
-            Files.createDirectories(IMAGES_FOLDER);
-        } catch (IOException e) {
-            throw new RuntimeException("No se pudo crear el directorio de imágenes", e);
+        String originalName = multiPartFile.getOriginalFilename();
+
+        if(!originalName.matches(".*\\.(jpg|jpeg|gif|png)")){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The url is not an image resource");  
         }
-    }
-
-    public String saveImage(MultipartFile file) throws IOException {
-        if (file == null || file.isEmpty()) {
-            return null;
-        }
-
-        String fileName = generateFileName(file);
+        
+        String fileName = "image_" + UUID.randomUUID() + "_" +originalName;
+        
         Path imagePath = IMAGES_FOLDER.resolve(fileName);
-        Files.copy(file.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
-        
-        return IMAGES_URL_PATH + fileName;
-    }
-
-    private String generateFileName(MultipartFile file) {
-        return System.currentTimeMillis() + "_" + file.getOriginalFilename().replaceAll("\\s+", "_");
-    }
-
-    public void deleteImage(String fileName) {
-        if (fileName != null && fileName.startsWith(IMAGES_URL_PATH)) {
-            fileName = fileName.substring(IMAGES_URL_PATH.length());
-        }
-        
         try {
-            Path imagePath = IMAGES_FOLDER.resolve(fileName);
-            Files.deleteIfExists(imagePath);
-        } catch (IOException e) {
-            throw new RuntimeException("Error al eliminar la imagen: " + fileName, e);
+            multiPartFile.transferTo(imagePath);
+        } catch (Exception ex) {
+            System.err.println(ex);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't save image locally", ex);
+        } 
+
+        return fileName;
+    }
+
+    public Resource getImage(String imageName) {
+        Path imagePath = IMAGES_FOLDER.resolve(imageName);
+        try {
+            return new UrlResource(imagePath.toUri());
+        } catch (MalformedURLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't get local image");
         }
     }
+
+    public void deleteImage(String image_url) {
+        String[] tokens = image_url.split("/");
+        String image_name = tokens[tokens.length -1 ];
+
+        try {
+            IMAGES_FOLDER.resolve(image_name).toFile().delete();
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't delete local image");
+        }
+    }
+    
 }
