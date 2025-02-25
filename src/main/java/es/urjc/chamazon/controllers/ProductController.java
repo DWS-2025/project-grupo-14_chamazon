@@ -20,6 +20,7 @@ import java.util.Collection;
 @Controller
 public class ProductController {
     private static final Path IMAGES_FOLDER = Paths.get("images");
+    private static final int NO_CATEGORY_SELECTED = 0;
 
     @Autowired
     private ProductService productService;
@@ -30,7 +31,9 @@ public class ProductController {
     @GetMapping("/products")
     public String products(Model model) {
         Collection<Product> products = productService.getAllProducts();
-        model.addAttribute("products", products);
+        model.addAttribute("productsEachCategory", products);
+        model.addAttribute("selectedCategoryId", NO_CATEGORY_SELECTED);
+        model.addAttribute("selectedCategoryName", "Todas las categorías");
         model.addAttribute("title", "Lista de Productos");
 
         return "products_list";
@@ -41,8 +44,7 @@ public class ProductController {
                            @RequestParam int selectedCategoryId, 
                            @RequestParam String selectedCategoryName) {
         model.addAttribute("product", new Product());
-        model.addAttribute("selectedCategoryId", selectedCategoryId);
-        model.addAttribute("selectedCategoryName", selectedCategoryName);
+        model.addAttribute("categories", categoryService.getAllCategories());
         return "addProduct";
     }
 

@@ -25,6 +25,12 @@ public class ProductService {
     public ProductService(CategoryService categoryService, ImageService imageService) {
         this.categoryService = categoryService;
         this.imageService = imageService;
+
+        Category defaultCategory = categoryService.getCategoryById(1); // Asegúrate de que existe esta categoría
+    if (defaultCategory != null) {
+        this.addProduct("Producto 1", "Descripción 1", 99.99, defaultCategory, "default-image.jpg");
+        this.addProduct("Producto 2", "Descripción 2", 149.99, defaultCategory, "default-image.jpg");
+    }
     }
 
     public Collection<Product> getAllProducts() {

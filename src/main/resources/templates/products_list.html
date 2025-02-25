@@ -9,6 +9,9 @@
 <body> -->
 
 {{>header}}
+</head>
+<body>
+{{>navBar}}
 
 <div class="container py-5">
   <div class="row">
@@ -26,6 +29,7 @@
                   <h5 class="card-title">{{name}}</h5>
                   <p class="card-text">{{description}}</p>
                   <h6 class="card-subtitle mb-2 text-primary">{{price}}</h6>
+                  <h7 class="card-subtitle mb-2 text-muted">{{category.name}}</h7>
               </div>
               
               <div class="card-footer bg-white border-top-0">
