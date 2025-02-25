@@ -1,0 +1,19 @@
+{{>header}}
+</head>
+<body>
+{{>navBar}}
+
+<div class="container my-5">
+    <h1 class="mb-4 text-center">Añadir Nueva Categoría</h1>
+    <div class="card shadow p-4">
+        <form action="/categories/add" method="post">
+            <div class="mb-3">
+                <label for="categoryName" class="form-label">Nombre:</label>
+                <input type="text" id="categoryName" name="categoryName" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-success w-100">Añadir</button>
+        </form>
+    </div>
+</div>
+
+{{>footer}}
