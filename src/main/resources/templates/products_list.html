@@ -9,9 +9,22 @@
 <body> -->
 
 {{>header}}
-</head>
-<body>
 {{>navBar}}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 text-end mb-3">
+            <form action="/products" method="GET">
+                <select name="userId" class="form-select" onchange="this.form.submit()">
+                    <option value="">Seleccionar Usuario</option>
+                    {{#users}}
+                    <option value="{{id}}" selected{}>{{userName}}</option>
+                    {{/users}}
+                </select>
+            </form>
+        </div>
+    </div>
+</div>
 
 <div class="container py-5">
   <div class="row">
@@ -45,6 +58,13 @@
                               <i class="fas fa-trash"></i> Eliminar
                           </button>
                       </form>
+
+                      <form action="/products/{id}/{userId}/addToCard" method="POST" class="ms-2">
+                          <button type="submit" class="btn btn-outline-success btn-sm">
+                              <i class="fas fa-cart-plus"></i> Añadir al carrito
+                          </button>
+
+                      
                     </div>
               </div>
           </div>

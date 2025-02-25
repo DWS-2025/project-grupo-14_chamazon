@@ -2,8 +2,12 @@ package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
+import es.urjc.chamazon.models.User;
+import es.urjc.chamazon.models.ShoppingCar;
+import es.urjc.chamazon.services.ShoppingCarService;
 import es.urjc.chamazon.services.CategoryService;
 import es.urjc.chamazon.services.ProductService;
+import es.urjc.chamazon.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +21,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 
+
 @Controller
 public class ProductController {
     private static final Path IMAGES_FOLDER = Paths.get("images");
@@ -28,10 +33,27 @@ public class ProductController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ShoppingCarService shoppingCarService;
+
     @GetMapping("/products")
-    public String products(Model model) {
+    public String products(Model model, Integer userId) {
         Collection<Product> products = productService.getAllProducts();
+        Collection<User> users = userService.getAllUsers();
+
+        if (userId != null) {
+            User selectedUser = userService.getUser(userId);
+            if (selectedUser != null) {
+                model.addAttribute("selectedUser", selectedUser);
+                model.addAttribute("selectedUserId", userId);
+            }
+        }
+
         model.addAttribute("productsEachCategory", products);
+        model.addAttribute("users", users);
         model.addAttribute("selectedCategoryId", NO_CATEGORY_SELECTED);
         model.addAttribute("selectedCategoryName", "Todas las categorías");
         model.addAttribute("title", "Lista de Productos");
@@ -62,6 +84,17 @@ public class ProductController {
         productService.addProduct(name, description, price, category, imageFile);
         return "redirect:/categories/" + category.getId();
     }
+
+    @PostMapping("/products/{id}/{userId}/addToCard")
+    public String addToCart(@PathVariable int id, @PathVariable int userId) {
+        Product product = productService.getProduct(id);
+        if (product != null) {
+        shoppingCarService.addProductFromShoppingCarByIdUser(userId, product);
+        }
+    return "redirect:/products";
+    }
+    
+
 
     @GetMapping("/products/{id}/edit")
     public String showEditForm(@PathVariable int id, Model model) {
