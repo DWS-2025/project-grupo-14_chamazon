@@ -44,14 +44,14 @@ public class ProductController {
         Collection<Product> products = productService.getAllProducts();
         Collection<User> users = userService.getAllUsers();
 
-        if (userId != null) {
-            User selectedUser = userService.getUser(userId);
-            if (selectedUser != null) {
-                model.addAttribute("selectedUser", selectedUser);
-                model.addAttribute("selectedUserId", userId);
-            }
+        model.addAttribute("selectedUserId", userId != null ? userId : -1);
+    
+     if (userId != null) {
+        User selectedUser = userService.getUser(userId);
+        if (selectedUser != null) {
+            model.addAttribute("selectedUser", selectedUser);
         }
-
+        }
         model.addAttribute("productsEachCategory", products);
         model.addAttribute("users", users);
         model.addAttribute("selectedCategoryId", NO_CATEGORY_SELECTED);
@@ -85,12 +85,12 @@ public class ProductController {
         return "redirect:/categories/" + category.getId();
     }
 
-    @PostMapping("/products/{id}/{userId}/addToCard")
+    @PostMapping("/products/{id}/addToCard/{userId}")
     public String addToCart(@PathVariable int id, @PathVariable int userId) {
-        Product product = productService.getProduct(id);
-        if (product != null) {
+    Product product = productService.getProduct(id);
+    if (product != null) {
         shoppingCarService.addProductFromShoppingCarByIdUser(userId, product);
-        }
+    }
     return "redirect:/products";
     }
     

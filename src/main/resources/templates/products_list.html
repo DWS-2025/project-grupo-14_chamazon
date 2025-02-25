@@ -59,8 +59,9 @@
                           </button>
                       </form>
 
-                      <form action="/products/{id}/{userId}/addToCard" method="POST" class="ms-2">
-                          <button type="submit" class="btn btn-outline-success btn-sm">
+                      <form action="/products/{{id}}/addToCard" method="POST" class="ms-2">
+                        <input type="hidden" name="userId" value="{{selectedUserId}}">  
+                        <button type="submit" class="btn btn-outline-success btn-sm">
                               <i class="fas fa-cart-plus"></i> Añadir al carrito
                           </button>
 
