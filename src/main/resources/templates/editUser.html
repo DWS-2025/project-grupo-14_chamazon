@@ -1,0 +1,46 @@
+{{>header}}
+</head>
+<body class="bg-light">
+{{>navBar}}
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm p-4">
+        <h2 class="mb-3 text-center text-primary">Editar Usuario</h2>
+        <form action="/users/edit" method="post">
+          <input type="hidden" name="id" value="{{user.id}}">
+
+          <div class="mb-3">
+            <label for="userName" class="form-label">Nombre:</label>
+            <input type="text" class="form-control" id="userName" name="userName" value="{{user.userName}}" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label">Contraseña:</label>
+            <input type="password" class="form-control" id="password" name="password" value="{{user.password}}" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{user.email}}" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="phone" class="form-label">Teléfono:</label>
+            <input type="text" class="form-control" id="phone" name="phone" value="{{#user.phone}}{{user.phone}}{{/user.phone}}">
+          </div>
+
+          <div class="mb-3">
+            <label for="address" class="form-label">Dirección:</label>
+            <input type="text" class="form-control" id="address" name="address" value="{{#user.address}}{{user.address}}{{/user.address}}">
+          </div>
+
+          <button type="submit" class="btn btn-success w-100">Actualizar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{>footer}}

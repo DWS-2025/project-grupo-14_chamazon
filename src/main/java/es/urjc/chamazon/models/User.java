@@ -39,7 +39,9 @@ public class User {
         this.phone = phone;
         this.address = address;
     }
+    public User() {
 
+    }
     public User(String userName, String email, String password) {
         this.id = generateNextId();
         this.userName = userName;
