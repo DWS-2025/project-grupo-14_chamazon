@@ -6,9 +6,6 @@ import es.urjc.chamazon.services.ShoppingCarService;
 import es.urjc.chamazon.services.UserService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 public class ChamazonBDD {
 
@@ -46,6 +43,12 @@ public class ChamazonBDD {
 
             userService.addUser(user1);
             userService.addUser(user2);
+
+            //Add product to ShoppingCar User
+            shoppingCarService.addProductForShoppingCarByIdUser(1,1);
+            shoppingCarService.addProductForShoppingCarByIdUser(1,2);
+            shoppingCarService.addProductForShoppingCarByIdUser(1,2);
+            shoppingCarService.addProductForShoppingCarByIdUser(1,1);
 
         }
 

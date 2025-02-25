@@ -3,29 +3,34 @@
 <body>
 {{>navBar}}
 
-    <h1>2. Welcome to {{title}}</h1>
+    <h1>Historial de Carritos de </h1>
 
 
 
     <!--FORM-->
 <table>
     <tr>
-        <th>ID</th>
         <th>Nombre</th>
-        <th>Email</th>
-        <th>Acciones</th>
+        <th>Cantidad</th>
+        <th>Precio</th>
     </tr>
-    {{#users}}
+    {{#productList}}
     <tr>
-        <td>{{id}}</td>
-        <td>{{userName}}</td>
-        <td>{{email}}</td>
-        <td>
-            <a type="button"  title="Carrito" href="/shoppingCar">Carrito</a>
 
+        <td>{{name}}</td>
+        <td>1</td>
+
+        <td>{{price}}</td>
+
+
+        <td>
+            <a type="button"  title="VerCarrito" href="/products/{{id}}">Ver Producto</a>
         </td>
+
     </tr>
-    {{/users}}
+
+    {{/productList}}
 </table>
+
 
 {{>footer}}

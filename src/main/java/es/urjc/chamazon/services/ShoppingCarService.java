@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -24,6 +26,37 @@ public class ShoppingCarService {
     //TODO
     public ShoppingCar getDatedShoppingCarByIdUser(int idUser, DateTimeFormatter dateSold) {
         return null;
+    }
+
+    public List<ShoppingCar> getShoppingCarListByUser(int idUser) {
+        List<ShoppingCar> sc = shoppingCars.get(idUser);
+        if (sc == null) {
+            this.addNewSoppingCarToUser(idUser);
+            return shoppingCars.get(idUser);
+        }else {
+            return sc;
+        }
+    }
+
+    public ShoppingCar getShoppingCarById(int id) {
+        for (List<ShoppingCar> list : shoppingCars.values()) {
+            for (ShoppingCar sc : list) {
+                if (sc.getId() == id) {
+                    return sc;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Map<Integer, Integer> getProductsLengthMap(List<ShoppingCar> listShoppingCar) {
+        Map<Integer, Integer> lengthMap = new HashMap<>();
+        for (ShoppingCar shoppingCar : listShoppingCar) {
+            if (shoppingCar.getProducts() != null) {
+                lengthMap.put(shoppingCar.getId(), shoppingCar.getProducts().size());
+            }
+        }
+        return lengthMap;
     }
 
     //Create a new ShoppingCar for the user. If a list does not exist for that user, it creates one
@@ -77,10 +110,14 @@ public class ShoppingCarService {
 
     }
 
-    public ShoppingCar addProductFromShoppingCarByIdUser(int idUser, Product product) {
+    public ShoppingCar addProductForShoppingCarByIdUser(int idUser, int idProduct) {
         ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-        sc.getProducts().add(product.getId());
-
+        List<Integer> lp = sc.getProducts();
+        if (lp == null) {
+            lp = new ArrayList<>();
+        }
+        lp.add(idProduct);
+        sc.setProducts(lp);
         this.deleteActualShoppingCarByIdUser(idUser);
         this.shoppingCars.get(idUser).add(sc);
 
@@ -108,10 +145,13 @@ public class ShoppingCarService {
     public List<Product> getProductListFromActualShoppingCar(int idUser) {
         List<Product> productList = new ArrayList<>();
         ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-        for (Integer idP : sc.getProducts()) {
-            productList.add(productService.getProduct(idP));
+        if (sc.getProducts() != null) {
+            for (Integer idP : sc.getProducts()) {
+                productList.add(productService.getProduct(idP));
+            }
+            return productList;
         }
-        return productList;
+            return null;
     }
 
     //Create a new List shoppingCar for idUser
@@ -124,6 +164,7 @@ public class ShoppingCarService {
     //Create a new shoppingCar for idUser
     private ShoppingCar addShoppingCarToUserList(int idUser) {
         ShoppingCar sc = new ShoppingCar();
+        sc.setIdUser(idUser);
         shoppingCars.get(idUser).add(sc);
 
 /*        List<ShoppingCar> newList = shoppingCars.get(idUser);
