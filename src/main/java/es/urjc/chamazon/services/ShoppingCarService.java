@@ -5,6 +5,7 @@ import es.urjc.chamazon.models.ShoppingCar;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,13 +67,11 @@ public class ShoppingCarService {
             return this.addShoppingCarToUserList(idUser);
         }else{
             //If not exist ShoppingCar it creates one
-            if (getActualShoppingCarByIdUser(idUser) == null) {
+            if (shoppingCars.get(idUser).isEmpty()) {
                 return this.addShoppingCarToUserList(idUser);
 
-            //Else returns null for know that already one created
-            // Devuelve nulo para saber que ya hay uno creado
             }else{
-                return null;
+                return getActualShoppingCarByIdUser(idUser);
             }
         }
     }
@@ -96,8 +95,18 @@ public class ShoppingCarService {
     //To Check
     public ShoppingCar endPurchaseByIdUser(int idUser) {
         ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-        sc.setDateSold(DateTimeFormatter.ofPattern(DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDate.now())));
-        this.addNewSoppingCarToUser(idUser);
+        return this.endPurchaseBySC(sc);
+    }
+    public ShoppingCar endPurchaseById(int idSC) {
+        ShoppingCar sc = this.getShoppingCarById(idSC);
+        return this.endPurchaseBySC(sc);
+    }
+    public ShoppingCar endPurchaseBySC(ShoppingCar sc) {
+        if (sc.getDateSold() == null) {
+            sc.setDateSold(LocalDateTime.now());
+            this.addNewSoppingCarToUser(sc.getIdUser());
+            return sc;
+        }
         return sc;
     }
 
@@ -107,20 +116,11 @@ public class ShoppingCarService {
         ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
         this.shoppingCars.get(idUser).remove(sc);
         return sc;
-
     }
 
     public ShoppingCar addProductForShoppingCarByIdUser(int idUser, int idProduct) {
         ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-        List<Integer> lp = sc.getProducts();
-        if (lp == null) {
-            lp = new ArrayList<>();
-        }
-        lp.add(idProduct);
-        sc.setProducts(lp);
-        this.deleteActualShoppingCarByIdUser(idUser);
-        this.shoppingCars.get(idUser).add(sc);
-
+        sc.getProducts().add(idProduct);
         return sc;
     }
 
@@ -143,15 +143,13 @@ public class ShoppingCarService {
     }
 
     public List<Product> getProductListFromActualShoppingCar(int idUser) {
-        List<Product> productList = new ArrayList<>();
         ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-        if (sc.getProducts() != null) {
-            for (Integer idP : sc.getProducts()) {
-                productList.add(productService.getProduct(idP));
-            }
-            return productList;
-        }
-            return null;
+        return getProductListFromidList(sc.getProducts());
+    }
+
+    public List<Product> getProductListByIdShoppingCar(int idSC) {
+        ShoppingCar sc = this.getShoppingCarById(idSC);
+        return getProductListFromidList(sc.getProducts());
     }
 
     //Create a new List shoppingCar for idUser
@@ -173,4 +171,14 @@ public class ShoppingCarService {
         return sc;
     }
 
+    public List<Product> getProductListFromidList(List<Integer> idProductList) {
+        List<Product> productList = new ArrayList<>();
+        if (!idProductList.isEmpty()) {
+            for (Integer idP : idProductList) {
+                productList.add(productService.getProduct(idP));
+            }
+            return productList;
+        }
+        return productList;
+    }
 }

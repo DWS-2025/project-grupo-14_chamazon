@@ -8,29 +8,32 @@
 
 
     <!--FORM-->
-<table>
-    <tr>
-        <th>Nombre</th>
-        <th>Cantidad</th>
-        <th>Precio</th>
-    </tr>
-    {{#productList}}
-    <tr>
+    <table>
+        <tr>
+            <th>Nombre</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+        </tr>
+        {{#productList}}
+        <tr>
 
-        <td>{{name}}</td>
-        <td>1</td>
+            <td>{{name}}</td>
+            <td>1</td>
 
-        <td>{{price}}</td>
+            <td>{{price}}</td>
 
 
-        <td>
-            <a type="button"  title="VerCarrito" href="/products/{{id}}">Ver Producto</a>
-        </td>
+            <td>
+                <a type="button"  title="VerCarrito" href="/products/{{id}}">Ver Producto</a>
+            </td>
 
-    </tr>
+        </tr>
 
-    {{/productList}}
-</table>
+        {{/productList}}
 
+    </table>
+    {{^ifNotEnd}}
+    <a type="button"  title="FinalizarCompra" href="/shoppingCar/endPurchase/{{idUser}}">Finalizar Compra</a>
+    {{/ifNotEnd}}
 
 {{>footer}}

@@ -45,8 +45,10 @@ public class ShoppingCarController {
     public String shoppingCar (@PathVariable int id, Model model) {
         model.addAttribute("title", "Shopping Car");
         ShoppingCar sc = shoppingCarService.getShoppingCarById(id);
-        List<Product> productList = shoppingCarService.getProductListFromActualShoppingCar(id);
-        model.addAttribute("shoppingCar", sc);
+        List<Product> productList = shoppingCarService.getProductListByIdShoppingCar(id);
+
+        model.addAttribute("ifNotEnd", sc.getDateSold());
+        model.addAttribute("idUser", sc.getIdUser());
         model.addAttribute("productList", productList);
 
 

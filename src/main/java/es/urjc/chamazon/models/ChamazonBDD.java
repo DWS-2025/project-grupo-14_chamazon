@@ -49,6 +49,10 @@ public class ChamazonBDD {
             shoppingCarService.addProductForShoppingCarByIdUser(1,2);
             shoppingCarService.addProductForShoppingCarByIdUser(1,2);
             shoppingCarService.addProductForShoppingCarByIdUser(1,1);
+            shoppingCarService.endPurchaseByIdUser(1);
+            shoppingCarService.addProductForShoppingCarByIdUser(1,1);
+            shoppingCarService.addProductForShoppingCarByIdUser(1,1);
+            shoppingCarService.addProductForShoppingCarByIdUser(1,1);
 
         }
 

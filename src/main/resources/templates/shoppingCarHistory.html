@@ -21,14 +21,14 @@
         <td>{{userName}}</td>
 
         {{#productLengthMap}}
-        <td>aa.id</td>
+        <td>{{productSize}}</td>
         {{/productLengthMap}}
         {{^productLengthMap}}
         <td>EMPTY</td>
         {{/productLengthMap}}
 
         {{#dateSold}}
-            <td>{{dateSold}}</td>
+            <td>{{dateSoldString}}</td>
         {{/dateSold}}
         {{^dateSold}}
         <td>ACTUAL</td>
