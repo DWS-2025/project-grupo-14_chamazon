@@ -28,6 +28,7 @@
         <td>
           <a class="btn btn-outline-primary btn-sm" href="/shoppingCar/History/{{id}}">Carrito</a>
           <a class="btn btn-outline-secondary btn-sm" href="/users/edit?id={{id}}">Editar</a>
+          <a class="btn btn-outline-danger btn-sm" href="/user/delete?id={{id}}">Eliminar</a>
         </td>
       </tr>
       {{/users}}
@@ -37,24 +38,9 @@
 </div>
 
 <div class="container my-5">
-  <div class="card shadow p-4 mb-4">
-    <h2 class="mb-3">Añadir Nuevo Usuario</h2>
+  <div class="d-flex justify-content-end mt-3">
     <form action="/users/add" method="get">
-      <button type="submit" class="btn btn-success w-100">Añadir</button>
-    </form>
-  </div>
-
-  <div class="card shadow p-4 mb-4">
-    <h2 class="mb-3">Eliminar Usuario</h2>
-    <form action="user/delete" method="post">
-      <label for="userId" class="form-label">Selecciona un usuario para eliminar:</label>
-      <select class="form-select" name="id" id="userId" required>
-        <option value="" disabled selected>Selecciona un usuario</option>
-        {{#users}}
-        <option value="{{id}}">{{userName}}</option>
-        {{/users}}
-      </select>
-      <button type="submit" class="btn btn-danger w-100 mt-3">Eliminar</button>
+      <button type="submit" class="btn btn-primary btn-sm">Añadir Usuario</button>
     </form>
   </div>
 </div>
