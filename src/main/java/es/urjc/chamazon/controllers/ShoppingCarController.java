@@ -48,6 +48,7 @@ public class ShoppingCarController {
         List<Product> productList = shoppingCarService.getProductListByIdShoppingCar(id);
 
         model.addAttribute("ifNotEnd", sc.getDateSold());
+        model.addAttribute("ifNotProducts", sc.getProducts().isEmpty());
         model.addAttribute("idUser", sc.getIdUser());
         model.addAttribute("productList", productList);
 

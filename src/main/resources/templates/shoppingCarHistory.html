@@ -3,44 +3,56 @@
 <body>
 {{>navBar}}
 
-    <h1>Historial de Carritos de {{userName}}</h1>
+<div class="container my-5">
+    <div class="d-flex justify-content mt-3">
+        <a class="btn btn-primary" href="/users" role="button">VOLVER</a>
+    </div>
+</div>
+<div class="container my-5">
+    <h1 class="mb-4 text-center">Historial de carritos</h1>
+    <div class="table-responsive">
 
 
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Productos</th>
+                    <th>Fecha de compra</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            {{#listShoppingCar}}
+            <tr>
+                <td>{{id}}</td>
+                <td>{{userName}}</td>
 
-    <!--FORM-->
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Usuario</th>
-        <th>Productos</th>
-        <th>Fecha de compra</th>
-    </tr>
-    {{#listShoppingCar}}
-    <tr>
-        <td>{{id}}</td>
-        <td>{{userName}}</td>
+                {{#productLengthMap}}
+                <td>{{productSize}}</td>
+                {{/productLengthMap}}
+                {{^productLengthMap}}
+                <td>EMPTY</td>
+                {{/productLengthMap}}
 
-        {{#productLengthMap}}
-        <td>{{productSize}}</td>
-        {{/productLengthMap}}
-        {{^productLengthMap}}
-        <td>EMPTY</td>
-        {{/productLengthMap}}
-
-        {{#dateSold}}
-            <td>{{dateSoldString}}</td>
-        {{/dateSold}}
-        {{^dateSold}}
-        <td>ACTUAL</td>
-        {{/dateSold}}
+                {{#dateSold}}
+                    <td>{{dateSoldString}}</td>
+                {{/dateSold}}
+                {{^dateSold}}
+                <td>ACTUAL</td>
+                {{/dateSold}}
 
 
-        <td>
-            <a type="button"  title="VerCarrito" href="/shoppingCar/{{id}}">Ver Carrito</a>
-        </td>
-    </tr>
-    {{/listShoppingCar}}
-</table>
+                <td>
+                    <a class="btn btn-outline-primary btn-sm"  href="/shoppingCar/{{id}}">Ver Carrito</a>
+                </td>
+            </tr>
+            {{/listShoppingCar}}
+            <tbody>
+        </table>
+    </div>
+</div>
 
 
 {{>footer}}
