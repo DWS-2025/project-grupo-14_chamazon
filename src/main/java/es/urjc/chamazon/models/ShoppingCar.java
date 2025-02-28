@@ -1,17 +1,18 @@
 package es.urjc.chamazon.models;
 
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentMap;
 
 public class ShoppingCar {
 
     private int id;
     private int idUser;
     private List<Integer> products;
-    private DateTimeFormatter dateSold;
+    private LocalDateTime dateSold;
 
     /*Generate a sequence id for the new registers*/
     /*Genera un id secuencial para los nuevos registros*/
@@ -27,7 +28,7 @@ public class ShoppingCar {
     public ShoppingCar() {
         this.id = generateNextId();
         this.idUser = 0;
-        this.products = null;
+        this.products = new ArrayList<>();
         this.dateSold = null;
     }
 
@@ -62,14 +63,23 @@ public class ShoppingCar {
         this.products = products;
     }
 
-    public DateTimeFormatter getDateSold() {
+    public LocalDateTime getDateSold() {
         return dateSold;
     }
 
-    public void setDateSold(DateTimeFormatter dateSold) {
+    public void setDateSold(LocalDateTime dateSold) {
         this.dateSold = dateSold;
     }
 
+    //GETS FOR MUSTACHE
+    public String getDateSoldString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy-HH:mm");
+        return dateSold.format(formatter);
+    }
+
+    public int getProductSize(){
+        return this.products.size();
+    }
 
     @Override
     public boolean equals(Object o) {

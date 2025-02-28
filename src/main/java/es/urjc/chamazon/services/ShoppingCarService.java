@@ -5,9 +5,12 @@ import es.urjc.chamazon.models.ShoppingCar;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -26,6 +29,37 @@ public class ShoppingCarService {
         return null;
     }
 
+    public List<ShoppingCar> getShoppingCarListByUser(int idUser) {
+        List<ShoppingCar> sc = shoppingCars.get(idUser);
+        if (sc == null) {
+            this.addNewSoppingCarToUser(idUser);
+            return shoppingCars.get(idUser);
+        }else {
+            return sc;
+        }
+    }
+
+    public ShoppingCar getShoppingCarById(int id) {
+        for (List<ShoppingCar> list : shoppingCars.values()) {
+            for (ShoppingCar sc : list) {
+                if (sc.getId() == id) {
+                    return sc;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Map<Integer, Integer> getProductsLengthMap(List<ShoppingCar> listShoppingCar) {
+        Map<Integer, Integer> lengthMap = new HashMap<>();
+        for (ShoppingCar shoppingCar : listShoppingCar) {
+            if (shoppingCar.getProducts() != null) {
+                lengthMap.put(shoppingCar.getId(), shoppingCar.getProducts().size());
+            }
+        }
+        return lengthMap;
+    }
+
     //Create a new ShoppingCar for the user. If a list does not exist for that user, it creates one
     public ShoppingCar addNewSoppingCarToUser(int idUser){
         if (!shoppingCars.containsKey(idUser)) {
@@ -33,13 +67,11 @@ public class ShoppingCarService {
             return this.addShoppingCarToUserList(idUser);
         }else{
             //If not exist ShoppingCar it creates one
-            if (getActualShoppingCarByIdUser(idUser) == null) {
+            if (shoppingCars.get(idUser).isEmpty()) {
                 return this.addShoppingCarToUserList(idUser);
 
-            //Else returns null for know that already one created
-            // Devuelve nulo para saber que ya hay uno creado
             }else{
-                return null;
+                return getActualShoppingCarByIdUser(idUser);
             }
         }
     }
@@ -63,8 +95,18 @@ public class ShoppingCarService {
     //To Check
     public ShoppingCar endPurchaseByIdUser(int idUser) {
         ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-        sc.setDateSold(DateTimeFormatter.ofPattern(DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDate.now())));
-        this.addNewSoppingCarToUser(idUser);
+        return this.endPurchaseBySC(sc);
+    }
+    public ShoppingCar endPurchaseById(int idSC) {
+        ShoppingCar sc = this.getShoppingCarById(idSC);
+        return this.endPurchaseBySC(sc);
+    }
+    public ShoppingCar endPurchaseBySC(ShoppingCar sc) {
+        if (sc.getDateSold() == null) {
+            sc.setDateSold(LocalDateTime.now());
+            this.addNewSoppingCarToUser(sc.getIdUser());
+            return sc;
+        }
         return sc;
     }
 
@@ -74,16 +116,11 @@ public class ShoppingCarService {
         ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
         this.shoppingCars.get(idUser).remove(sc);
         return sc;
-
     }
 
-    public ShoppingCar addProductFromShoppingCarByIdUser(int idUser, Product product) {
+    public ShoppingCar addProductForShoppingCarByIdUser(int idUser, int idProduct) {
         ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-        sc.getProducts().add(product.getId());
-
-        this.deleteActualShoppingCarByIdUser(idUser);
-        this.shoppingCars.get(idUser).add(sc);
-
+        sc.getProducts().add(idProduct);
         return sc;
     }
 
@@ -106,12 +143,13 @@ public class ShoppingCarService {
     }
 
     public List<Product> getProductListFromActualShoppingCar(int idUser) {
-        List<Product> productList = new ArrayList<>();
         ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-        for (Integer idP : sc.getProducts()) {
-            productList.add(productService.getProduct(idP));
-        }
-        return productList;
+        return getProductListFromidList(sc.getProducts());
+    }
+
+    public List<Product> getProductListByIdShoppingCar(int idSC) {
+        ShoppingCar sc = this.getShoppingCarById(idSC);
+        return getProductListFromidList(sc.getProducts());
     }
 
     //Create a new List shoppingCar for idUser
@@ -124,6 +162,7 @@ public class ShoppingCarService {
     //Create a new shoppingCar for idUser
     private ShoppingCar addShoppingCarToUserList(int idUser) {
         ShoppingCar sc = new ShoppingCar();
+        sc.setIdUser(idUser);
         shoppingCars.get(idUser).add(sc);
 
 /*        List<ShoppingCar> newList = shoppingCars.get(idUser);
@@ -132,4 +171,14 @@ public class ShoppingCarService {
         return sc;
     }
 
+    public List<Product> getProductListFromidList(List<Integer> idProductList) {
+        List<Product> productList = new ArrayList<>();
+        if (!idProductList.isEmpty()) {
+            for (Integer idP : idProductList) {
+                productList.add(productService.getProduct(idP));
+            }
+            return productList;
+        }
+        return productList;
+    }
 }

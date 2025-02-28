@@ -2,14 +2,19 @@ package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.ShoppingCar;
+import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.ShoppingCarService;
+import es.urjc.chamazon.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
 @Controller
@@ -17,13 +22,44 @@ public class ShoppingCarController {
 
     @Autowired
     private ShoppingCarService shoppingCarService;
+    @Autowired
+    private UserService userService;
 
 
-    @GetMapping("/shoppingCar")
-    public String shoppingCar (Model model) {
+    @GetMapping("/shoppingCar/History/{idUser}")
+    public String shoppingCarHistory (@PathVariable int idUser, Model model) {
+        model.addAttribute("userName", userService.getUserById(idUser).getUserName());
+        List<ShoppingCar> listShoppingCar = shoppingCarService.getShoppingCarListByUser(idUser);
+
+        model.addAttribute("listShoppingCar", listShoppingCar);
+        model.addAttribute("productLengthMap", shoppingCarService.getProductsLengthMap(listShoppingCar));
+
+        return "shoppingCarHistory";
+
+
+    }
+
+
+
+    @GetMapping("/shoppingCar/{id}")
+    public String shoppingCar (@PathVariable int id, Model model) {
         model.addAttribute("title", "Shopping Car");
-        //model.addAttribute("listShoppingCar", shoppingCarService.getShoppingCars());
+        ShoppingCar sc = shoppingCarService.getShoppingCarById(id);
+        List<Product> productList = shoppingCarService.getProductListByIdShoppingCar(id);
+
+        model.addAttribute("ifNotEnd", sc.getDateSold());
+        model.addAttribute("ifNotProducts", sc.getProducts().isEmpty());
+        model.addAttribute("idUser", sc.getIdUser());
+        model.addAttribute("productList", productList);
+
+
         return "shoppingCar";
+    }
+
+    @GetMapping("shoppingCar/endPurchase/{idUser}")
+    public String endPurchase (@PathVariable int idUser,Model model) {
+        shoppingCarService.endPurchaseByIdUser(idUser);
+        return "redirect:/shoppingCar/History/" + idUser;
     }
 
 /*    @PostMapping("/shoppingCar/add")
