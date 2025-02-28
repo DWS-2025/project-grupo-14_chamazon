@@ -35,18 +35,13 @@ public class ProductService {
     return products.get(id);
     }
 
-
-    public String processMultipartFile(MultipartFile imageFile) throws IOException {
-        if (!imageFile.isEmpty()) {
-            String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
-            Files.createDirectories(IMAGES_FOLDER);
-            Path imagePath = IMAGES_FOLDER.resolve(fileName);
-            Files.copy(imageFile.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
-            return fileName;
+    public Product processMultipartFile(MultipartFile imageFile) throws IOException {
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String path = imageService.createImage(imageFile);
+            return products.get(path);
         }
         return null;
     }
-
 
     public void validateProduct(Product product) {
     if (product.getName() == null || product.getName().trim().isEmpty()) {
@@ -84,9 +79,9 @@ public class ProductService {
     }
 
     public Product addProduct(String name, String description, double price, Category category, MultipartFile imageFile) throws IOException {
-        String imageName = imageService.saveImage(imageFile);
-        return addProduct(name, description, price, category, imageName);
-    }
+        String imageName = imageService.createImage(imageFile);
+            return addProduct(name, description, price, category, imageName);
+         }
 
     public void updateProduct(int id, String name, String description, double price, Category category, MultipartFile imageFile) throws IOException {
         Product existingProduct = products.get(id);
@@ -94,7 +89,7 @@ public class ProductService {
             throw new IllegalArgumentException("Product not found");
         }
 
-        String imageName = imageService.saveImage(imageFile);
+        String imageName = imageService.createImage(imageFile);
 
         // Remove from old category
         Category oldCategory = existingProduct.getCategory();
