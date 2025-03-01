@@ -23,8 +23,8 @@ public class CategoryController {
         Collection<Category> categories = categoryService.getAllCategories();
         model.addAttribute("categories", categories);
         return "categories";
-
     }
+
     @GetMapping("/categories/add")
     public String addCategory(Model model) {
         return "addCategory";
@@ -52,6 +52,7 @@ public class CategoryController {
         categoryService.deleteCategory(categoryId);
         return "redirect:/categories";
     }
+
     @GetMapping("/categories/delete")
     public String deleteCategory(@RequestParam int categoryId, Model model) {
         categoryService.deleteCategory(categoryId);
@@ -60,13 +61,13 @@ public class CategoryController {
 
     @GetMapping("/categories/{id}")
     public String showProductsEachCategory(Model model, @PathVariable int id) {
-    Collection<Product> productsEachCategory = categoryService.getProductsFromCategory(id);
-    Category category = categoryService.getCategoryById(id);
-    model.addAttribute("productsEachCategory", productsEachCategory);
-    model.addAttribute("selectedCategoryId", id);
-    model.addAttribute("selectedCategoryName", category.getName());
-    model.addAttribute("title", "Lista de Productos");
-    return "products_list";
+        Collection<Product> productsEachCategory = categoryService.getProductsFromCategory(id);
+        Category category = categoryService.getCategoryById(id);
+        model.addAttribute("productsEachCategory", productsEachCategory);
+        model.addAttribute("selectedCategoryId", id);
+        model.addAttribute("selectedCategoryName", category.getName());
+        model.addAttribute("title", "Lista de Productos");
+        return "products_list";
     }
 
     @GetMapping("/categories/edit")
@@ -83,7 +84,6 @@ public class CategoryController {
         categoryService.updateCategory(category);
         return "redirect:/categories";
     }
-
 
     @GetMapping("/")
     public String home() {
