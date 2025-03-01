@@ -85,11 +85,11 @@ public class ProductController {
         return "redirect:/categories/" + category.getId();
     }
 
-    @PostMapping("/products/{id}/addToCard/{userId}")
-    public String addToCart(@PathVariable int id, @PathVariable int userId) {
+    @PostMapping("/products/{id}/addToCard")
+    public String addToCart(@PathVariable int id, @RequestParam int userId) {
     Product product = productService.getProduct(id);
     if (product != null) {
-        shoppingCarService.addProductFromShoppingCarByIdUser(userId, product);
+        shoppingCarService.addProductForShoppingCarByIdUser(userId, product.getId());
     }
     return "redirect:/products";
     }
