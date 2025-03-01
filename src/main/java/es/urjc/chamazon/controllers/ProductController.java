@@ -20,11 +20,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Collection;
+import java.util.List;
 
 
 @Controller
 public class ProductController {
-    private static final Path IMAGES_FOLDER = Paths.get("images");
+    private static final Path IMAGES_FOLDER = Paths.get("src/main/resources/static/images");
     private static final int NO_CATEGORY_SELECTED = 0;
 
     @Autowired
@@ -50,6 +51,8 @@ public class ProductController {
         User selectedUser = userService.getUser(userId);
         if (selectedUser != null) {
             model.addAttribute("selectedUser", selectedUser);
+            List<Product> cartProducts = shoppingCarService.getProductListFromActualShoppingCar(userId);
+            model.addAttribute("cartItemCount", cartProducts.size());
         }
         }
         model.addAttribute("productsEachCategory", products);

@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentMap;
 
 @Service
 public class ProductService {
-    private static final Path IMAGES_FOLDER = Paths.get("/images");
+    private static final Path IMAGES_FOLDER = Paths.get("src/main/resources/static/images");
     private int productId = 1;
     private final CategoryService categoryService;
     private final ConcurrentMap<Integer, Product> products = new ConcurrentHashMap<>();
@@ -35,10 +35,9 @@ public class ProductService {
     return products.get(id);
     }
 
-    public Product processMultipartFile(MultipartFile imageFile) throws IOException {
+    public String processMultipartFile(MultipartFile imageFile) throws IOException {
         if (imageFile != null && !imageFile.isEmpty()) {
-            String path = imageService.createImage(imageFile);
-            return products.get(path);
+            return imageService.createImage(imageFile);
         }
         return null;
     }

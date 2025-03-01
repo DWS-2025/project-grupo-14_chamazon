@@ -2,7 +2,10 @@ package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
+import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.CategoryService;
+import es.urjc.chamazon.services.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +20,10 @@ import java.util.Collection;
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
+
+     @Autowired
+    private UserService userService;
+
 
     @GetMapping("/categories")
     public String getAllCategories(Model model) {
@@ -62,6 +69,14 @@ public class CategoryController {
     public String showProductsEachCategory(Model model, @PathVariable int id) {
     Collection<Product> productsEachCategory = categoryService.getProductsFromCategory(id);
     Category category = categoryService.getCategoryById(id);
+    Collection<User> users = userService.getAllUsers();
+
+    if (category == null) {
+        return "redirect:/categories";
+    }
+
+    model.addAttribute("selectedUserId", -1);
+    model.addAttribute("users", users);
     model.addAttribute("productsEachCategory", productsEachCategory);
     model.addAttribute("selectedCategoryId", id);
     model.addAttribute("selectedCategoryName", category.getName());
