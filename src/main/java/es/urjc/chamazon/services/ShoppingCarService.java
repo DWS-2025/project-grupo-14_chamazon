@@ -4,7 +4,6 @@ import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.ShoppingCar;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -118,24 +117,28 @@ public class ShoppingCarService {
         return sc;
     }
 
-    public ShoppingCar addProductForShoppingCarByIdUser(int idUser, int idProduct) {
+    public ShoppingCar addProductToUserShoppingCar(int idProduct, int idUser) {
         ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
         sc.getProducts().add(idProduct);
         return sc;
     }
 
 
-    public ShoppingCar removeProductsFromShoppingCar(int idUser, int idProduct, boolean dellAll) {
+    public ShoppingCar removeProductsFromShoppingCar(int idProduct, int idUser, boolean dellAll) {
         ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
         if (sc.getProducts().contains(idProduct)) {
 
             if (dellAll) {
                 sc.getProducts().removeIf(p -> p == idProduct);
             }else{
-                sc.getProducts().remove(idProduct);
+                if (sc.getProducts().size() < 2) {
+                    sc.getProducts().clear();
+                }else{
+                    sc.getProducts().remove(idProduct);
+                }
             }
-            this.deleteActualShoppingCarByIdUser(idUser);
-            this.shoppingCars.get(idUser).add(sc);
+/*            this.deleteActualShoppingCarByIdUser(idUser);
+            this.shoppingCars.get(idUser).add(sc);*/
             return sc;
 
         }

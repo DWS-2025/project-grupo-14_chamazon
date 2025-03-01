@@ -18,7 +18,7 @@
                 <select name="userId" class="form-select" onchange="this.form.submit()">
                     <option value="">Seleccionar Usuario</option>
                     {{#users}}
-                    <option value="{{id}}" selected{}>{{userName}}</option>
+                    <option value="{{id}}" >{{userName}}</option>
                     {{/users}}
                 </select>
             </form>
@@ -59,12 +59,14 @@
                           </button>
                       </form>
 
-                      <form action="/products/{{id}}/addToCard" method="POST" class="ms-2">
+                      {{#selectedUserId}}
+                      <form action="/products/{{id}}/addToCard/{{selectedUserId}}" method="POST" class="ms-2">
                         <input type="hidden" name="userId" value="{{selectedUserId}}">  
                         <button type="submit" class="btn btn-outline-success btn-sm">
                               <i class="fas fa-cart-plus"></i> Añadir al carrito
                           </button>
-
+                      </form>
+                      {{/selectedUserId}}
                       
                     </div>
               </div>

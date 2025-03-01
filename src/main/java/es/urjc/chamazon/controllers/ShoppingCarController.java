@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
+import static java.lang.Boolean.FALSE;
+
 @Controller
 public class ShoppingCarController {
 
@@ -36,7 +38,6 @@ public class ShoppingCarController {
 
         return "shoppingCarHistory";
 
-
     }
 
 
@@ -47,6 +48,7 @@ public class ShoppingCarController {
         ShoppingCar sc = shoppingCarService.getShoppingCarById(id);
         List<Product> productList = shoppingCarService.getProductListByIdShoppingCar(id);
 
+        model.addAttribute("idSC", id);
         model.addAttribute("ifNotEnd", sc.getDateSold());
         model.addAttribute("ifNotProducts", sc.getProducts().isEmpty());
         model.addAttribute("idUser", sc.getIdUser());
@@ -56,11 +58,21 @@ public class ShoppingCarController {
         return "shoppingCar";
     }
 
-    @GetMapping("shoppingCar/endPurchase/{idUser}")
+    @GetMapping("/shoppingCar/endPurchase/{idUser}")
     public String endPurchase (@PathVariable int idUser,Model model) {
         shoppingCarService.endPurchaseByIdUser(idUser);
         return "redirect:/shoppingCar/History/" + idUser;
     }
+
+    @GetMapping("/shoppingCar/removeProduct/{idProduct}/{idUser}")
+    public String removeProduct (@PathVariable int idProduct, @PathVariable int idUser, Model model) {
+
+        shoppingCarService.removeProductsFromShoppingCar(idProduct, idUser, FALSE);
+        Integer idSC = shoppingCarService.getActualShoppingCarByIdUser(idUser).getId();
+
+        return "/shoppingCar/" + idSC;
+    }
+
 
 /*    @PostMapping("/shoppingCar/add")
     public String createShoppingCar (@RequestParam int idUser, @RequestParam ConcurrentMap<Integer, Product> products, Model model) {

@@ -3,7 +3,6 @@ package es.urjc.chamazon.controllers;
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.User;
-import es.urjc.chamazon.models.ShoppingCar;
 import es.urjc.chamazon.services.ShoppingCarService;
 import es.urjc.chamazon.services.CategoryService;
 import es.urjc.chamazon.services.ProductService;
@@ -15,10 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.List;
 
@@ -45,8 +42,9 @@ public class ProductController {
         Collection<Product> products = productService.getAllProducts();
         Collection<User> users = userService.getAllUsers();
 
-        model.addAttribute("selectedUserId", userId != null ? userId : -1);
-    
+        //model.addAttribute("selectedUserId", userId != null ? userId : -1);
+        model.addAttribute("selectedUserId", userId);
+
      if (userId != null) {
         User selectedUser = userService.getUser(userId);
         if (selectedUser != null) {
@@ -88,12 +86,12 @@ public class ProductController {
         return "redirect:/products";
         }
 
-        @PostMapping("/products/{id}/addToCard")
-        public String addToCart(@PathVariable int id, @RequestParam int userId) {
-    Product product = productService.getProduct(id);
-    if (product != null) {
-        shoppingCarService.addProductForShoppingCarByIdUser(userId, product.getId());
-    }
+        @PostMapping("/products/{id}/addToCard/{idUser}")
+        public String addToCart(@PathVariable int id, @PathVariable int idUser, @RequestParam int userId) {
+    //Product product = productService.getProduct(id);
+    //if (product != null) {
+        shoppingCarService.addProductToUserShoppingCar(id, idUser);
+    //}
     return "redirect:/products";
     }
     
