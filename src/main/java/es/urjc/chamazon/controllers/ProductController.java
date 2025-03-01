@@ -71,25 +71,25 @@ public class ProductController {
         model.addAttribute("product", new Product());
         model.addAttribute("categories", categoryService.getAllCategories());
         return "addProduct";
-    }
+        }
 
-    @PostMapping("/products/add")
-    public String addProduct(@RequestParam String name,
-                            @RequestParam String description,
-                            @RequestParam double price,
-                            @RequestParam int categoryId,
-                            @RequestParam(required = false) MultipartFile imageFile) throws IOException {
+        @PostMapping("/products/add")
+        public String addProduct(@RequestParam String name,
+                    @RequestParam String description,
+                    @RequestParam double price,
+                    @RequestParam int categoryId,
+                    @RequestParam(required = false) MultipartFile imageFile) throws IOException {
         Category category = categoryService.getCategoryById(categoryId);
         if (category == null) {
             return "redirect:/products";
         }
-    
+        
         productService.addProduct(name, description, price, category, imageFile);
-        return "redirect:/categories/" + category.getId();
-    }
+        return "redirect:/products";
+        }
 
-    @PostMapping("/products/{id}/addToCard")
-    public String addToCart(@PathVariable int id, @RequestParam int userId) {
+        @PostMapping("/products/{id}/addToCard")
+        public String addToCart(@PathVariable int id, @RequestParam int userId) {
     Product product = productService.getProduct(id);
     if (product != null) {
         shoppingCarService.addProductForShoppingCarByIdUser(userId, product.getId());
