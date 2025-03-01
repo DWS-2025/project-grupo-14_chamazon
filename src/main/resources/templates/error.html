@@ -1,11 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    <h1>Pagina de error Yea</h1>
+{{>header}}
 
-</body>
-</html>
+</head>
+<body class="bg-light d-flex align-items-center justify-content-center vh-100">
+
+<div class="container d-flex flex-column justify-content-center align-items-center text-center" style="max-width: 700px; height: 80vh;">
+    <h2 class="text-dark fw-bold mb-2">404 - Página no encontrada</h2>
+    <p class="text-muted mb-3">Lo sentimos, la página que buscas no existe o ha sido movida.</p>
+
+    <div class="card shadow-lg p-3 border-0 w-50">
+        <img src="/images/Error.gif" class="img-fluid rounded" alt="Error 404">
+    </div>
+
+    <a href="/" class="btn btn-primary mt-3">VOLVER</a>
+</div>
+
+{{>footer}}
+

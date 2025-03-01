@@ -20,11 +20,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Collection;
+import java.util.List;
 
 
 @Controller
 public class ProductController {
-    private static final Path IMAGES_FOLDER = Paths.get("images");
+    private static final Path IMAGES_FOLDER = Paths.get("src/main/resources/static/images");
     private static final int NO_CATEGORY_SELECTED = 0;
 
     @Autowired
@@ -50,6 +51,8 @@ public class ProductController {
         User selectedUser = userService.getUser(userId);
         if (selectedUser != null) {
             model.addAttribute("selectedUser", selectedUser);
+            List<Product> cartProducts = shoppingCarService.getProductListFromActualShoppingCar(userId);
+            model.addAttribute("cartItemCount", cartProducts.size());
         }
         }
         model.addAttribute("productsEachCategory", products);
@@ -68,28 +71,28 @@ public class ProductController {
         model.addAttribute("product", new Product());
         model.addAttribute("categories", categoryService.getAllCategories());
         return "addProduct";
-    }
+        }
 
-    @PostMapping("/products/add")
-    public String addProduct(@RequestParam String name,
-                            @RequestParam String description,
-                            @RequestParam double price,
-                            @RequestParam int categoryId,
-                            @RequestParam(required = false) MultipartFile imageFile) throws IOException {
+        @PostMapping("/products/add")
+        public String addProduct(@RequestParam String name,
+                    @RequestParam String description,
+                    @RequestParam double price,
+                    @RequestParam int categoryId,
+                    @RequestParam(required = false) MultipartFile imageFile) throws IOException {
         Category category = categoryService.getCategoryById(categoryId);
         if (category == null) {
             return "redirect:/products";
         }
-    
+        
         productService.addProduct(name, description, price, category, imageFile);
-        return "redirect:/categories/" + category.getId();
-    }
+        return "redirect:/products";
+        }
 
-    @PostMapping("/products/{id}/addToCard/{userId}")
-    public String addToCart(@PathVariable int id, @PathVariable int userId) {
+        @PostMapping("/products/{id}/addToCard")
+        public String addToCart(@PathVariable int id, @RequestParam int userId) {
     Product product = productService.getProduct(id);
     if (product != null) {
-        shoppingCarService.addProductFromShoppingCarByIdUser(userId, product);
+        shoppingCarService.addProductForShoppingCarByIdUser(userId, product.getId());
     }
     return "redirect:/products";
     }

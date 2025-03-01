@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class ImageService{
     
-    private static final Path IMAGES_FOLDER = Paths.get(System.getProperty("user.dir"), "images");
+    private static final Path IMAGES_FOLDER = Paths.get("src/main/resources/static/images");//System.getProperty("user.dir"), "images");
 
     public String createImage(MultipartFile multiPartFile) {
 
