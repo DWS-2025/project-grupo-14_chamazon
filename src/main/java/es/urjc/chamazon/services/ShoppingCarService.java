@@ -128,17 +128,17 @@ public class ShoppingCarService {
         ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
         if (sc.getProducts().contains(idProduct)) {
 
-            if (dellAll) {
-                sc.getProducts().removeIf(p -> p == idProduct);
+            if (sc.getProducts().size() < 2) {
+                sc.getProducts().clear();
             }else{
-                if (sc.getProducts().size() < 2) {
-                    sc.getProducts().clear();
+                if (dellAll) {
+                    sc.getProducts().removeIf(p -> p == idProduct);
                 }else{
-                    sc.getProducts().remove(idProduct);
+                    sc.getProducts().remove(Integer.valueOf(idProduct));
+
                 }
             }
-/*            this.deleteActualShoppingCarByIdUser(idUser);
-            this.shoppingCars.get(idUser).add(sc);*/
+
             return sc;
 
         }
