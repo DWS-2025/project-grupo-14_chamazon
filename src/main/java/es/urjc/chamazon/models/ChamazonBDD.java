@@ -45,14 +45,14 @@ public class ChamazonBDD {
             userService.addUser(user2);
 
             //Add product to ShoppingCar User
-            shoppingCarService.addProductForShoppingCarByIdUser(1,1);
-            shoppingCarService.addProductForShoppingCarByIdUser(1,2);
-            shoppingCarService.addProductForShoppingCarByIdUser(1,2);
-            shoppingCarService.addProductForShoppingCarByIdUser(1,1);
+            shoppingCarService.addProductToUserShoppingCar(1,1);
+            shoppingCarService.addProductToUserShoppingCar(1,2);
+            shoppingCarService.addProductToUserShoppingCar(1,2);
+            shoppingCarService.addProductToUserShoppingCar(1,1);
             shoppingCarService.endPurchaseByIdUser(1);
-            shoppingCarService.addProductForShoppingCarByIdUser(1,1);
-            shoppingCarService.addProductForShoppingCarByIdUser(1,1);
-            shoppingCarService.addProductForShoppingCarByIdUser(1,1);
+            shoppingCarService.addProductToUserShoppingCar(1,1);
+            shoppingCarService.addProductToUserShoppingCar(1,1);
+            shoppingCarService.addProductToUserShoppingCar(1,1);
 
         }
 

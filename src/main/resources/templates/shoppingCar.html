@@ -29,8 +29,10 @@
                 <td>1</td>
                 <td>{{price}}</td>
                 <td>
-                    <a class="btn btn-outline-primary btn-sm"  title="VerCarrito" href="/products/{{id}}">Ver</a>
-                    <a class="btn btn-outline-danger btn-sm"  title="VerCarrito" href="/products/{{id}}">Eliminar de la cesta</a>
+                    <a class="btn btn-outline-primary btn-sm"  title="verCarrito" href="/products">Ver</a>
+                    {{^ifNotEnd}}
+                    <a class="btn btn-outline-danger btn-sm"  title="eliminarProducto" href="/shoppingCar/removeProduct/{{id}}/{{idUser}}">Eliminar de la cesta</a>
+                    {{/ifNotEnd}}
                 </td>
             </tr>
             {{/productList}}
@@ -44,7 +46,7 @@
 
     {{^ifNotEnd}}
     <div class="d-flex justify-content-end mt-3">
-        <a class="btn btn-success" role="button" href="/shoppingCar/products">Añadir +</a>
+        <a class="btn btn-success" role="button" href="/products">Añadir +</a>
     </div>
     {{/ifNotEnd}}
 

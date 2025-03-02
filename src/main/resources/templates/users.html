@@ -4,6 +4,9 @@
 {{>navBar}}
 
 <div class="container my-5">
+  <div class="d-flex justify-content mt-3">
+    <a class="btn btn-primary" href="/" role="button">VOLVER</a>
+  </div>
   <h1 class="mb-4 text-center">Lista de Usuarios</h1>
   <div class="table-responsive">
     <table class="table table-striped table-hover">
@@ -39,9 +42,7 @@
 
 <div class="container my-5">
   <div class="d-flex justify-content-end mt-3">
-    <form action="/users/add" method="get">
-      <button type="submit" class="btn btn-primary btn-sm">Añadir Usuario</button>
-    </form>
+    <a class="btn btn-primary btn-sm" href="/users/add">Añadir Usuario</a>
   </div>
 </div>
 
