@@ -82,13 +82,13 @@ public class ProductService {
             return addProduct(name, description, price, category, imageName);
          }
 
-    public void updateProduct(int id, String name, String description, double price, Category category, MultipartFile imageFile) throws IOException {
+    public void updateProduct(int id, String name, String description, double price, Category category) throws IOException{ //MultipartFile imageFile) throws IOException {
         Product existingProduct = products.get(id);
         if (existingProduct == null) {
             throw new IllegalArgumentException("Product not found");
         }
 
-        String imageName = imageService.createImage(imageFile);
+        //String imageName = imageService.createImage(imageFile);
 
         // Remove from old category
         Category oldCategory = existingProduct.getCategory();
@@ -101,9 +101,9 @@ public class ProductService {
         existingProduct.setDescription(description);
         existingProduct.setPrice(price);
         existingProduct.setCategory(category);
-        if (imageName != null) {
-            existingProduct.setImage(imageName);
-        }
+        //if (imageName != null) {
+        //    existingProduct.setImage(imageName);
+        //}
 
         validateProduct(existingProduct);
 

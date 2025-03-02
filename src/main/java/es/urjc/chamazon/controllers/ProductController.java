@@ -114,18 +114,13 @@ public class ProductController {
                               @RequestParam String name,
                               @RequestParam String description,
                               @RequestParam double price,
-                              @RequestParam int categoryId,
-                              @RequestParam(required = false) MultipartFile imageFile) throws IOException {
+                              @RequestParam int categoryId) throws IOException {
         Category category = categoryService.getCategoryById(categoryId);
         if (category == null) {
             return "redirect:/products";
         }
     
-        if (!imageFile.isEmpty()) {
-            productService.processMultipartFile(imageFile); 
-        }
-    
-        productService.updateProduct(id, name, description, price, category, imageFile);
+        productService.updateProduct(id, name, description, price, category);
         return "redirect:/categories/" + category.getId();
     }
 
