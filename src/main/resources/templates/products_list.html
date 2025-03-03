@@ -32,7 +32,8 @@
       <div class="col-md-4 mb-4">
           <div class="card h-100">
               {{#image}}
-              <img src="/images/{{.}}" class="card-img-top img-thumbnail" alt="{{name}}" style="height: 200px; object-fit: cover;">
+              <a>{{image}}</a>
+              <img src="{{image}}" class="card-img-top img-thumbnail" alt="{{name}}" style="height: 200px; object-fit: cover;">
               {{/image}}
               {{^image}}
               <img src="/images/default-product.jpg" class="card-img-top img-thumbnail" alt="No image available" style="height: 200px; object-fit: cover;">

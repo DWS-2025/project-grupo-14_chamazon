@@ -1,10 +1,14 @@
 package es.urjc.chamazon.models;
 
 
+import org.springframework.core.io.Resource;
+
+import javax.swing.*;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Product {
-
+    private static final Path IMAGES_FOLDER = Paths.get(System.getProperty("user.dir"), "images");
     private int id;
     private String name;
     private String description;
@@ -59,7 +63,7 @@ public class Product {
     }
 
     public String getImage() {
-        return image;
+        return IMAGES_FOLDER+"\\"+image;
     }
 
     public void setImage(String image) {

@@ -76,7 +76,7 @@ public class ProductController {
                     @RequestParam String description,
                     @RequestParam double price,
                     @RequestParam int categoryId,
-                    @RequestParam(required = false) MultipartFile imageFile) throws IOException {
+                    @RequestParam MultipartFile imageFile) throws IOException {
         Category category = categoryService.getCategoryById(categoryId);
         if (category == null) {
             return "redirect:/products";
