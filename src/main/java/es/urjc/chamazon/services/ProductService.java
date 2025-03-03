@@ -77,24 +77,10 @@ public class ProductService {
         return product;
     }
 
-    public Product addProduct(String name, String description, double price, Category category, MultipartFile imageField) throws IOException {
-
-        Product product = new Product();
-        product.setId(productId);
-        product.setName(name);
-        product.setDescription(description);
-        product.setPrice(price);
-        product.setCategory(category);
-
-        if (imageField != null && !imageField.isEmpty()){
-            String path = imageService.createImage(imageField);
-            product.setImage(path);
-        }
-
-        this.products.put(productId, product);
-
-        return product;
-    }
+    public Product addProduct(String name, String description, double price, Category category, MultipartFile imageFile) throws IOException {
+        String imageName = imageService.createImage(imageFile);
+            return addProduct(name, description, price, category, imageName);
+         }
 
     public void updateProduct(int id, String name, String description, double price, Category category) throws IOException{ //MultipartFile imageFile) 
         Product existingProduct = products.get(id);
