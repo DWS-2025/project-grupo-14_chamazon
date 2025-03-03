@@ -72,7 +72,7 @@ public class ProductController {
         }
 
         @PostMapping("/products/add")
-        public String addProduct(@RequestParam String name,
+        public String addProduct(Model model, @RequestParam String name,
                     @RequestParam String description,
                     @RequestParam double price,
                     @RequestParam int categoryId,
@@ -82,7 +82,15 @@ public class ProductController {
             return "redirect:/products";
         }
 
-        productService.addProduct(name, description, price, category, imageFile);
+        // Error control name like 'Empty' is only for demo Fase 1
+        if (imageFile != null && !imageFile.isEmpty() && price > 0 && name != null && !name.isEmpty() && !name.equals("empty")) {
+            productService.addProduct(name, description, price, category, imageFile);
+
+        }else{
+            model.addAttribute("error", "Error de nombre inválido para el producto");
+            return "error";
+        }
+
         return "redirect:/products";
         }
 
