@@ -38,8 +38,8 @@ public class ChamazonBDD {
             categoryService.addProductToCategory(smartphone, electronics.getId());
             categoryService.addProductToCategory(tshirt, clothing.getId());
 
-            User user1 = new User("user1", "user1@gmail.com", "123");
-            User user2 = new User("user2", "user2@gmail.com", "123");
+            User user1 = new User("user1", "user1@gmail.com", "123", null, null);
+            User user2 = new User("user2", "user2@gmail.com", "123", null, null);
 
             userService.addUser(user1);
             userService.addUser(user2);

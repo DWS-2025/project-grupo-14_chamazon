@@ -76,12 +76,12 @@ public class ProductController {
                     @RequestParam String description,
                     @RequestParam double price,
                     @RequestParam int categoryId,
-                    @RequestParam(required = false) MultipartFile imageFile) throws IOException {
+                    @RequestParam(required = true) MultipartFile imageFile) throws IOException {
         Category category = categoryService.getCategoryById(categoryId);
         if (category == null) {
             return "redirect:/products";
         }
-        
+
         productService.addProduct(name, description, price, category, imageFile);
         return "redirect:/products";
         }
@@ -116,24 +116,19 @@ public class ProductController {
                               @RequestParam double price,
                               @RequestParam int categoryId) throws IOException {
         Category category = categoryService.getCategoryById(categoryId);
-        if (category == null) {
-            return "redirect:/products";
-        }
-    
+        
         productService.updateProduct(id, name, description, price, category);
-        return "redirect:/categories/" + category.getId();
+        return "redirect:/products";
     }
 
     @PostMapping("/products/{id}/delete")
     public String deleteProduct(@PathVariable int id) {
         Product product = productService.getProduct(id);
-        if (product == null) {
-            return "redirect:/products";
-        }
+        
     
         Category category = product.getCategory();
         productService.deleteProduct(id);
-        return "redirect:/categories/" + category.getId();
+        return "redirect:/products";
     }
 
 
