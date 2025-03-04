@@ -1,6 +1,32 @@
 {{>header}}
 {{>navBar}}
 
+<h1>Agregar Producto</h1>
+<form action="/products/add" method="post" enctype="multipart/form-data">
+    <input type="hidden" id="id" name="id">
+    <label for="name">Nombre:</label>
+    <input type="text" id="name" name="name" required>
+    <br>
+    <label for="description">Descripción:</label>
+    <input type="text" id="description" name="description">
+    <br>
+    <label for="price">Precio:</label>
+    <input type="number" id="price" name="price" step="0.01" required>
+    <br>
+    <label for="categoryId">Categoría:</label>
+    <select name="categoryId" id="categoryId" required>
+        <option value="">Selecciona una categoría</option>
+        {{#categories}}
+        <option value="{{id}}">{{name}}</option>
+        {{/categories}}
+    </select>
+    <br>
+    <label for="imageFile">Imagen:</label>
+    <input type="file" id="imageFile" name="imageFile" accept="image/*">
+    <br>
+    <button type="submit">Agregar</button>
+</form>
+
 <div class="container my-5">
   <div class="d-flex justify-content mt-3">
     <a class="btn btn-primary" href="/products" role="button">VOLVER</a>

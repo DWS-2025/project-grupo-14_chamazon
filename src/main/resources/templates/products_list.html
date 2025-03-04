@@ -1,12 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <title>Lista de Productos</title>
-</head>
-
-<body> -->
 
 {{>header}}
 {{>navBar}}
@@ -32,10 +23,7 @@
       <div class="col-md-4 mb-4">
           <div class="card h-100">
               {{#image}}
-              <img src="/images/{{.}}" class="card-img-top img-thumbnail" alt="{{name}}" style="height: 200px; object-fit: cover;">
-              {{/image}}
-              {{^image}}
-              <img src="/images/default-product.jpg" class="card-img-top img-thumbnail" alt="No image available" style="height: 200px; object-fit: cover;">
+              <img src="/products/{{id}}/image" class="card-img-top img-thumbnail" alt="{{name}}" style="height: 200px; object-fit: contain;">
               {{/image}}
               
               <div class="card-body">
@@ -90,6 +78,3 @@
 </div>
 
 {{>footer}}
-<!-- </body>
-
-</html> -->
