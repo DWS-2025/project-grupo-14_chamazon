@@ -23,14 +23,20 @@ public class ChamazonBDD {
             this.userService = userService ;
 
 
+
+                // 🔹 Initialise Categories
+
             Category electronics = new Category("Electronics");
             Category clothing = new Category("Clothing");
 
             categoryService.addCategory(electronics.getName());
             categoryService.addCategory(clothing.getName());
 
+            // 🔹 Initialise Products
             Product smartphone = productService.addProduct("Smartphone", "High-end smartphone", 499.99, categoryService.getCategoryByName("Electronics"), "smartphone.jpg");
             Product tshirt = productService.addProduct("T-shirt", "Comfortable cotton t-shirt", 19.99, categoryService.getCategoryByName("Clothing"), "tshirt.jpg");
+
+            // 🔹 Assign products to categories
 
             categoryService.addProductToCategory(smartphone, electronics.getId());
             categoryService.addProductToCategory(tshirt, clothing.getId());
