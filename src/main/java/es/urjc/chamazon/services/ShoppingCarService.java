@@ -178,7 +178,7 @@ public class ShoppingCarService {
         List<Product> productList = new ArrayList<>();
         if (!idProductList.isEmpty()) {
             for (Integer idP : idProductList) {
-                productList.add(productService.getProduct(idP));
+                productList.add(productService.findById(idP));
             }
             return productList;
         }

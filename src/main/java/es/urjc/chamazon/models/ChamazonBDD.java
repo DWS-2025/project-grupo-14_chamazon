@@ -23,18 +23,15 @@ public class ChamazonBDD {
             this.userService = userService ;
 
 
-                // 🔹 Inicializar Categorías
             Category electronics = new Category("Electronics");
             Category clothing = new Category("Clothing");
 
             categoryService.addCategory(electronics.getName());
             categoryService.addCategory(clothing.getName());
 
-            // 🔹 Inicializar Productos
             Product smartphone = productService.addProduct("Smartphone", "High-end smartphone", 499.99, categoryService.getCategoryByName("Electronics"), "smartphone.jpg");
             Product tshirt = productService.addProduct("T-shirt", "Comfortable cotton t-shirt", 19.99, categoryService.getCategoryByName("Clothing"), "tshirt.jpg");
 
-            // 🔹 Asignar productos a las categorías
             categoryService.addProductToCategory(smartphone, electronics.getId());
             categoryService.addProductToCategory(tshirt, clothing.getId());
 
@@ -44,7 +41,6 @@ public class ChamazonBDD {
             userService.addUser(user1);
             userService.addUser(user2);
 
-            //Add product to ShoppingCar User
             shoppingCarService.addProductToUserShoppingCar(1,1);
             shoppingCarService.addProductToUserShoppingCar(1,2);
             shoppingCarService.addProductToUserShoppingCar(1,2);

@@ -5,6 +5,7 @@
 
 <h1>Agregar Producto</h1>
 <form action="/products/add" method="post" enctype="multipart/form-data">
+    <input type="hidden" id="id" name="id">
     <label for="name">Nombre:</label>
     <input type="text" id="name" name="name" required>
     <br>
