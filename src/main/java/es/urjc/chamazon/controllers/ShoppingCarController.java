@@ -2,7 +2,6 @@ package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.ShoppingCar;
-import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.ShoppingCarService;
 import es.urjc.chamazon.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentMap;
 
 import static java.lang.Boolean.FALSE;
 
