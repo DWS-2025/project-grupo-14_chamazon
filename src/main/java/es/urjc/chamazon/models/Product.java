@@ -2,21 +2,28 @@ package es.urjc.chamazon.models;
 
 
 import java.nio.file.Path;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 
+@Entity
 public class Product {
 
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    long id;
+
     private String name;
     private String description;
     private double price;
     private String image;
     private Category category;
 
-    public Product() {
+    public Product() { }
 
-    }
-
-    public Product(int id, String name, String description, double price, String image, Category category) {
+    public Product(Long id, String name, String description, double price, String image, Category category) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -26,11 +33,11 @@ public class Product {
     }
 
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -73,4 +80,6 @@ public class Product {
     public void setCategory(Category category) {
         this.category = category;
     }
+
+
 }
