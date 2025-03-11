@@ -1,6 +1,6 @@
 package es.urjc.chamazon.models;
 
-
+import java.util.List;
 import java.nio.file.Path;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +13,10 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    long id;
+    private Long id;
+
+    @ManyToMany
+    private List<ShoppingCar> shoppingList;
 
     private String name;
     private String description;
