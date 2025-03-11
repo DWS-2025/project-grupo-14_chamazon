@@ -1,47 +1,27 @@
 package es.urjc.chamazon.models;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
+import jakarta.persistence.*;
 
+import java.util.List;
+
+@Entity
 public class Category {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String name;
-    private int id;
-    private ConcurrentMap<Integer, Product> products;
+    private String description;
 
-    public Category(String name) {
-        this.name = name;
-        this.products = new ConcurrentHashMap<>();
-    }
+    @ManyToMany
+    private List<Product> productList;
 
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public void setId(int id){
-        this.id = id;
-    }
-    public int getId(){
-        return id;
+    public Category() {
+
     }
 
-    public Collection<Product> getAllProducts(){
-        return products.values();
-    }
+    //GETTERS AND SETTERS//
 
-    public Product getProduct(int id){
-        return products.get(id);
-    }
 
-    public void addProduct(Product productToAdd){
-        products.put(productToAdd.getId(), productToAdd);
-    }
-
-    public void removeProduct(int productId){
-        products.remove(productId);
-    }
 
 }
