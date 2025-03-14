@@ -1,38 +1,38 @@
 package es.urjc.chamazon.models;
 
 import java.util.List;
-import java.nio.file.Path;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 
 @Entity
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    
     private Long id;
+    private String name;
+    private Float price;
+    private String description;
+    private String image;
+    private Float rating;
+
+    @ManyToOne
+    private User user;
 
     @ManyToMany
-    private List<ShoppingCar> shoppingList;
+    private List<Category> categoryList;
 
-    private String name;
-    private String description;
-    private double price;
-    private String image;
-    private Category category;
+    @ManyToMany
+    private List<ShoppingCar> shoppingCarList;
 
     public Product() { }
 
-    public Product(Long id, String name, String description, double price, String image, Category category) {
-        this.id = id;
+    public Product(String name, Float price, String description, String image, Float rating) {
         this.name = name;
-        this.description = description;
         this.price = price;
+        this.description = description;
         this.image = image;
-        this.category = category;
+        this.rating = rating;
     }
 
 
@@ -40,49 +40,47 @@ public class Product {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Float getPrice() {
+        return price;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public String getImage() {
+        return image;
     }
 
-    public double getPrice() {
-        return price;
+    public Float getRating() {
+        return rating;
     }
 
-    public void setPrice(double price) {
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrice(Float price) {
         this.price = price;
     }
 
-    public String getImage() {
-        return image;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setImage(String image) {
         this.image = image;
     }
 
-    public Category getCategory() {
-        return category;
+    public void setRating(Float rating) {
+        this.rating = rating;
     }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-
 }

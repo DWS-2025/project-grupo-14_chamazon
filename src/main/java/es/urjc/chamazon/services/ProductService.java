@@ -81,8 +81,8 @@ public class ProductService {
             throw new IllegalArgumentException("El precio no puede ser negativo");
         }
         
-        if (product.getCategory() == null) {
-            throw new IllegalArgumentException("La categoría no puede ser nula");
+        if (product.getImage() == null) {
+            throw new IllegalArgumentException("La imagen no puede ser nula");
         }
     }
 
