@@ -1,3 +1,4 @@
+/*
 package es.urjc.chamazon.services;
 
 import es.urjc.chamazon.models.Category;
@@ -79,3 +80,4 @@ public class CategoryService {
         categories.put(category.getId(), category);
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.models.Category;
@@ -43,7 +44,8 @@ public class CategoryController {
         return "redirect:/categories";
     }
 
-    /*@PostMapping("/categories/delete")
+    */
+/*@PostMapping("/categories/delete")
     public String deleteCategory(Model model,@RequestParam int categoryId){
         Category category = categoryService.getCategoryById(categoryId);
         if (category != null) {
@@ -52,7 +54,8 @@ public class CategoryController {
             return "error";
         }
         return "redirect:/categories";
-    }*/
+    }*//*
+
 
     @PostMapping("/categories/delete")
     public String deleteCategory(@RequestParam int categoryId) {
@@ -105,3 +108,4 @@ public class CategoryController {
         return "main";
     }
 }
+*/

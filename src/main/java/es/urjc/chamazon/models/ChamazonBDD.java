@@ -1,19 +1,43 @@
+/*
 package es.urjc.chamazon.models;
 
+import es.urjc.chamazon.repositories.ShoppingCarRepository;
 import es.urjc.chamazon.services.CategoryService;
 import es.urjc.chamazon.services.ProductService;
 import es.urjc.chamazon.services.ShoppingCarService;
 import es.urjc.chamazon.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
-@Service
-public class ChamazonBDD {
+import java.util.List;
 
-    private final ShoppingCarService shoppingCarService;
+@Controller
+public class ChamazonBDD implements CommandLineRunner {
+
+    @Autowired
+    private ShoppingCarRepository shoppingCarRepository;
+
+    //private final ShoppingCarService shoppingCarService;
     private final CategoryService categoryService;
     private final ProductService productService;
     private final UserService userService;
 
+
+    @Override
+    public void run(String... args) throws Exception {
+
+        shoppingCarRepository.save(new ShoppingCar(1L));
+        shoppingCarRepository.save(new ShoppingCar(2L));
+
+        List<ShoppingCar> shoppingCars = shoppingCarRepository.findAll();
+        for (ShoppingCar sc : shoppingCars) {
+            System.out.println(sc.toString());
+        }
+
+        shoppingCarRepository.deleteAll();
+    }
 
         public ChamazonBDD(ProductService productService, CategoryService categoryService, UserService userService,
                             ShoppingCarService shoppingCarService) {
@@ -58,4 +82,6 @@ public class ChamazonBDD {
 
         }
 
+
 }
+*/

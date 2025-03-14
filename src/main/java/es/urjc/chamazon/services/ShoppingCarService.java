@@ -1,7 +1,10 @@
+/*
 package es.urjc.chamazon.services;
 
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.ShoppingCar;
+import es.urjc.chamazon.repositories.ShoppingCarRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,6 +18,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class ShoppingCarService {
+
+    @Autowired
+    private ShoppingCarRepository shoppingCarRepository;
 
     private final ProductService productService;
     private ConcurrentHashMap<Integer, List<ShoppingCar>> shoppingCars = new ConcurrentHashMap<>();
@@ -168,9 +174,11 @@ public class ShoppingCarService {
         sc.setIdUser(idUser);
         shoppingCars.get(idUser).add(sc);
 
+*/
 /*        List<ShoppingCar> newList = shoppingCars.get(idUser);
         newList.add(sc);
-        shoppingCars.put(idUser,newList);*/
+        shoppingCars.put(idUser,newList);*//*
+
         return sc;
     }
 
@@ -185,3 +193,4 @@ public class ShoppingCarService {
         return productList;
     }
 }
+*/

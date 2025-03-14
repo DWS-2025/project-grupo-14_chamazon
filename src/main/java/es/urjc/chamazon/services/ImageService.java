@@ -1,3 +1,4 @@
+/*
 package es.urjc.chamazon.services;
 
 import java.io.IOException;
@@ -68,3 +69,4 @@ public class ImageService {
         Files.deleteIfExists(imageFile);
     }
 }
+*/

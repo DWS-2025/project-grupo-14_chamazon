@@ -9,7 +9,7 @@ import java.util.Objects;
 
 
 @SessionScope
-@Entity
+@Entity(name = "USR")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,10 +24,10 @@ public class User {
     private String address;
 
     //orphanRemoval -> User cant exist without shoppingCar
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<ShoppingCar> shoppingCarList;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL )
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Product> productList;
 
 
@@ -35,8 +35,94 @@ public class User {
 
     }
 
+    //GETTERS AND SETTERS//
 
 
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public List<ShoppingCar> getShoppingCarList() {
+        return shoppingCarList;
+    }
+
+    public void setShoppingCarList(List<ShoppingCar> shoppingCarList) {
+        this.shoppingCarList = shoppingCarList;
+    }
+
+    public List<Product> getProductList() {
+        return productList;
+    }
+
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
+    }
 }
