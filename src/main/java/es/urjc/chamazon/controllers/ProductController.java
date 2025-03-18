@@ -4,8 +4,9 @@ import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.*;
-import io.github.classgraph.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +20,22 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.List;
 
+import java.sql.Blob;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
+
 @Controller
 public class ProductController {
-    private static final int NO_CATEGORY_SELECTED = 0;
+    private static final long NO_CATEGORY_SELECTED = 0;
 
     @Autowired
     private ProductService productService;
@@ -41,27 +51,22 @@ public class ProductController {
 
     @Autowired
     private ImageService imageService;
-/*
-    @GetMapping("/products")
-    public String products(Model model, Integer userId) {
-        Collection<Product> products = productService.getAllProducts();
-        Collection<User> users = userService.getAllUsers();
 
-        model.addAttribute("selectedUserId", userId);
-        if (userId != null) {
-            User selectedUser = userService.getUser(userId);
-            if (selectedUser != null) {
-                model.addAttribute("selectedUser", selectedUser);
-                List<Product> cartProducts = shoppingCarService.getProductListFromActualShoppingCar(userId);
-                model.addAttribute("cartItemCount", cartProducts.size());
-            }
-        }
-        model.addAttribute("productsEachCategory", products);
-        model.addAttribute("users", users);
-        model.addAttribute("selectedCategoryId", NO_CATEGORY_SELECTED);
-        model.addAttribute("selectedCategoryName", "Todas las categorías");
-        model.addAttribute("title", "Lista de Productos");
+    @GetMapping("/products")
+    public String products(Model model) {
+        model.addAttribute("products", productService.findAllProducts());
         return "products_list";
+    }   
+    
+    @GetMapping("/products/{id}")
+    public String product(@PathVariable long id, Model model) {
+        Optional<Product> product = productService.findById(id);
+        if (product.isPresent()) {
+            model.addAttribute("product", product.get());
+            return "product_detail";
+        } else {
+            return "redirect:/products";
+        }
     }
 
     @GetMapping("/products/add")
@@ -70,13 +75,12 @@ public class ProductController {
         model.addAttribute("categories", categoryService.getAllCategories());
         return "addProduct";
     }
-
+/*
     @PostMapping("/products/add")
-    public String addProduct(Model model,
-                             @RequestParam String name,
+    public String addProduct(@RequestParam String name,
                              @RequestParam String description,
                              @RequestParam double price,
-                             @RequestParam int categoryId,
+                             @RequestParam long categoryId,
                              @RequestParam(required = false) MultipartFile imageFile) throws IOException {
   
         Category category = categoryService.getCategoryById(categoryId);
@@ -86,18 +90,18 @@ public class ProductController {
   
         // Error control name like 'Empty' is only for demo Fase 1
         if (imageFile != null && !imageFile.isEmpty() && price > 0 && name != null && !name.isEmpty() && !name.equals("empty")) {
-            productService.addProduct(name, description, price, category, imageFile.getOriginalFilename());
+            productService.save(new Product(name, price, description, imageFile.getBytes(), 0.0f));
             imageService.saveImage(imageFile);
         }else{
-            model.addAttribute("error", "Error de nombre inválido para el producto");
-            return "error";
+            return "redirect:/products";
         }
   
         return "redirect:/products";
     }
 
+
     @PostMapping("/products/{id}/addToCard/{idUser}")
-    public String addToCart(@PathVariable int id, @PathVariable int idUser, @RequestParam int userId) {
+    public String addToCart(@PathVariable long id, @PathVariable long idUser, @RequestParam long userId) {
         //Product product = productService.getProduct(id);
         //if (product != null) {
         shoppingCarService.addProductToUserShoppingCar(id, idUser);
@@ -106,12 +110,12 @@ public class ProductController {
     }
 */ //FIX CATEGORYSERVICE
     @GetMapping("/products/{id}/edit")
-    public String updateProduct(@PathVariable int id, Model model) {
+    public String updateProduct(@PathVariable long id, Model model) {
         Optional<Product> product = productService.findById(id);
         if (product.isPresent()) {
             model.addAttribute("product", product);
-        model.addAttribute("categories", categoryService.getAllCategories());
-        return "editProduct";
+            model.addAttribute("categories", categoryService.getAllCategories());
+            return "editProduct";
         } else {
             return "redirect:/products";
         }
@@ -119,11 +123,11 @@ public class ProductController {
 
 /*
     @PostMapping("products/{id}/edit")
-    public String updateProduct(@PathVariable int id,
+    public String updateProduct(@PathVariable long id,
                                 @RequestParam String name,
                                 @RequestParam String description,
                                 @RequestParam double price,
-                                @RequestParam int categoryId,
+                                @RequestParam long categoryId,
                                 @RequestParam(required = false) MultipartFile imageFile) throws IOException {
 
         Category category = categoryService.getCategoryById(categoryId);
@@ -139,29 +143,27 @@ public class ProductController {
         productService.updateProduct(id, name, description, price, category, imagePath);
         return "redirect:/products";
     }
-
+*/
     @PostMapping("/products/{id}/delete")
-    public String deleteProduct(@PathVariable int id) {
-        Product product = productService.findById(id);
-        if (product == null) {
+    public String deleteProduct(@PathVariable long id) {
+        Optional<Product> product = productService.findById(id);
+        if (!product.isPresent()) {
             return "redirect:/products";
         }
-        productService.delete(id);
+        productService.deleteById(id);
         return "redirect:/products";
     }
-*/
+
     @GetMapping("/products/{id}/image")
     public ResponseEntity<Resource> downloadImage(@PathVariable long id) throws SQLException {
         Optional<Product> product = productService.findById(id);
-    if (product.isPresent() && product.get().getImageFile() != null) {
-        Resource file = new InputStreamResource(product.getImageFile().getBinaryStream());
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
-                .contentLength(product.get().getImageFile().length())
-                .body(file);
-    } else {
-        return ResponseEntity.notFound().build();
+        if (product.isPresent() && product.get().getImageFile() != null) {
+            Blob image = product.get().getImageFile();
+		    Resource file = new InputStreamResource(image.getBinaryStream());
+		    return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "image/jpeg").contentLength(image.length()).body(file);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
-}
 
-}*/
+}

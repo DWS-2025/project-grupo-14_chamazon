@@ -12,7 +12,7 @@
         <p>Precip: <span>{{price}}</span></p>
         <p>Categoria: <span>{{category.name}}</span></p>
         {{#image}}
-        <img src="/products/{{id}}/image" alt="Product Image">
+              <img src="/products/{{id}}/image" class="card-img-top img-thumbnail" alt="{{name}}" style="height: 200px; object-fit: contain;">
         {{/image}}
     </div>
     {{/product}}

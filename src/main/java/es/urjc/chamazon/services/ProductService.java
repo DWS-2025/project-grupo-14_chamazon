@@ -19,7 +19,7 @@ public class ProductService {
 
     @Autowired ProductRepository productRepository;
 
-    public Collection<Product> getAllProducts() {
+    public Collection<Product> findAllProducts() {
         return productRepository.findAll();
     }
 

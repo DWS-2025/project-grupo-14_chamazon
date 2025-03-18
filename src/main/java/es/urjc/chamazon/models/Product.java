@@ -14,10 +14,9 @@ public class Product {
     private String name;
     private Float price;
     private String description;
-    private String image;
-    private Float rating;
     private Blob imageFile;
-
+    private Float rating;
+    
     @ManyToOne
     private User user;
 
@@ -29,11 +28,11 @@ public class Product {
 
     public Product() { }
 
-    public Product(String name, Float price, String description, String image, Float rating) {
+    public Product(String name, Float price, String description, Blob imageFile, Float rating) {
         this.name = name;
         this.price = price;
         this.description = description;
-        this.image = image;
+        this.imageFile = imageFile;
         this.rating = rating;
     }
 
@@ -52,10 +51,6 @@ public class Product {
 
     public String getDescription() {
         return description;
-    }
-
-    public String getImage() {
-        return image;
     }
 
     public Blob getImageFile() {
@@ -82,15 +77,17 @@ public class Product {
         this.description = description;
     }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public void setImageFile(){
+    public void setImageFile(Blob imageFile){
         this.imageFile = imageFile;
     }
 
     public void setRating(Float rating) {
         this.rating = rating;
     }
+
+    @Override
+    public String toString() {
+        return "Product [id=" + id + ", name=" + name + ", price=" + price + ", rating=" + rating + "]";
+    }
+
 }
