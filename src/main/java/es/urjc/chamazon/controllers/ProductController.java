@@ -1,4 +1,3 @@
-/*
 package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.models.Category;
@@ -21,8 +20,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.List;
-
 
 @Controller
 public class ProductController {
@@ -42,7 +41,7 @@ public class ProductController {
 
     @Autowired
     private ImageService imageService;
-
+/*
     @GetMapping("/products")
     public String products(Model model, Integer userId) {
         Collection<Product> products = productService.getAllProducts();
@@ -105,19 +104,20 @@ public class ProductController {
         //}
         return "redirect:/products";
     }
-
+*/ //FIX CATEGORYSERVICE
     @GetMapping("/products/{id}/edit")
     public String updateProduct(@PathVariable int id, Model model) {
-        Product product = productService.findById(id);
-        if (product == null) {
-            return "redirect:/products";
-        }
-
-        model.addAttribute("product", product);
+        Optional<Product> product = productService.findById(id);
+        if (product.isPresent()) {
+            model.addAttribute("product", product);
         model.addAttribute("categories", categoryService.getAllCategories());
         return "editProduct";
+        } else {
+            return "redirect:/products";
+        }
     }
 
+/*
     @PostMapping("products/{id}/edit")
     public String updateProduct(@PathVariable int id,
                                 @RequestParam String name,
@@ -149,14 +149,19 @@ public class ProductController {
         productService.delete(id);
         return "redirect:/products";
     }
-
+*/
     @GetMapping("/products/{id}/image")
-    public ResponseEntity<Object> downloadImage(@PathVariable int id) throws MalformedURLException {
-        String imageName = productService.findById(id).getImage();
-        if (imageName == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return imageService.createResponseFromImage(imageName);
+    public ResponseEntity<Resource> downloadImage(@PathVariable long id) throws SQLException {
+        Optional<Product> product = productService.findById(id);
+    if (product.isPresent() && product.get().getImageFile() != null) {
+        Resource file = new InputStreamResource(product.getImageFile().getBinaryStream());
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
+                .contentLength(product.get().getImageFile().length())
+                .body(file);
+    } else {
+        return ResponseEntity.notFound().build();
     }
+}
 
 }*/

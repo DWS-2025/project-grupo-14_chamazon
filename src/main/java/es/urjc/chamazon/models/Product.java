@@ -1,6 +1,7 @@
 package es.urjc.chamazon.models;
 
 import java.util.List;
+import java.sql.Blob;
 import jakarta.persistence.*;
 
 @Entity
@@ -15,6 +16,7 @@ public class Product {
     private String description;
     private String image;
     private Float rating;
+    private Blob imageFile;
 
     @ManyToOne
     private User user;
@@ -56,6 +58,10 @@ public class Product {
         return image;
     }
 
+    public Blob getImageFile() {
+        return imageFile;
+    }
+
     public Float getRating() {
         return rating;
     }
@@ -78,6 +84,10 @@ public class Product {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public void setImageFile(){
+        this.imageFile = imageFile;
     }
 
     public void setRating(Float rating) {
