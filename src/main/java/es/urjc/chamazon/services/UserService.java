@@ -1,41 +1,50 @@
-/*
+
 package es.urjc.chamazon.services;
 
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.User;
+import es.urjc.chamazon.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 @Service
 public class UserService {
 
+    /*@Autowired
+    private ShoppingCarService shoppingCarService;*/
+
     @Autowired
-    private ShoppingCarService shoppingCarService;
+    private UserRepository userRepository;
 
 
-    private int userId = 1;
-    private ConcurrentMap<Integer, User> users = new ConcurrentHashMap<>();
-
-    public Collection<User> getAllUsers() {
-        return users.values();
+    public Collection<User> findAll() {
+        return userRepository.findAll();
     }
 
-    public User getUser(int id) {
-        return users.get(id);
+    public Optional<User> findById(long Id) {
+        return userRepository.findById(Id);
     }
 
+    public void deleteById(long Id) {
+        userRepository.deleteById(Id);
+    }
+
+    public void save(User user) {
+        userRepository.save(user);
+        //falta añadir la parte del carrito
+    }
+
+    /*
     public void addUser(User user) {
         users.put(user.getId(), user);
         shoppingCarService.addNewSoppingCarToUser(user.getId());
     }
 
-    public void removeAllUsers() {
-        users.clear();
-    }
 
     public void getShoppingFromUser(int id) {
         User user = users.get(id);
@@ -55,16 +64,8 @@ public class UserService {
         };
     }
 
-    public void deleteUser(int id) {
-        users.remove(id);
-    }
-
-    public User getUserById(int id) {
-        return users.get(id);
-    }
-
     public void updateUser(User existingUser) {
         users.put(existingUser.getId(), existingUser);
-    }
+    }*/
 }
-*/
+
