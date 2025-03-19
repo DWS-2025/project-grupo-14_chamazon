@@ -1,36 +1,43 @@
 package es.urjc.chamazon.models;
 
 
-import java.nio.file.Path;
+import jakarta.persistence.*;
 
+import java.util.List;
+
+@Entity
 public class Product {
 
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String name;
+    private Float price;
     private String description;
-    private double price;
     private String image;
-    private Category category;
+    private Float rating;
+
+
+    @ManyToOne
+    private User user;
+
+    @ManyToMany
+    private List<Category> categoryList;
+
+    @ManyToMany
+    private List<ShoppingCar> shoppingCarList;
 
     public Product() {
 
     }
 
-    public Product(int id, String name, String description, double price, String image, Category category) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.image = image;
-        this.category = category;
-    }
+    //GETTERS AND SETTERS//
 
-
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -42,20 +49,20 @@ public class Product {
         this.name = name;
     }
 
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
+    }
+
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
     }
 
     public String getImage() {
@@ -66,11 +73,35 @@ public class Product {
         this.image = image;
     }
 
-    public Category getCategory() {
-        return category;
+    public Float getRating() {
+        return rating;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setRating(Float rating) {
+        this.rating = rating;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User userPr) {
+        this.user = userPr;
+    }
+
+    public List<Category> getCategoryList() {
+        return categoryList;
+    }
+
+    public void setCategoryList(List<Category> categoryList) {
+        this.categoryList = categoryList;
+    }
+
+    public List<ShoppingCar> getShoppingCarList() {
+        return shoppingCarList;
+    }
+
+    public void setShoppingCarList(List<ShoppingCar> shoppingCarList) {
+        this.shoppingCarList = shoppingCarList;
     }
 }

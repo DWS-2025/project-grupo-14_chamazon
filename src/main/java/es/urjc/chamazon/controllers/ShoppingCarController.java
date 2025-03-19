@@ -1,8 +1,9 @@
+/*
 package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.ShoppingCar;
-import es.urjc.chamazon.models.User;
+import es.urjc.chamazon.repositories.ShoppingCarRepository;
 import es.urjc.chamazon.services.ShoppingCarService;
 import es.urjc.chamazon.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentMap;
+import java.util.Optional;
 
 import static java.lang.Boolean.FALSE;
 
@@ -24,6 +22,8 @@ public class ShoppingCarController {
 
     @Autowired
     private ShoppingCarService shoppingCarService;
+    @Autowired
+    private ShoppingCarRepository shoppingCarRepository;
     @Autowired
     private UserService userService;
 
@@ -43,9 +43,12 @@ public class ShoppingCarController {
 
 
     @GetMapping("/shoppingCar/{id}")
-    public String shoppingCar (@PathVariable int id, Model model) {
+    public String shoppingCar (@PathVariable Long id, Model model) {
         model.addAttribute("title", "Shopping Car");
-        ShoppingCar sc = shoppingCarService.getShoppingCarById(id);
+        Optional<ShoppingCar> sc = shoppingCarRepository.findById(id);
+        if (sc.isPresent()) {
+            model.addAttribute("shoppingCar", sc.get());
+        }
         List<Product> productList = shoppingCarService.getProductListByIdShoppingCar(id);
 
         model.addAttribute("idSC", id);
@@ -74,12 +77,15 @@ public class ShoppingCarController {
     }
 
 
+*/
 /*    @PostMapping("/shoppingCar/add")
     public String createShoppingCar (@RequestParam int idUser, @RequestParam ConcurrentMap<Integer, Product> products, Model model) {
 
         shoppingCarService.addShoppingCarToUser(idUser);
 
         return "redirect:/shoppingCar";
-    }*/
+    }*//*
+
 
 }
+*/

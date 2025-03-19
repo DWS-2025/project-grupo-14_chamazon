@@ -13,22 +13,4 @@ public class ChamazonApplication {
     }
 
 
-    /*Create unique chamazon object*/
-    /*Crear al unico objeto chamazon*/
-/*
-    @Bean
-    public ChamazonBDD chamazonBDD(){
-        Object product = new Object();
-        List<Object> products = new ArrayList<>();
-        ShoppingCar shoppingCar = new ShoppingCar(1,products);
-
-        ChamazonBDD chamazonBDD = new ChamazonBDD();
-        chamazonBDD.addShoppingCar(shoppingCar);
-
-        return chamazonBDD;
-    }
-
-*/
-
-
 }

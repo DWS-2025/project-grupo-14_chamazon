@@ -1,3 +1,4 @@
+/*
 package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.models.Category;
@@ -149,4 +150,4 @@ public class ProductController {
         return imageService.createResponseFromImage(imageName);
     }
 
-}
+}*/

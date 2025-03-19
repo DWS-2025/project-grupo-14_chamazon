@@ -1,3 +1,4 @@
+/*
 package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.models.User;
@@ -69,9 +70,12 @@ public class UserController {
         return "redirect:/users";
     }
 
-   /* @GetMapping("/")
+   */
+/* @GetMapping("/")
     public String home() {
         return "main";
     }
-*/
+*//*
+
 }
+*/
