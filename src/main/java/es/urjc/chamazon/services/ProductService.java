@@ -3,13 +3,15 @@ package es.urjc.chamazon.services;
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
 
+import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+
 
 
 import es.urjc.chamazon.repositories.ProductRepository;
@@ -27,7 +29,14 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    public Product save(Product product) {
+    public Optional<Product> findByName(String name) {
+        return productRepository.findByName(name);
+    }
+
+    public Product save(Product product, MultipartFile imageFile) throws IOException {
+        if(!imageFile.isEmpty()){
+            product.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
+        }
         return productRepository.save(product);
     }
 

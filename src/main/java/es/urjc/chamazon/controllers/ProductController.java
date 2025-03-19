@@ -31,8 +31,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
-
 @Controller
 public class ProductController {
     private static final long NO_CATEGORY_SELECTED = 0;
@@ -56,8 +54,8 @@ public class ProductController {
     public String products(Model model) {
         model.addAttribute("products", productService.findAllProducts());
         return "products_list";
-    }   
-    
+    }
+
     @GetMapping("/products/{id}")
     public String product(@PathVariable long id, Model model) {
         Optional<Product> product = productService.findById(id);
@@ -69,81 +67,75 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/products/{id}/image")
+    public ResponseEntity<Resource> downloadImage(@PathVariable long id) throws SQLException {
+        Optional<Product> product = productService.findById(id);
+        if (product.isPresent() && product.get().getImageFile() != null) {
+            Blob image = product.get().getImageFile();
+            Resource file = new InputStreamResource(image.getBinaryStream());
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "image/jpeg").contentLength(image.length())
+                    .body(file);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
     @GetMapping("/products/add")
     public String addProduct(Model model) {
         model.addAttribute("product", new Product());
-        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("categories", categoryService.findAll());
         return "addProduct";
     }
-/*
+
     @PostMapping("/products/add")
-    public String addProduct(@RequestParam String name,
-                             @RequestParam String description,
-                             @RequestParam double price,
-                             @RequestParam long categoryId,
-                             @RequestParam(required = false) MultipartFile imageFile) throws IOException {
-  
-        Category category = categoryService.getCategoryById(categoryId);
-        if (category == null) {
-            return "redirect:/products";
-        }
-  
-        // Error control name like 'Empty' is only for demo Fase 1
-        if (imageFile != null && !imageFile.isEmpty() && price > 0 && name != null && !name.isEmpty() && !name.equals("empty")) {
-            productService.save(new Product(name, price, description, imageFile.getBytes(), 0.0f));
-            imageService.saveImage(imageFile);
-        }else{
-            return "redirect:/products";
-        }
-  
+    public String addProduct(Model model, Product product, MultipartFile imageFile) throws IOException {
+        /*
+         * Optional<Category> category = categoryService.findById(categoryId);
+         * if (category == null) {
+         * return "redirect:/products";
+         * }
+         * 
+         * product.setCategory(category.get());
+         * 
+         * // Error control name like 'Empty' is only for demo Fase 1
+         * if (imageFile != null && !imageFile.isEmpty() && price > 0 && name != null &&
+         * !name.isEmpty() && !name.equals("empty")) {
+         * productService.save(new Product(name, price, description,
+         * imageFile.getBytes(), 0.0f));
+         * imageService.saveImage(imageFile);
+         * }else{
+         * return "redirect:/products";
+         * }
+         */
+        productService.save(product, imageFile);
         return "redirect:/products";
     }
 
 
-    @PostMapping("/products/{id}/addToCard/{idUser}")
-    public String addToCart(@PathVariable long id, @PathVariable long idUser, @RequestParam long userId) {
-        //Product product = productService.getProduct(id);
-        //if (product != null) {
-        shoppingCarService.addProductToUserShoppingCar(id, idUser);
-        //}
-        return "redirect:/products";
-    }
-*/ //FIX CATEGORYSERVICE
     @GetMapping("/products/{id}/edit")
     public String updateProduct(@PathVariable long id, Model model) {
         Optional<Product> product = productService.findById(id);
         if (product.isPresent()) {
             model.addAttribute("product", product);
-            model.addAttribute("categories", categoryService.getAllCategories());
+            model.addAttribute("categories", categoryService.findAll());
             return "editProduct";
         } else {
             return "redirect:/products";
         }
     }
 
-/*
     @PostMapping("products/{id}/edit")
-    public String updateProduct(@PathVariable long id,
-                                @RequestParam String name,
-                                @RequestParam String description,
-                                @RequestParam double price,
-                                @RequestParam long categoryId,
-                                @RequestParam(required = false) MultipartFile imageFile) throws IOException {
+    public String updateProduct(@PathVariable long id, Model model, Product newProduct, MultipartFile imageFile) throws IOException{
+    //first delete the product i want to emove
+    productService.deleteById(id);
 
-        Category category = categoryService.getCategoryById(categoryId);
-        if (category == null) {
-            return "redirect:/products";
-        }
-
-        String imagePath = null;
-        if (imageFile != null && !imageFile.isEmpty()) {
-            imagePath = imageService.saveImage(imageFile);
-        }
-
-        productService.updateProduct(id, name, description, price, category, imagePath);
-        return "redirect:/products";
+    //then save the new product with corresponding id and elements.
+    newProduct.setId(id);
+    productService.save(newProduct, imageFile);
+    return "redirect:/products";
     }
-*/
+
     @PostMapping("/products/{id}/delete")
     public String deleteProduct(@PathVariable long id) {
         Optional<Product> product = productService.findById(id);
@@ -154,16 +146,17 @@ public class ProductController {
         return "redirect:/products";
     }
 
-    @GetMapping("/products/{id}/image")
-    public ResponseEntity<Resource> downloadImage(@PathVariable long id) throws SQLException {
-        Optional<Product> product = productService.findById(id);
-        if (product.isPresent() && product.get().getImageFile() != null) {
-            Blob image = product.get().getImageFile();
-		    Resource file = new InputStreamResource(image.getBinaryStream());
-		    return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "image/jpeg").contentLength(image.length()).body(file);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+    /*
+     * @PostMapping("/products/{id}/addToCard/{idUser}")
+     * public String addToCart(@PathVariable long id, @PathVariable long
+     * idUser, @RequestParam long userId) {
+     * //Product product = productService.getProduct(id);
+     * //if (product != null) {
+     * shoppingCarService.addProductToUserShoppingCar(id, idUser);
+     * //}
+     * return "redirect:/products";
+     * }
+     */
+   
 
 }
