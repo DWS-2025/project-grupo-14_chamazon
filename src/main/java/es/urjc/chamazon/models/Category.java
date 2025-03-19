@@ -13,7 +13,7 @@ public class Category {
     private String name;
     private String description;
 
-    @ManyToMany
+    @ManyToMany(mappedBy ="categories")
     private List<Product> productList;
 
     public Category() {

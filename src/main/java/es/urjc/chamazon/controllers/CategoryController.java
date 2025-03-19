@@ -1,11 +1,10 @@
-/*
+
 package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.CategoryService;
-import es.urjc.chamazon.services.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,35 +15,50 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Controller
 public class CategoryController {
+
     @Autowired
     private CategoryService categoryService;
 
-     @Autowired
-    private UserService userService;
+
+    //private UserService userService;
 
 
     @GetMapping("/categories")
     public String getAllCategories(Model model) {
-        Collection<Category> categories = categoryService.getAllCategories();
+        Collection <Category> categories = categoryService.findAll();
         model.addAttribute("categories", categories);
         return "categories";
 
     }
+
     @GetMapping("/categories/add")
     public String addCategory(Model model) {
         return "addCategory";
     }
 
     @PostMapping("/categories/add")
-    public String addCategory(@RequestParam String categoryName) {
-        categoryService.addCategory(categoryName);
+    public String addCategory(Category newCategory) {
+        categoryService.save(newCategory);
         return "redirect:/categories";
     }
 
-    */
+    @PostMapping ("categories/delete")
+    public String deleteCategory(@PathVariable long categoryId) {
+        Optional<Category> category = categoryService.findById(categoryId);
+        if (category.isPresent()) {
+            categoryService.deleteById(categoryId);
+            return "redirect:/categories";
+        }else{
+            return "/error/error";
+        }
+    }
+}
+
+
 /*@PostMapping("/categories/delete")
     public String deleteCategory(Model model,@RequestParam int categoryId){
         Category category = categoryService.getCategoryById(categoryId);
