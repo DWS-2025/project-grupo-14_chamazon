@@ -1,8 +1,10 @@
-/*
+
 package es.urjc.chamazon.services;
 
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
+import es.urjc.chamazon.repositories.CategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -11,35 +13,38 @@ import java.util.concurrent.ConcurrentMap;
 
 @Service
 public class CategoryService {
-    private int categoryId = 1;
-    private ConcurrentMap<Integer, Category> categories = new ConcurrentHashMap<>();
 
-    public Collection<Category> getAllCategories() {
-        return categories.values();
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    public Collection<Category> findAll() {
+        return categoryRepository.findAll();
     }
 
-    public Category getCategoryById(int categoryId) {
-        return categories.get(categoryId);
+    public Optional<Category> findById(Long categoryId) {
+        return categoryRepository.findById(categoryId);
     }
 
-    public Category getCategoryByName(String categoryName) {
-        for (Category c : categories.values()) {
-            if (c.getName().equalsIgnoreCase(categoryName)){
-                return c;
-            }
-        }
-        return null;
+    public Optional<Category> findByName(String categoryName) {
+        return categoryRepository.findByName(categoryName);
+    }
+
+    public Category save(Category category) {
+        return categoryRepository.save(category);
+    }
+
+    public void deleteById(Long categoryId) {
+        categoryRepository.deleteById(categoryId);
     }
 
 
+
+    /*
     public void addCategory(String categoryName) {
         Category newCategory = new Category(categoryName);
         newCategory.setId(categoryId++);
         categories.put(newCategory.getId(), newCategory);
-    }
-
-    public void deleteCategory(int category) {
-        categories.remove(category);
     }
 
     public void addProductToCategory(Product product, int categoryId) {
@@ -78,6 +83,6 @@ public class CategoryService {
 
     public void updateCategory(Category category) {
         categories.put(category.getId(), category);
-    }
+    }*/
 }
-*/
+
