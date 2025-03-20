@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title>Edit Comment</title>
+{{>header}}
+</head>
+
+<body>
+{{>navBar}}
+
+<div class="container my-5">
+  <div class="d-flex justify-content mt-3">
+    <a class="btn btn-primary" href="/comments" role="button">VOLVER</a>
+  </div>
+
+  <h1 class="mb-4 text-center">Editar Comentario</h1>
+
+  <div class="card shadow p-4">
+    <form action="/comments/{{id}}" method="post">
+      <input type="hidden" name="_method" value="put">
+
+      <div class="mb-3">
+        <label for="text" class="form-label">Texto:</label>
+        <input type="text" id="text" name="text" class="form-control" value="{{text}}" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="author" class="form-label">Autor:</label>
+        <input type="text" id="author" name="author" class="form-control" value="{{author}}" required>
+      </div>
+
+      <button type="submit" class="btn btn-success w-100">Actualizar</button>
+    </form>
+  </div>
+</div>
+
+{{>footer}}
+
+</body>
+</html>
