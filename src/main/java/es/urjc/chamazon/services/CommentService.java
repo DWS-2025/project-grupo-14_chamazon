@@ -18,7 +18,7 @@ public class CommentService  {
     public List<Comment> findAll() {
         return commentRepository.findAll();
     }
-    
+
     //Method to find a comment by its id if it exists
     public Optional<Comment> findById(Long id) {
         return commentRepository.findById(id);
