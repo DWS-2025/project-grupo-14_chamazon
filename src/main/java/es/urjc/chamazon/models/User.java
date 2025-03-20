@@ -13,7 +13,7 @@ import java.util.Objects;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
     private String type;
     private String userName;
     private String firstName;
@@ -38,11 +38,11 @@ public class User {
     //GETTERS AND SETTERS//
 
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

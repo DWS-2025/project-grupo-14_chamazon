@@ -13,7 +13,12 @@ public class Category {
     private String name;
     private String description;
 
-    @ManyToMany(mappedBy ="categories")
+    @ManyToMany()
+    @JoinTable(
+            name = "category_products",
+            joinColumns = @JoinColumn(name = "category_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
     private List<Product> productList;
 
     public Category() {

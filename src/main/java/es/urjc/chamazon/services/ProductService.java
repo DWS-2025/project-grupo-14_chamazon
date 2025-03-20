@@ -35,9 +35,6 @@ public class ProductService {
     }
     public void updateProduct(int id, String name, String description, double price, Category category, String image) {
         Product product = findById(id);
-
-
-
         if (product != null) {
             product.setName(name);
             product.setDescription(description);

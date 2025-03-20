@@ -21,7 +21,7 @@ public class Product {
     @ManyToOne
     private User user;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "productList")
     private List<Category> categoryList;
 
     @ManyToMany
