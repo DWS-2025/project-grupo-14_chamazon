@@ -1,49 +1,65 @@
 package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.models.Comment;
-import es.urjc.chamazon.repositories.CommentRepository;
+import es.urjc.chamazon.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@RestController
+@Controller
 @RequestMapping("/comments")
 public class CommentController {
 
     @Autowired
-    private CommentRepository commentRepository;
+    private CommentService commentService;
 
     @GetMapping
-    public List<Comment> getAllComments() {
-        return commentRepository.findAll();
+    public String getAllComments(Model model) {
+        model.addAttribute("comments", commentService.findAll());
+        return "comment/comment";
     }
 
     @GetMapping("/{id}")
-    public Comment getCommentById(@PathVariable Long id) {
-        return commentRepository.findById(id).orElse(null);
+    public String getCommentById(@PathVariable Long id, Model model) {
+        model.addAttribute("comment", commentService.findById(id).orElse(null));
+        return "comment/comment";
+    }
+
+    @GetMapping("/add")
+    public String getAddCommentPage(Model model) {
+        model.addAttribute("comment", new Comment());
+        return "comment/addComment";
     }
 
     @PostMapping
-    public Comment createComment(@RequestBody Comment comment) {
-        return commentRepository.save(comment);
+    public String createComment(@ModelAttribute Comment comment) {
+        commentService.save(comment);
+        return "redirect:/comments";
     }
 
-    @PutMapping("/{id}")
-    public Comment updateComment(@PathVariable Long id, @RequestBody Comment commentDetails) {
-        Comment comment = commentRepository.findById(id).orElse(null);
+    @GetMapping("/edit/{id}")
+    public String getEditCommentPage(@PathVariable Long id, Model model) {
+        model.addAttribute("comment", commentService.findById(id).orElse(null));
+        return "comment/editComment";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String updateComment(@PathVariable Long id, @ModelAttribute Comment commentDetails) {
+        Comment comment = commentService.findById(id).orElse(null);
         if (comment != null) {
             comment.setComment(commentDetails.getComment());
             comment.setRating(commentDetails.getRating());
             comment.setUser(commentDetails.getUser());
             comment.setProduct(commentDetails.getProduct());
-            return commentRepository.save(comment);
+            commentService.save(comment);
         }
-        return null;
+        return "redirect:/comments";
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteComment(@PathVariable Long id) {
-        commentRepository.deleteById(id);
+    @GetMapping("/delete/{id}")
+    public String deleteComment(@PathVariable Long id) {
+        commentService.deleteById(id);
+        return "redirect:/comments";
     }
 }
