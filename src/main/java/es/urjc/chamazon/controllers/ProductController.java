@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -26,10 +28,6 @@ import java.util.Optional;
 import java.util.List;
 
 import java.sql.Blob;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class ProductController {
@@ -41,13 +39,14 @@ public class ProductController {
     @Autowired
     private CategoryService categoryService;
 
-    /*@Autowired
-    private UserService userService;
+    /*
+     * @Autowired
+     * private UserService userService;
+     * 
+     * @Autowired
+     * private ShoppingCarService shoppingCarService;
+     */
 
-    @Autowired
-    private ShoppingCarService shoppingCarService;
-*/
-   
     @GetMapping("/products")
     public String products(Model model) {
         model.addAttribute("products", productService.findAllProducts());
@@ -78,7 +77,6 @@ public class ProductController {
         }
     }
 
-
     @GetMapping("/products/add")
     public String addProduct(Model model) {
         model.addAttribute("product", new Product());
@@ -87,29 +85,12 @@ public class ProductController {
     }
 
     @PostMapping("/products/add")
-    public String addProduct(Model model, Product product, MultipartFile imageFile) throws IOException {
-        /*
-         * Optional<Category> category = categoryService.findById(categoryId);
-         * if (category == null) {
-         * return "redirect:/products";
-         * }
-         * 
-         * product.setCategory(category.get());
-         * 
-         * // Error control name like 'Empty' is only for demo Fase 1
-         * if (imageFile != null && !imageFile.isEmpty() && price > 0 && name != null &&
-         * !name.isEmpty() && !name.equals("empty")) {
-         * productService.save(new Product(name, price, description,
-         * imageFile.getBytes(), 0.0f));
-         * imageService.saveImage(imageFile);
-         * }else{
-         * return "redirect:/products";
-         * }
-         */
+    public String addProduct(Model model,
+            @ModelAttribute Product product,
+            @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
         productService.save(product, imageFile);
         return "redirect:/products";
     }
-
 
     @GetMapping("/products/{id}/edit")
     public String updateProduct(@PathVariable long id, Model model) {
@@ -125,14 +106,16 @@ public class ProductController {
     }
 
     @PostMapping("products/{id}/edit")
-    public String updateProduct(@PathVariable long id, Model model, Product newProduct, MultipartFile imageFile) throws IOException{
-    //first delete the product i want to emove
-    productService.deleteById(id);
+    public String updateProduct(@PathVariable long id, Model model, @ModelAttribute("product") Product newProduct,
+            @RequestParam("imageFile") MultipartFile imageFile)
+            throws IOException {
+        // first delete the product i want to emove
+        productService.deleteById(id);
 
-    //then save the new product with corresponding id and elements.
-    newProduct.setId(id);
-    productService.save(newProduct, imageFile);
-    return "redirect:/products";
+        // then save the new product with corresponding id and elements.
+        newProduct.setId(id);
+        productService.save(newProduct, imageFile);
+        return "redirect:/products";
     }
 
     @PostMapping("/products/{id}/delete")
@@ -156,6 +139,5 @@ public class ProductController {
      * return "redirect:/products";
      * }
      */
-   
 
 }

@@ -33,12 +33,16 @@ public class ProductService {
         return productRepository.findByName(name);
     }
 
-    public Product save(Product product, MultipartFile imageFile) throws IOException {
-        if(!imageFile.isEmpty()){
-            product.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
-        }
-        return productRepository.save(product);
+    public void save(Product product) {
+        productRepository.save(product);
     }
+
+    public void save(Product product, MultipartFile imageFile) throws IOException{
+		if(!imageFile.isEmpty()) {
+			product.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
+		}
+		this.save(product);
+	}
 
     public void deleteById(long id) {
         productRepository.deleteById(id);
