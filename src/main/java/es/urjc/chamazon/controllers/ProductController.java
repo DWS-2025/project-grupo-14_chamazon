@@ -94,7 +94,7 @@ public class ProductController {
     @GetMapping("/products/{id}/edit")
     public String updateProduct(@PathVariable long id, Model model) {
         Optional<Product> optionalProduct = productService.findById(id);
-        if (optionalProduct.isPresent()) { // using optional and get product's information
+        if (optionalProduct.isPresent()) { // getting optional product's information
             Product product = optionalProduct.get();
             model.addAttribute("product", product);
             model.addAttribute("categories", categoryService.findAll());

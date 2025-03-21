@@ -36,23 +36,31 @@
                 </div>
 
                 <div class="card-footer bg-white border-top-0">
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between flex-wrap">
                         <form action="/products/{{id}}/edit" method="GET">
-                            <button type="submit" class="btn btn-outline-secondary btn-sm">
+                            <button type="submit" class="btn btn-outline-secondary btn-sm mb-1">
                                 <i class="fas fa-edit"></i> Editar
                             </button>
                         </form>
-
+                
+                        <a href="/commentView/product/{{id}}/add" class="btn btn-outline-primary btn-sm mb-1 ms-2">
+                            <i class="fas fa-comment-plus"></i> Añadir Comentario
+                        </a>
+                
+                        <a href="/commentView/product/{{id}}" class="btn btn-outline-info btn-sm mb-1 ms-2">
+                            <i class="fas fa-comments"></i> Ver Comentarios
+                        </a>
+                
                         <form action="/products/{{id}}/delete" method="POST" class="ms-2">
-                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                            <button type="submit" class="btn btn-outline-danger btn-sm mb-1">
                                 <i class="fas fa-trash"></i> Eliminar
                             </button>
                         </form>
-
+                
                         {{#selectedUserId}}
                         <form action="/products/{{id}}/addToCard/{{selectedUserId}}" method="POST" class="ms-2">
                             <input type="hidden" name="userId" value="{{selectedUserId}}">
-                            <button type="submit" class="btn btn-outline-success btn-sm">
+                            <button type="submit" class="btn btn-outline-success btn-sm mb-1">
                                 <i class="fas fa-cart-plus"></i> Añadir al carrito
                             </button>
                         </form>
