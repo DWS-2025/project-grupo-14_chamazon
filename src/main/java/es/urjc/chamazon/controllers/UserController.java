@@ -1,4 +1,4 @@
-/*
+
 package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.models.User;
@@ -20,12 +20,24 @@ public class UserController {
 
     @GetMapping("/users")
     public String users(Model model) {
-        Collection<User> users = userService.getAllUsers();
-        System.out.println(users.toString());
+        Collection<User> users = userService.findAll();
         model.addAttribute("users", users);
        return "users";
     }
 
+
+    @PostMapping("user/delete")
+    public String deleteUser(@RequestParam long id) {
+        userService.deleteById(id);
+        return "redirect:/users";
+    }
+
+    @GetMapping("user/delete")
+    public String deleteUser(@RequestParam long id, Model model) {
+        userService.deleteById(id);
+        return "redirect:/users";
+    }
+    /*
     @GetMapping("/users/add")
     public String addUser(Model model) {
         Collection<User> users = userService.getAllUsers();
@@ -37,18 +49,6 @@ public class UserController {
     public String addUser(@RequestParam String userName, @RequestParam String userEmail, @RequestParam String password, @RequestParam String address, @RequestParam String phone) {
         User newUser = new User(userName, userEmail, password, address, phone);
         userService.addUser(newUser);
-        return "redirect:/users";
-    }
-
-    @PostMapping("user/delete")
-    public String deleteUser(@RequestParam int id) {
-        userService.deleteUser(id);
-        return "redirect:/users";
-    }
-
-    @GetMapping("user/delete")
-    public String deleteUser(@RequestParam int id, Model model) {
-        userService.deleteUser(id);
         return "redirect:/users";
     }
 
@@ -68,14 +68,6 @@ public class UserController {
         existingUser.setPhone(user.getPhone() != null ? user.getPhone() : "");
         userService.updateUser(existingUser);
         return "redirect:/users";
-    }
-
-   */
-/* @GetMapping("/")
-    public String home() {
-        return "main";
-    }
-*//*
-
+    }*/
 }
-*/
+

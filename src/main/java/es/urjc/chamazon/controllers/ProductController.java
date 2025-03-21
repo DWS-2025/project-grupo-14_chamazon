@@ -79,21 +79,12 @@ public class ProductController {
                              @RequestParam double price,
                              @RequestParam int categoryId,
                              @RequestParam(required = false) MultipartFile imageFile) throws IOException {
-  
         Category category = categoryService.getCategoryById(categoryId);
         if (category == null) {
             return "redirect:/products";
         }
-  
-        // Error control name like 'Empty' is only for demo Fase 1
-        if (imageFile != null && !imageFile.isEmpty() && price > 0 && name != null && !name.isEmpty() && !name.equals("empty")) {
-            productService.addProduct(name, description, price, category, imageFile.getOriginalFilename());
-            imageService.saveImage(imageFile);
-        }else{
-            model.addAttribute("error", "Error de nombre inválido para el producto");
-            return "error";
-        }
-  
+        productService.addProduct(name, description, price, category, imageFile.getOriginalFilename());
+        imageService.saveImage(imageFile);
         return "redirect:/products";
     }
 

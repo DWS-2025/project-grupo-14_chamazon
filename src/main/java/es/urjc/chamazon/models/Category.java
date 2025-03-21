@@ -13,11 +13,15 @@ public class Category {
     private String name;
     private String description;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "categoryList")
     private List<Product> productList;
 
     public Category() {
 
+    }
+    public Category(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 
     //GETTERS AND SETTERS//

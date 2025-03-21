@@ -21,7 +21,7 @@ public class Product {
     @ManyToOne
     private User user;
 
-    @ManyToMany
+    @ManyToMany()
     private List<Category> categoryList;
 
     @ManyToMany

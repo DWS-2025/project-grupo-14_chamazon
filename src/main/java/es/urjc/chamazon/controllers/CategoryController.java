@@ -1,11 +1,10 @@
-/*
+
 package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.CategoryService;
-import es.urjc.chamazon.services.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,57 +15,79 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Controller
 public class CategoryController {
+
     @Autowired
     private CategoryService categoryService;
 
-     @Autowired
-    private UserService userService;
 
+    @GetMapping("/")
+    public String home() {
+        return "main";
+    }
 
     @GetMapping("/categories")
     public String getAllCategories(Model model) {
-        Collection<Category> categories = categoryService.getAllCategories();
+        Collection <Category> categories = categoryService.findAll();
         model.addAttribute("categories", categories);
-        return "categories";
+        return "/category/categories";
 
     }
+
     @GetMapping("/categories/add")
     public String addCategory(Model model) {
-        return "addCategory";
+        return "/category/addCategory";
     }
 
     @PostMapping("/categories/add")
-    public String addCategory(@RequestParam String categoryName) {
-        categoryService.addCategory(categoryName);
+    public String addCategory(Category newCategory) {
+        categoryService.save(newCategory);
         return "redirect:/categories";
     }
 
-    */
-/*@PostMapping("/categories/delete")
-    public String deleteCategory(Model model,@RequestParam int categoryId){
-        Category category = categoryService.getCategoryById(categoryId);
-        if (category != null) {
-            categoryService.deleteCategory(categoryId);
-        } else {
-            return "error";
+    @PostMapping ("/categories/delete")
+    public String deleteCategory(@RequestParam long categoryId) {
+        Optional<Category> category = categoryService.findById(categoryId);
+        if (category.isPresent()) {
+            categoryService.deleteById(categoryId);
+            return "redirect:/categories";
+        }else{
+            return "/error/error";
         }
-        return "redirect:/categories";
-    }*//*
+    }
+
+    @GetMapping("/categories/edit")
+    public String editCategory(@RequestParam Long categoryId, Model model) {
+        Optional <Category> category = categoryService.findById(categoryId);
+        if (category.isPresent()) {
+            model.addAttribute("category", category.get());
+        }else {
+            return "/error/error";
+        }
+        return "/category/editCategory";
+    }
+
+    @PostMapping("/categories/edit")
+    public String editCategory(@RequestParam long categoryId, @RequestParam String categoryName,@RequestParam String categoryDescription, Model model) {
+        Optional <Category> category = categoryService.findById(categoryId);
+        if (category.isPresent()) {
+            Category newCategory = category.get();
+            newCategory.setName(categoryName);
+            newCategory.setDescription(categoryDescription);
+            categoryService.save(newCategory);
+            return "redirect:/categories";
+        }else {
+            return "/error/error";
+        }
+    }
+
+}
 
 
-    @PostMapping("/categories/delete")
-    public String deleteCategory(@RequestParam int categoryId) {
-        categoryService.deleteCategory(categoryId);
-        return "redirect:/categories";
-    }
-    @GetMapping("/categories/delete")
-    public String deleteCategory(@RequestParam int categoryId, Model model) {
-        categoryService.deleteCategory(categoryId);
-        return "redirect:/categories";
-    }
+/*
 
     @GetMapping("/categories/{id}")
     public String showProductsEachCategory(Model model, @PathVariable int id) {
@@ -87,25 +108,5 @@ public class CategoryController {
     return "products_list";
     }
 
-    @GetMapping("/categories/edit")
-    public String editCategory(@RequestParam int categoryId, Model model) {
-        Category category = categoryService.getCategoryById(categoryId);
-        model.addAttribute("category", category);
-        return "editCategory";
-    }
-
-    @PostMapping("/categories/edit")
-    public String editCategory(@RequestParam int categoryId, @RequestParam String categoryName, Model model) {
-        Category category = categoryService.getCategoryById(categoryId);
-        category.setName(categoryName);
-        categoryService.updateCategory(category);
-        return "redirect:/categories";
-    }
-
-
-    @GetMapping("/")
-    public String home() {
-        return "main";
-    }
 }
 */
