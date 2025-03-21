@@ -1,0 +1,41 @@
+{{>header}}
+
+<head>
+    <title>New Comment</title>
+</head>
+
+<body class="bg-light">
+{{>navBar}}
+
+<div class="container my-5">
+    <div class="d-flex justify-content mt-3">
+        <a class="btn btn-primary ms-3" href="/commentView/comments" role="button">Ver Comentarios</a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4">
+                <h2 class="mb-3 text-center text-primary">Añadir Comentario</h2>
+                <form action="/commentView/add" method="post">
+                    <div class="mb-3">
+                        <label for="commentText" class="form-label">Comentario:</label>
+                        <textarea class="form-control" id="commentText" name="comment" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="rating" class="form-label">Calificación:</label>
+                        <input type="number" class="form-control" id="rating" name="rating" min="1" max="5" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="userId" class="form-label">Usuario:</label>
+                        <input type="text" class="form-control" id="userId" name="user" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{>footer}}
+
+</body>

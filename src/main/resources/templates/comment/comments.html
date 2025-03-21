@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Comments</title>
+    {{>header}}
+</head>
+<body>
+{{>navBar}}
+
+<div class="container my-5">
+    <h1 class="mb-4 text-center">Comentarios</h1>
+    <div class="list-group">
+        {{#comments}}
+        <div class="list-group-item">
+            <p><strong>Comentario:</strong> {{comment}}</p>
+            <p><strong>Calificación:</strong> {{rating}}</p>
+            <p><strong>Usuario:</strong> {{user.name}}</p>
+            <p><strong>Producto:</strong> {{product.name}}</p>
+            <form action="/comments/delete/{{comment.id}}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </form>
+        </div>
+        {{/comments}}
+    </div>
+    <!-- <a href="/products/{{product.id}}" class="btn btn-primary mt-3">Volver</a>  Este mapeado todavía no funciona porque hay que tocar en products -->
+</div>
+
+{{>footer}}
+</body>
+</html>
