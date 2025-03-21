@@ -1,51 +1,55 @@
-/*
 package es.urjc.chamazon.services;
 
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
-import org.springframework.stereotype.Service;
 
+import org.hibernate.engine.jdbc.BlobProxy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Optional;
 import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+
+
+
+import es.urjc.chamazon.repositories.ProductRepository;
 
 @Service
 public class ProductService {
-    private final ConcurrentMap<Integer, Product> products = new ConcurrentHashMap<>();
-    private int productId = 1;
 
-    public Collection<Product> getAllProducts() {
-        return products.values();
+    @Autowired ProductRepository productRepository;
+
+    public Collection<Product> findAllProducts() {
+        return productRepository.findAll();
     }
 
-    public Product findById(int id) {
-        return products.get(id);
+    public Optional<Product> findById(long id) {
+        return productRepository.findById(id);
     }
-    public Product addProduct(String name, String description, double price, Category category, String image) {
-        Product product = new Product();
-        product.setId(productId++);
-        product.setName(name);
-        product.setDescription(description);
-        product.setPrice(price);
-        product.setCategory(category);
-        product.setImage(image);
 
-        products.put(product.getId(), product);
-        return product;
+    public Optional<Product> findByName(String name) {
+        return productRepository.findByName(name);
     }
-    public void updateProduct(int id, String name, String description, double price, Category category, String image) {
-        Product product = findById(id);
-        if (product != null) {
-            product.setName(name);
-            product.setDescription(description);
-            product.setPrice(price);
-            product.setCategory(category);
-            if (image != null && !image.isEmpty()) {
-                product.setImage(image);
-            }
-        }
+
+    public void save(Product product) {
+        productRepository.save(product);
     }
-    public void delete(int id) {
-        products.remove(id);
+
+    public void save(Product product, MultipartFile imageFile) throws IOException{
+		if(!imageFile.isEmpty()) {
+			product.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
+		}
+		this.save(product);
+	}
+
+    public void deleteById(long id) {
+        productRepository.deleteById(id);
     }
-}*/
+
+    public void deleteAll() {
+        productRepository.deleteAll();
+    }
+
+}
