@@ -26,12 +26,6 @@ public class CommentController {
         return "comment/comment";
     }
 
-    @GetMapping("/add")
-    public String getAddCommentPage(Model model) {
-        model.addAttribute("comment", new Comment());
-        return "comment/addComment";
-    }
-
     @PostMapping
     public String createComment(@ModelAttribute Comment comment) {
         commentService.save(comment);
