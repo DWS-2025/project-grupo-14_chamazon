@@ -23,6 +23,11 @@ public class ShoppingCar {
     public ShoppingCar() {
     }
 
+    public ShoppingCar(User User) {
+        ShoppingCar shoppingCar = new ShoppingCar();
+        shoppingCar.setUser(user);
+    }
+
     //GETTERS AND SETTERS//
 
 

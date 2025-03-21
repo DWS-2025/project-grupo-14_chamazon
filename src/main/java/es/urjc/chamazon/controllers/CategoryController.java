@@ -24,8 +24,6 @@ public class CategoryController {
     private CategoryService categoryService;
 
 
-    //private UserService userService;
-
     @GetMapping("/")
     public String home() {
         return "main";
@@ -41,7 +39,7 @@ public class CategoryController {
 
     @GetMapping("/categories/add")
     public String addCategory(Model model) {
-        return "addCategory";
+        return "/category/addCategory";
     }
 
     @PostMapping("/categories/add")
@@ -50,8 +48,8 @@ public class CategoryController {
         return "redirect:/categories";
     }
 
-    @PostMapping ("categories/delete")
-    public String deleteCategory(@PathVariable long categoryId) {
+    @PostMapping ("/categories/delete")
+    public String deleteCategory(@RequestParam long categoryId) {
         Optional<Category> category = categoryService.findById(categoryId);
         if (category.isPresent()) {
             categoryService.deleteById(categoryId);
@@ -60,31 +58,36 @@ public class CategoryController {
             return "/error/error";
         }
     }
+
+    @GetMapping("/categories/edit")
+    public String editCategory(@RequestParam Long categoryId, Model model) {
+        Optional <Category> category = categoryService.findById(categoryId);
+        if (category.isPresent()) {
+            model.addAttribute("category", category.get());
+        }else {
+            return "/error/error";
+        }
+        return "/category/editCategory";
+    }
+
+    @PostMapping("/categories/edit")
+    public String editCategory(@RequestParam long categoryId, @RequestParam String categoryName,@RequestParam String categoryDescription, Model model) {
+        Optional <Category> category = categoryService.findById(categoryId);
+        if (category.isPresent()) {
+            Category newCategory = category.get();
+            newCategory.setName(categoryName);
+            newCategory.setDescription(categoryDescription);
+            categoryService.save(newCategory);
+            return "redirect:/categories";
+        }else {
+            return "/error/error";
+        }
+    }
+
 }
 
 
-/*@PostMapping("/categories/delete")
-    public String deleteCategory(Model model,@RequestParam int categoryId){
-        Category category = categoryService.getCategoryById(categoryId);
-        if (category != null) {
-            categoryService.deleteCategory(categoryId);
-        } else {
-            return "error";
-        }
-        return "redirect:/categories";
-    }*//*
-
-
-    @PostMapping("/categories/delete")
-    public String deleteCategory(@RequestParam int categoryId) {
-        categoryService.deleteCategory(categoryId);
-        return "redirect:/categories";
-    }
-    @GetMapping("/categories/delete")
-    public String deleteCategory(@RequestParam int categoryId, Model model) {
-        categoryService.deleteCategory(categoryId);
-        return "redirect:/categories";
-    }
+/*
 
     @GetMapping("/categories/{id}")
     public String showProductsEachCategory(Model model, @PathVariable int id) {
@@ -104,23 +107,6 @@ public class CategoryController {
     model.addAttribute("title", "Lista de Productos");
     return "products_list";
     }
-
-    @GetMapping("/categories/edit")
-    public String editCategory(@RequestParam int categoryId, Model model) {
-        Category category = categoryService.getCategoryById(categoryId);
-        model.addAttribute("category", category);
-        return "editCategory";
-    }
-
-    @PostMapping("/categories/edit")
-    public String editCategory(@RequestParam int categoryId, @RequestParam String categoryName, Model model) {
-        Category category = categoryService.getCategoryById(categoryId);
-        category.setName(categoryName);
-        categoryService.updateCategory(category);
-        return "redirect:/categories";
-    }
-
-
 
 }
 */
