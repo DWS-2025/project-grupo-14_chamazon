@@ -1,19 +1,17 @@
-/*
+
 package es.urjc.chamazon.services;
 
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.ShoppingCar;
+import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.repositories.ShoppingCarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Optional;
 
 
 @Service
@@ -22,167 +20,155 @@ public class ShoppingCarService {
     @Autowired
     private ShoppingCarRepository shoppingCarRepository;
 
-    private final ProductService productService;
-    private ConcurrentHashMap<Integer, List<ShoppingCar>> shoppingCars = new ConcurrentHashMap<>();
+    private ShoppingCar shoppingCar;
+    private User user;
 
-    public ShoppingCarService(ProductService productService) {
-        this.productService = productService;
-    }
+    //UTILS//
 
-    //TODO
-    public ShoppingCar getDatedShoppingCarByIdUser(int idUser, DateTimeFormatter dateSold) {
-        return null;
-    }
-
-    public List<ShoppingCar> getShoppingCarListByUser(int idUser) {
-        List<ShoppingCar> sc = shoppingCars.get(idUser);
-        if (sc == null) {
-            this.addNewSoppingCarToUser(idUser);
-            return shoppingCars.get(idUser);
-        }else {
-            return sc;
+        private ShoppingCar clSC(){
+            shoppingCar = new ShoppingCar();
+            return shoppingCar;
         }
-    }
 
-    public ShoppingCar getShoppingCarById(int id) {
-        for (List<ShoppingCar> list : shoppingCars.values()) {
-            for (ShoppingCar sc : list) {
-                if (sc.getId() == id) {
-                    return sc;
-                }
-            }
+    //ALIAS FOR CRUD REPOSITORY METHODS//
+
+        public void addShoppingCar(ShoppingCar sc) {
+            shoppingCarRepository.save(sc);
         }
-        return null;
-    }
 
-    public Map<Integer, Integer> getProductsLengthMap(List<ShoppingCar> listShoppingCar) {
-        Map<Integer, Integer> lengthMap = new HashMap<>();
-        for (ShoppingCar shoppingCar : listShoppingCar) {
-            if (shoppingCar.getProducts() != null) {
-                lengthMap.put(shoppingCar.getId(), shoppingCar.getProducts().size());
-            }
+        public ShoppingCar getShoppingCarById(Long id) {
+            Optional<ShoppingCar> scOptional = shoppingCarRepository.findById(id);
+            return scOptional.orElse(null);
         }
-        return lengthMap;
-    }
 
-    //Create a new ShoppingCar for the user. If a list does not exist for that user, it creates one
-    public ShoppingCar addNewSoppingCarToUser(int idUser){
-        if (!shoppingCars.containsKey(idUser)) {
-            this.addListShoppingCarToUser(idUser);
-            return this.addShoppingCarToUserList(idUser);
-        }else{
-            //If not exist ShoppingCar it creates one
-            if (shoppingCars.get(idUser).isEmpty()) {
-                return this.addShoppingCarToUserList(idUser);
+        public void updateShoppingCar(ShoppingCar sc) {
+            shoppingCarRepository.save(sc);
+        }
 
+        public void deleteShoppingCar(ShoppingCar sc) {
+            shoppingCarRepository.delete(sc);
+        }
+
+
+    //SHOPPING CAR METHODS//
+
+        //Return the shoppingCar with Date = null. If not exist create it and return
+        public ShoppingCar getActualShoppingCarByIdUser(Long idUser) {
+            if(shoppingCarRepository.existsByUser_IdAndDateSoldNull(idUser)){
+                return shoppingCarRepository.findByUser_IdAndDateSoldNull(idUser);
             }else{
-                return getActualShoppingCarByIdUser(idUser);
+                return shoppingCarRepository.save(new ShoppingCar(user));
             }
-        }
-    }
 
-    //Return the shoppingCar with Date = null. If not exist create it and return
-    public ShoppingCar getActualShoppingCarByIdUser(int idUser) {
-        List<ShoppingCar> listSC = shoppingCars.get(idUser);
-        if (!listSC.isEmpty()) {
-            for (ShoppingCar spc : listSC) {
-                if (spc.getDateSold() == null){
-                    return spc;
-                }
+        }
+
+        //Return the ended ShoppingCar Purchase
+        //To Check
+        public ShoppingCar endPurchaseByIdUser(Long idUser) {
+            ShoppingCar sc = getActualShoppingCarByIdUser(idUser);
+            return this.endPurchaseBySC(sc);
+        }
+
+        public ShoppingCar endPurchaseById(Long idSC) {
+            ShoppingCar sc = getShoppingCarById(idSC);
+            return this.endPurchaseBySC(sc);
+        }
+
+        public ShoppingCar endPurchaseBySC(ShoppingCar sc) {
+
+            if (!sc.getProductList().isEmpty()) {
+                sc.setDateSold(LocalDateTime.now());
+                shoppingCarRepository.save(sc);
             }
-            return this.addShoppingCarToUserList(idUser);
-        }else{
-            return this.addShoppingCarToUserList(idUser);
-        }
-    }
-
-    //Return the ended ShoppingCar Purchase
-    //To Check
-    public ShoppingCar endPurchaseByIdUser(int idUser) {
-        ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-        return this.endPurchaseBySC(sc);
-    }
-    public ShoppingCar endPurchaseById(int idSC) {
-        ShoppingCar sc = this.getShoppingCarById(idSC);
-        return this.endPurchaseBySC(sc);
-    }
-    public ShoppingCar endPurchaseBySC(ShoppingCar sc) {
-        if (sc.getDateSold() == null) {
-            sc.setDateSold(LocalDateTime.now());
-            this.addNewSoppingCarToUser(sc.getIdUser());
             return sc;
         }
-        return sc;
-    }
 
 
-    //Delete Actual ShoppingCar and return it
-    public ShoppingCar deleteActualShoppingCarByIdUser(int idUser) {
-        ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-        this.shoppingCars.get(idUser).remove(sc);
-        return sc;
-    }
-
-    public ShoppingCar addProductToUserShoppingCar(int idProduct, int idUser) {
-        ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-        sc.getProducts().add(idProduct);
-        return sc;
-    }
-
-
-    public ShoppingCar removeProductsFromShoppingCar(int idProduct, int idUser, boolean dellAll) {
-        ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-        if (sc.getProducts().contains(idProduct)) {
-
-            if (sc.getProducts().size() < 2) {
-                sc.getProducts().clear();
-            }else{
-                if (dellAll) {
-                    sc.getProducts().removeIf(p -> p == idProduct);
-                }else{
-                    sc.getProducts().remove(Integer.valueOf(idProduct));
-
-                }
-            }
-
+        //Delete Actual ShoppingCar and return it
+        public ShoppingCar deleteActualShoppingCarByIdUser(Long idUser) {
+            ShoppingCar sc = getActualShoppingCarByIdUser(idUser);
+            shoppingCarRepository.deleteById(sc.getId());
             return sc;
-
         }
-        return sc;
-    }
 
-    public List<Product> getProductListFromActualShoppingCar(int idUser) {
-        ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-        return getProductListFromidList(sc.getProducts());
-    }
+        public ShoppingCar addProductToUserShoppingCar(Long idProduct, Long idUser) {
+            ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
+            /*
+            Product product = productService.gtProductById(idProduct);
+            if (product != null) {
+                sc.getProductList().add(product);
+                shoppingCarRepository.update(sc);
+            }
+            */
+            return sc;
+        }
 
-    public List<Product> getProductListByIdShoppingCar(int idSC) {
-        ShoppingCar sc = this.getShoppingCarById(idSC);
-        return getProductListFromidList(sc.getProducts());
-    }
+
+        public ShoppingCar removeProductsFromShoppingCar(Long idProduct, Long idUser, boolean dellAll) {
+            ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
+            /*
+            Product product = productService.gtProductById(idProduct);
+            if (product != null) {
+                sc.getProductList().remove(product);
+                shoppingCarRepository.update(sc);
+            }
+            */
+            return sc;
+        }
+
+
+    //SHOPPING CAR LIST METHODS//
+
+        public List<ShoppingCar> getShoppingCarListByUser(Long idUser) {
+            //ToCheck
+            List<ShoppingCar> shoppingCarList = new ArrayList<>();
+            Optional<List<ShoppingCar>> scOptional = shoppingCarRepository.findByUser_Id(idUser);
+            if (scOptional.isPresent()) {
+                shoppingCarList = scOptional.get();
+            }
+            return shoppingCarList;
+        }
+
+        public List<Product> getProductListFromActualShoppingCar(Long idUser) {
+            ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
+            return getProductListFromSC(sc);
+        }
+
+        public List<Product> getProductListByIdShoppingCar(Long idSC) {
+            ShoppingCar sc = this.getShoppingCarById(idSC);
+            return getProductListFromSC(sc);
+        }
+
+        public List<Product> getProductListFromSC(ShoppingCar sc) {
+            return sc.getProductList();
+        }
+
+
+
+    //DEPRECATED Methods / Delete on future
 
     //Create a new List shoppingCar for idUser
-    private List<ShoppingCar> addListShoppingCarToUser(int idUser) {
+/*    private List<ShoppingCar> addListShoppingCarToUser(int idUser) {
         List<ShoppingCar> shoppingCarList = new ArrayList<>();
         shoppingCars.put(idUser, shoppingCarList);
         return shoppingCarList;
-    }
+    }*/
 
     //Create a new shoppingCar for idUser
-    private ShoppingCar addShoppingCarToUserList(int idUser) {
-        ShoppingCar sc = new ShoppingCar();
+/*    private ShoppingCar addShoppingCarToUser(int idUser) {
+
         sc.setIdUser(idUser);
         shoppingCars.get(idUser).add(sc);
 
-*/
-/*        List<ShoppingCar> newList = shoppingCars.get(idUser);
+
+        List<ShoppingCar> newList = shoppingCars.get(idUser);
         newList.add(sc);
-        shoppingCars.put(idUser,newList);*//*
+        shoppingCars.put(idUser,newList);
 
         return sc;
-    }
+    }*/
 
-    public List<Product> getProductListFromidList(List<Integer> idProductList) {
+/*    public List<Product> getProductListFromidList(List<Integer> idProductList) {
         List<Product> productList = new ArrayList<>();
         if (!idProductList.isEmpty()) {
             for (Integer idP : idProductList) {
@@ -191,6 +177,6 @@ public class ShoppingCarService {
             return productList;
         }
         return productList;
-    }
+    }*/
 }
-*/
+
