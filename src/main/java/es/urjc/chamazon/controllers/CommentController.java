@@ -17,13 +17,13 @@ public class CommentController {
     @GetMapping
     public String getAllComments(Model model) {
         model.addAttribute("comments", commentService.findAll());
-        return "comment/comment";
+        return "comment/addNewComment";
     }
 
     @GetMapping("/{id}")
     public String getCommentById(@PathVariable Long id, Model model) {
         model.addAttribute("comment", commentService.findById(id).orElse(null));
-        return "comment/comment";
+        return "comment/addNewComment";
     }
 
     @PostMapping
