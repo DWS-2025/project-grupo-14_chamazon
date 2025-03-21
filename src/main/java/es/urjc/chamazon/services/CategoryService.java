@@ -26,10 +26,6 @@ public class CategoryService {
         return categoryRepository.findById(categoryId);
     }
 
-    public Optional<Category> findByName(String categoryName) {
-        return categoryRepository.findByName(categoryName);
-    }
-
     public Category save(Category category) {
         return categoryRepository.save(category);
     }
@@ -37,6 +33,7 @@ public class CategoryService {
     public void deleteById(Long categoryId) {
         categoryRepository.deleteById(categoryId);
     }
+
 
 
 
