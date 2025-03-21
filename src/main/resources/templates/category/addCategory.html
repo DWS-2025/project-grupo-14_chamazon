@@ -5,16 +5,20 @@
 
 <div class="container my-5">
     <div class="d-flex justify-content mt-3">
-        <a class="btn btn-primary" href="/categories" role="button">VOLVER</a>
+        <a class="btn btn-primary" href="/category/categories" role="button">VOLVER</a>
     </div>
     <h1 class="mb-4 text-center">Añadir Nueva Categoría</h1>
     <div class="card shadow p-4">
         <form action="/categories/add" method="post">
             <div class="mb-3">
-                <label for="categoryName" class="form-label">Nombre:</label>
-                <input type="text" id="categoryName" name="categoryName" class="form-control" required>
+                <label for="name" class="form-label">Nombre:</label>
+                <input type="text" id="name" name="name" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-success w-100">Añadir</button>
+            <div class="mb-3">
+                <label for="description" class="form-label">Descripción de la categoría::</label>
+                <input type="text" id="description" name="description" class="form-control" required>
+            </div>
+            <input type="submit" value="Añadir" class="btn btn-success w-100">
         </form>
     </div>
 </div>
