@@ -41,15 +41,13 @@ public class ProductController {
     @Autowired
     private CategoryService categoryService;
 
-    @Autowired
+    /*@Autowired
     private UserService userService;
 
     @Autowired
     private ShoppingCarService shoppingCarService;
-
-    @Autowired
-    private ImageService imageService;
-
+*/
+   
     @GetMapping("/products")
     public String products(Model model) {
         model.addAttribute("products", productService.findAllProducts());
@@ -61,7 +59,7 @@ public class ProductController {
         Optional<Product> product = productService.findById(id);
         if (product.isPresent()) {
             model.addAttribute("product", product.get());
-            return "product_detail";
+            return "product/product_detail";
         } else {
             return "redirect:/products";
         }

@@ -2,6 +2,7 @@ package es.urjc.chamazon.models;
 
 import java.util.List;
 import java.sql.Blob;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -14,13 +15,16 @@ public class Product {
     private String name;
     private Float price;
     private String description;
-    private Blob imageFile;
     private Float rating;
-    
+
+    @Lob
+    private Blob imageFile;
+
+
     @ManyToOne
     private User user;
 
-    @ManyToMany(mappedBy = "productList")
+    @ManyToMany()
     private List<Category> categoryList;
 
     @ManyToMany
