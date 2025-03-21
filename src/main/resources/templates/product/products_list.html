@@ -9,7 +9,7 @@
                 <select name="userId" class="form-select" onchange="this.form.submit()">
                     <option value="">Seleccionar Usuario</option>
                     {{#users}}
-                    <option value="{{id}}" >{{userName}}</option>
+                    <option value="{{id}}">{{userName}}</option>
                     {{/users}}
                 </select>
             </form>
@@ -18,63 +18,63 @@
 </div>
 
 <div class="container py-5">
-  <div class="row">
-      {{#productsEachCategory}}
-      <div class="col-md-4 mb-4">
-          <div class="card h-100">
-              {{#image}}
-              <img src="/products/{{id}}/image" class="card-img-top img-thumbnail" alt="{{name}}" style="height: 200px; object-fit: contain;">
-              {{/image}}
-              
-              <div class="card-body">
-                  <h5 class="card-title">{{name}}</h5>
-                  <p class="card-text">{{description}}</p>
-                  <h6 class="card-subtitle mb-2 text-primary">{{price}}</h6>
-                  <h7 class="card-subtitle mb-2 text-muted">{{category.name}}</h7>
-              </div>
-              
-              <div class="card-footer bg-white border-top-0">
-                  <div class="d-flex justify-content-between">
-                      <form action="/products/{{id}}/edit" method="GET">
-                          <button type="submit" class="btn btn-outline-secondary btn-sm">
-                              <i class="fas fa-edit"></i> Editar
-                          </button>
-                      </form>
-                      
-                      <form action="/products/{{id}}/delete" method="POST" class="ms-2">
-                          <button type="submit" class="btn btn-outline-danger btn-sm">
-                              <i class="fas fa-trash"></i> Eliminar
-                          </button>
-                      </form>
+    <div class="row">
+        {{#products}}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {{#imageFile}}
+                <img src="/products/{{id}}/image" class="card-img-top img-thumbnail" alt="{{name}}" style="height: 200px; object-fit: contain;">
+                {{/imageFile}}
 
-                      {{#selectedUserId}}
-                      <form action="/products/{{id}}/addToCard/{{selectedUserId}}" method="POST" class="ms-2">
-                        <input type="hidden" name="userId" value="{{selectedUserId}}">  
-                        <button type="submit" class="btn btn-outline-success btn-sm">
-                              <i class="fas fa-cart-plus"></i> Añadir al carrito
-                          </button>
-                      </form>
-                      {{/selectedUserId}}
-                      
+                <div class="card-body">
+                    <h5 class="card-title">{{name}}</h5>
+                    <p class="card-text">{{description}}</p>
+                    <h6 class="card-subtitle mb-2 text-primary">{{price}}</h6>
+                    {{#category}}
+                    <p class="card-subtitle mb-2 text-muted">{{name}}</p>
+                    {{/category}}
+                </div>
+
+                <div class="card-footer bg-white border-top-0">
+                    <div class="d-flex justify-content-between">
+                        <form action="/products/{{id}}/edit" method="GET">
+                            <button type="submit" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                        </form>
+
+                        <form action="/products/{{id}}/delete" method="POST" class="ms-2">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </form>
+
+                        {{#selectedUserId}}
+                        <form action="/products/{{id}}/addToCard/{{selectedUserId}}" method="POST" class="ms-2">
+                            <input type="hidden" name="userId" value="{{selectedUserId}}">
+                            <button type="submit" class="btn btn-outline-success btn-sm">
+                                <i class="fas fa-cart-plus"></i> Añadir al carrito
+                            </button>
+                        </form>
+                        {{/selectedUserId}}
                     </div>
-              </div>
-          </div>
-      </div>
-      {{/productsEachCategory}}
-  </div>
+                </div>
+            </div>
+        </div>
+        {{/products}}
+    </div>
 
-  {{^productsEachCategory}}
-  <div class="alert alert-info text-center" role="alert">
-      <i class="fas fa-info-circle"></i> No hay productos disponibles
-  </div>
-  {{/productsEachCategory}}
+    {{^products}}
+    <div class="alert alert-info text-center" role="alert">
+        <i class="fas fa-info-circle"></i> No hay productos disponibles
+    </div>
+    {{/products}}
 
-  <div class="text-center mt-4">
-      <a href="/products/add?selectedCategoryId={{selectedCategoryId}}&selectedCategoryName={{selectedCategoryName}}" 
-         class="btn btn-success">
-          <i class="fas fa-plus"></i> Añadir Producto
-      </a>
-  </div>
+    <div class="text-center mt-4">
+        <a href="/products/add" class="btn btn-success">
+            <i class="fas fa-plus"></i> Añadir Producto
+        </a>
+    </div>
 </div>
 
 {{>footer}}

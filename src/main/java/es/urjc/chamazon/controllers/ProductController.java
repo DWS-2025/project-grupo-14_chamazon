@@ -51,7 +51,7 @@ public class ProductController {
     @GetMapping("/products")
     public String products(Model model) {
         model.addAttribute("products", productService.findAllProducts());
-        return "products_list";
+        return "product/products_list";
     }
 
     @GetMapping("/products/{id}")
@@ -83,7 +83,7 @@ public class ProductController {
     public String addProduct(Model model) {
         model.addAttribute("product", new Product());
         model.addAttribute("categories", categoryService.findAll());
-        return "addProduct";
+        return "product/addProduct";
     }
 
     @PostMapping("/products/add")
@@ -117,7 +117,8 @@ public class ProductController {
         if (product.isPresent()) {
             model.addAttribute("product", product);
             model.addAttribute("categories", categoryService.findAll());
-            return "editProduct";
+
+            return "product/editProduct";
         } else {
             return "redirect:/products";
         }
