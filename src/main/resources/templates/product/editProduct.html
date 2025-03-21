@@ -27,6 +27,7 @@
                    class="form-control" 
                    id="price" 
                    name="price" 
+                   value="{{product.price}}"
                    step="0.01" 
                    min="0.01" 
                    pattern="^\d+(\.\d{1,2})?$"
@@ -43,25 +44,25 @@
             <select class="form-select" name="categoryId" id="categoryId" required>
               <option value="">Selecciona una categoría</option>
               {{#categories}}
-              <option value="{{id}}">{{name}}</option>
+              <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
               {{/categories}}
             </select>
           </div>
 
         <div class="mb-3">
-          <label for="imageFile" class="form-label">Imagen:</label>
-          <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*">
+          <label for="imageFileParameter" class="form-label">Imagen:</label>
+          <input type="file" class="form-control" id="imageFileParameter" name="imageFileParameter" accept="image/*">
           <small class="form-text text-muted">Dejar en blanco para mantener la imagen actual.</small>
         </div>
 
-        {{#product.image}}
+        {{#product.imageFile}}
         <div class="mb-3">
           <label class="form-label">Imagen actual:</label>
           <div class="text-center border p-2">
-            <img src="/products/{{id}}/image" class="card-img-top img-thumbnail"  style="height: 200px; object-fit: contain;">
+            <img src="/products/{{product.id}}/image" class="card-img-top img-thumbnail" style="height: 200px; object-fit: contain;">
           </div>
         </div>
-        {{/product.image}}
+        {{/product.imageFile}}
 
         <div class="text-center">
           <button type="submit" class="btn btn-primary">

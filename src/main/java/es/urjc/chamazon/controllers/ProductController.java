@@ -85,17 +85,17 @@ public class ProductController {
     }
 
     @PostMapping("/products/add")
-    public String addProduct(Model model,
-            @ModelAttribute Product product,
-            @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
-        productService.save(product, imageFile);
+    public String addProduct(Model model, @ModelAttribute Product product,
+            @RequestParam("imageFileParameter") MultipartFile imageFileParameter) throws IOException {
+        productService.save(product, imageFileParameter);
         return "redirect:/products";
     }
 
     @GetMapping("/products/{id}/edit")
     public String updateProduct(@PathVariable long id, Model model) {
-        Optional<Product> product = productService.findById(id);
-        if (product.isPresent()) {
+        Optional<Product> optionalProduct = productService.findById(id);
+        if (optionalProduct.isPresent()) { // using optional and get product's information
+            Product product = optionalProduct.get();
             model.addAttribute("product", product);
             model.addAttribute("categories", categoryService.findAll());
 
@@ -107,14 +107,26 @@ public class ProductController {
 
     @PostMapping("products/{id}/edit")
     public String updateProduct(@PathVariable long id, Model model, @ModelAttribute("product") Product newProduct,
-            @RequestParam("imageFile") MultipartFile imageFile)
+            @RequestParam("imageFileParameter") MultipartFile imageFileParameter)
             throws IOException {
-        // first delete the product i want to emove
-        productService.deleteById(id);
-
+        // Get existing product at the exact moment by editing
+        Optional<Product> existProductActually = productService.findById(id);
+        if (!existProductActually.isPresent()) {
+            return "redirect:/products";
+        }
+        Product existProduct = existProductActually.get();
         // then save the new product with corresponding id and elements.
-        newProduct.setId(id);
-        productService.save(newProduct, imageFile);
+        existProduct.setName(newProduct.getName());
+        existProduct.setDescription(newProduct.getDescription());
+        existProduct.setPrice(newProduct.getPrice());
+        
+        //make sure the image works properly depending on which option did they choose
+        if (!imageFileParameter.isEmpty()) {
+            productService.save(existProduct, imageFileParameter);
+        } else {
+        // keep the existing image and just save the updated product
+            productService.save(existProduct);
+        }
         return "redirect:/products";
     }
 
