@@ -26,12 +26,16 @@ public class CategoryController {
 
     //private UserService userService;
 
+    @GetMapping("/")
+    public String home() {
+        return "main";
+    }
 
     @GetMapping("/categories")
     public String getAllCategories(Model model) {
         Collection <Category> categories = categoryService.findAll();
         model.addAttribute("categories", categories);
-        return "categories";
+        return "/category/categories";
 
     }
 
@@ -117,9 +121,6 @@ public class CategoryController {
     }
 
 
-    @GetMapping("/")
-    public String home() {
-        return "main";
-    }
+
 }
 */
