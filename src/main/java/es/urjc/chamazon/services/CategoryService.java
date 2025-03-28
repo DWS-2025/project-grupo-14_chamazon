@@ -4,6 +4,7 @@ package es.urjc.chamazon.services;
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.repositories.CategoryRepository;
+import es.urjc.chamazon.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,11 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public Collection<Category> findAll() {
+    @Autowired
+    private ProductService productService;
+
+
+    public List<Category> findAll() {
         return categoryRepository.findAll();
     }
 
@@ -26,16 +31,40 @@ public class CategoryService {
         return categoryRepository.findById(categoryId);
     }
 
-    public Category save(Category category) {
-        return categoryRepository.save(category);
+    public void save(Category category) {
+         categoryRepository.save(category);
     }
 
     public void deleteById(Long categoryId) {
-        categoryRepository.deleteById(categoryId);
+        Optional<Category> category = categoryRepository.findById(categoryId);
+
+        for (Product product : new ArrayList<>(category.get().getProductList())) {
+            product.getCategoryList().remove(category);
+            productService.save(product); // Actualizamos el producto
+        }
+
+        category.get().getProductList().clear();
+        categoryRepository.save(category.get()); // Guardamos los cambios
+
+        categoryRepository.delete(category.get());
     }
 
+    public Object getProductsByCategoryId(Long id) {
+        return categoryRepository.findProductsByCategoryId(id);
+    }
 
+    public void addProductToCategory(Long categoryId, Long productId) {
+        Optional <Category> categoryOpt = categoryRepository.findById(categoryId);
+        Optional <Product> productOpt = productService.findById(productId);
 
+        if (categoryOpt.isPresent() && productOpt.isPresent()) {
+            categoryOpt.get().getProductList().add(productOpt.get());
+            productOpt.get().getCategoryList().add(categoryOpt.get());
+            categoryRepository.save(categoryOpt.get());
+            productService.save(productOpt.get());
+        }
+    }
+    
 
     /*
     public void addCategory(String categoryName) {

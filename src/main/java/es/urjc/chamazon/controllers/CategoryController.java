@@ -2,8 +2,6 @@
 package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.models.Category;
-import es.urjc.chamazon.models.Product;
-import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.CategoryService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -31,7 +29,7 @@ public class CategoryController {
 
     @GetMapping("/categories")
     public String getAllCategories(Model model) {
-        Collection <Category> categories = categoryService.findAll();
+        List<Category> categories = categoryService.findAll();
         model.addAttribute("categories", categories);
         return "/category/categories";
 
@@ -71,7 +69,7 @@ public class CategoryController {
     }
 
     @PostMapping("/categories/edit")
-    public String editCategory(@RequestParam long categoryId, @RequestParam String categoryName,@RequestParam String categoryDescription, Model model) {
+    public String editCategory(@RequestParam Long categoryId, @RequestParam String categoryName,@RequestParam String categoryDescription, Model model) {
         Optional <Category> category = categoryService.findById(categoryId);
         if (category.isPresent()) {
             Category newCategory = category.get();
@@ -84,29 +82,15 @@ public class CategoryController {
         }
     }
 
-}
-
-
-/*
-
-    @GetMapping("/categories/{id}")
-    public String showProductsEachCategory(Model model, @PathVariable int id) {
-    Collection<Product> productsEachCategory = categoryService.getProductsFromCategory(id);
-    Category category = categoryService.getCategoryById(id);
-    Collection<User> users = userService.getAllUsers();
-
-    if (category == null) {
-        return "redirect:/categories";
+    @GetMapping("/categories/products")
+    public String getProductsByCategory(@RequestParam Long categoryId, Model model) {
+        Optional<Category> category = categoryService.findById(categoryId);
+        if (category.isPresent()) {
+            model.addAttribute("category", category.get());
+            model.addAttribute("products", categoryService.getProductsByCategoryId(categoryId));
+            return "product/products_list";
+        } else {
+            return "error/error";
+        }
     }
-
-    model.addAttribute("selectedUserId", -1);
-    model.addAttribute("users", users);
-    model.addAttribute("productsEachCategory", productsEachCategory);
-    model.addAttribute("selectedCategoryId", id);
-    model.addAttribute("selectedCategoryName", category.getName());
-    model.addAttribute("title", "Lista de Productos");
-    return "products_list";
-    }
-
 }
-*/
