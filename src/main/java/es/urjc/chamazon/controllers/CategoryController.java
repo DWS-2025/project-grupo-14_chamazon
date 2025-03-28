@@ -69,13 +69,10 @@ public class CategoryController {
     }
 
     @PostMapping("/categories/edit")
-    public String editCategory(@RequestParam Long categoryId, @RequestParam String categoryName,@RequestParam String categoryDescription, Model model) {
+    public String editCategory(@RequestParam Long categoryId, @RequestParam String categoryName, @RequestParam String categoryDescription, Model model) {
         Optional <Category> category = categoryService.findById(categoryId);
         if (category.isPresent()) {
-            Category newCategory = category.get();
-            newCategory.setName(categoryName);
-            newCategory.setDescription(categoryDescription);
-            categoryService.save(newCategory);
+            categoryService.editCategory(categoryId, categoryName, categoryDescription);
             return "redirect:/categories";
         }else {
             return "/error/error";
