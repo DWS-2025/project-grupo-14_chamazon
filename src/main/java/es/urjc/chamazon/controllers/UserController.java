@@ -3,6 +3,7 @@ package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.UserService;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,23 +13,37 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class UserController {
+
     @Autowired
     private UserService userService;
 
     @GetMapping("/users")
     public String users(Model model) {
-        Collection<User> users = userService.findAll();
+        List<User> users = userService.findAll();
         model.addAttribute("users", users);
-       return "users";
+       return "/user/users";
     }
 
+    @GetMapping("/users/add")
+    public String addUser(Model model) {
+        List<User> users = userService.findAll();
+        model.addAttribute("user", users.iterator().next());
+        return "/user/addUser";
+    }
 
-    @PostMapping("user/delete")
-    public String deleteUser(@RequestParam long id) {
-        userService.deleteById(id);
+    @PostMapping("/users/add")
+    public String addUser(User newUser, Model model) {
+        System.out.println(newUser.getUserName());
+        System.out.println(newUser.getFirstName());
+        System.out.println(newUser.getId());
+        System.out.println(newUser.getEmail());
+
+        userService.save(newUser);
         return "redirect:/users";
     }
 
@@ -37,37 +52,33 @@ public class UserController {
         userService.deleteById(id);
         return "redirect:/users";
     }
-    /*
-    @GetMapping("/users/add")
-    public String addUser(Model model) {
-        Collection<User> users = userService.getAllUsers();
-        model.addAttribute("user", users.iterator().next());
-        return "addUser";
-    }
 
-    @PostMapping("/users/add")
-    public String addUser(@RequestParam String userName, @RequestParam String userEmail, @RequestParam String password, @RequestParam String address, @RequestParam String phone) {
-        User newUser = new User(userName, userEmail, password, address, phone);
-        userService.addUser(newUser);
+    @PostMapping("user/delete")
+    public String deleteUser(@RequestParam long id) {
+        userService.deleteById(id);
         return "redirect:/users";
     }
 
     @GetMapping("users/edit")
-    public String editUser(@RequestParam int id, Model model) {
-        User user = userService.getUserById(id);
-        model.addAttribute("user", user);
-        return "editUser";}
+    public String editUser(@RequestParam Long id, Model model) {
+        Optional<User> user = userService.findById(id);
+        if (user.isPresent()) {
+            model.addAttribute("user", user.get());
+            return "user/editUser";
+        }else{
+            return "error/error";
+        }
+    }
 
     @PostMapping("/users/edit")
-    public String editUser(@ModelAttribute("user") User user, Model model) {
-        User existingUser = userService.getUserById(user.getId());
-        existingUser.setUserName(user.getUserName());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setAddress(user.getAddress() != null ? user.getAddress() : "");
-        existingUser.setPassword(user.getPassword());
-        existingUser.setPhone(user.getPhone() != null ? user.getPhone() : "");
-        userService.updateUser(existingUser);
-        return "redirect:/users";
-    }*/
+    public String editUser(@RequestParam Long id, @RequestParam String userName, @RequestParam String password, @RequestParam String email, @RequestParam(required = false) String phone, @RequestParam(required = false) String address,  Model model) {
+        Optional<User> existingUser = userService.findById(id);
+        if (existingUser.isPresent()) {
+            userService.updateUser(id, userName, password, email, phone, address);
+            return "redirect:/users";
+        }else {
+            return "error/error";
+        }
+    }
 }
 
