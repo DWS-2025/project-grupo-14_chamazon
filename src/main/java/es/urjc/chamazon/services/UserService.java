@@ -7,6 +7,7 @@ import es.urjc.chamazon.repositories.ShoppingCarRepository;
 import es.urjc.chamazon.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
 import java.util.List;
@@ -40,6 +41,20 @@ public class UserService {
         userRepository.save(user);
         //falta añadir la parte del carrito
     }
+    public void updateUser(Long id, String userName, String password, String email, String phone, String address) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            User existingUser = userOptional.get();
+            existingUser.setUserName(userName);
+            existingUser.setEmail(email);
+            existingUser.setAddress(address != null ? address : "");
+            existingUser.setPassword(password);
+            existingUser.setPhone(phone != null ? phone : "");
+            userRepository.save(existingUser);
+        }
+    }
+
+
 
 
     /*

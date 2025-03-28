@@ -134,7 +134,7 @@ public class ProductController {
     public String deleteProduct(@PathVariable long id) {
         Optional<Product> product = productService.findById(id);
         if (!product.isPresent()) {
-            return "redirect:/products";
+            return "redirect:/categories";
         }
         productService.deleteById(id);
         return "redirect:/products";

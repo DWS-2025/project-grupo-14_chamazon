@@ -37,16 +37,18 @@ public class CategoryService {
 
     public void deleteById(Long categoryId) {
         Optional<Category> category = categoryRepository.findById(categoryId);
+        if (category.isPresent()){
+            for (Product product : new ArrayList<>(category.get().getProductList())) {
+                product.getCategoryList().remove(category.get());
+                productService.save(product); // Actualizamos el producto
+            }
 
-        for (Product product : new ArrayList<>(category.get().getProductList())) {
-            product.getCategoryList().remove(category);
-            productService.save(product); // Actualizamos el producto
+            category.get().getProductList().clear();
+            categoryRepository.save(category.get()); // Guardamos los cambios
+
+            categoryRepository.delete(category.get());
         }
 
-        category.get().getProductList().clear();
-        categoryRepository.save(category.get()); // Guardamos los cambios
-
-        categoryRepository.delete(category.get());
     }
 
     public Object getProductsByCategoryId(Long id) {
@@ -64,7 +66,21 @@ public class CategoryService {
             productService.save(productOpt.get());
         }
     }
-    
+
+    public void removeProductFromCategory(Long categoryId, Long productId) {
+        Optional <Category> categoryOpt = categoryRepository.findById(categoryId);
+    }
+
+    public void editCategory(Long categoryId, String categoryName, String categoryDescription) {
+        Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
+
+        if (categoryOptional.isPresent()) {
+            Category existingCategory = categoryOptional.get();
+            existingCategory.setName(categoryName);
+            existingCategory.setDescription(categoryDescription);
+            categoryRepository.save(existingCategory);
+        }
+    }
 
     /*
     public void addCategory(String categoryName) {

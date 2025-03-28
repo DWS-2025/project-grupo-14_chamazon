@@ -3,6 +3,7 @@ package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.UserService;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class UserController {
@@ -57,27 +59,26 @@ public class UserController {
         return "redirect:/users";
     }
 
-
-
-    /*
-
-
     @GetMapping("users/edit")
-    public String editUser(@RequestParam int id, Model model) {
-        User user = userService.getUserById(id);
-        model.addAttribute("user", user);
-        return "editUser";}
+    public String editUser(@RequestParam Long id, Model model) {
+        Optional<User> user = userService.findById(id);
+        if (user.isPresent()) {
+            model.addAttribute("user", user.get());
+            return "user/editUser";
+        }else{
+            return "error/error";
+        }
+    }
 
     @PostMapping("/users/edit")
-    public String editUser(@ModelAttribute("user") User user, Model model) {
-        User existingUser = userService.getUserById(user.getId());
-        existingUser.setUserName(user.getUserName());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setAddress(user.getAddress() != null ? user.getAddress() : "");
-        existingUser.setPassword(user.getPassword());
-        existingUser.setPhone(user.getPhone() != null ? user.getPhone() : "");
-        userService.updateUser(existingUser);
-        return "redirect:/users";
-    }*/
+    public String editUser(@RequestParam Long id, @RequestParam String userName, @RequestParam String password, @RequestParam String email, @RequestParam(required = false) String phone, @RequestParam(required = false) String address,  Model model) {
+        Optional<User> existingUser = userService.findById(id);
+        if (existingUser.isPresent()) {
+            userService.updateUser(id, userName, password, email, phone, address);
+            return "redirect:/users";
+        }else {
+            return "error/error";
+        }
+    }
 }
 
