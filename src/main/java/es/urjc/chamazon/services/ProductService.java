@@ -33,6 +33,10 @@ public class ProductService {
         return productRepository.findByName(name);
     }
 
+    public Optional<Product> findByRating(Float rating) {
+        return productRepository.findByRating(rating);
+    }
+
     public void save(Product product) {
         productRepository.save(product);
     }
