@@ -1,81 +1,94 @@
-/*
 package es.urjc.chamazon.models;
 
-import es.urjc.chamazon.repositories.ShoppingCarRepository;
+import com.mysql.cj.jdbc.Blob;
+import es.urjc.chamazon.repositories.CategoryRepository;
 import es.urjc.chamazon.services.CategoryService;
 import es.urjc.chamazon.services.ProductService;
-import es.urjc.chamazon.services.ShoppingCarService;
 import es.urjc.chamazon.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import javax.sql.rowset.serial.SerialBlob;
+import java.sql.SQLException;
 
-@Controller
+@Component
 public class ChamazonBDD implements CommandLineRunner {
 
-    @Autowired
-    private ShoppingCarRepository shoppingCarRepository;
-
-    //private final ShoppingCarService shoppingCarService;
-    private final CategoryService categoryService;
     private final ProductService productService;
+    private final CategoryService categoryService;
     private final UserService userService;
+    private final CategoryRepository categoryRepository;
 
-
-    @Override
-    public void run(String... args) throws Exception {
-
-        shoppingCarRepository.save(new ShoppingCar(1L));
-        shoppingCarRepository.save(new ShoppingCar(2L));
-
-        List<ShoppingCar> shoppingCars = shoppingCarRepository.findAll();
-        for (ShoppingCar sc : shoppingCars) {
-            System.out.println(sc.toString());
-        }
-
-        shoppingCarRepository.deleteAll();
+    public ChamazonBDD(CategoryService categoryService, UserService userService, CategoryRepository categoryRepository, ProductService productService) {
+        this.categoryService = categoryService;
+        this.userService = userService;
+        this.categoryRepository = categoryRepository;
+        this.productService = productService;
     }
 
-        public ChamazonBDD(ProductService productService, CategoryService categoryService, UserService userService,
-                            ShoppingCarService shoppingCarService) {
-            this.shoppingCarService = shoppingCarService;
-            this.categoryService = categoryService;
-            this.productService = productService;
-            this.userService = userService ;
+    @Override
+    @Transactional
+    public void run(String... args) throws SQLException {
+        Category electronics = new Category("Electronics", "Electronic devices");
+        Category clothing = new Category("Clothing", "Fashion items");
+        Category books = new Category("Books", "A collection of books");
+        Category travel = new Category("Travel", "Travel gear");
+
+        categoryService.save(electronics);
+        categoryService.save(clothing);
+        categoryService.save(books);
+        categoryService.save(travel);
+
+        Product laptop = new Product("Laptop Premium", 999.99F,
+                "High performance laptop with 16GB RAM",
+                new SerialBlob(new byte[0]), 4.5F);
+
+        Product smartphone = new Product("Smartphone X", 699.99F,
+                "Latest model with AMOLED display",
+                new SerialBlob(new byte[0]), 4.7F);
+
+        Product tshirt = new Product("Cotton T-Shirt", 19.99F,
+                "Comfortable 100% cotton t-shirt",
+                new SerialBlob(new byte[0]), 4.2F);
+
+        Product novel = new Product("Best Seller Novel", 14.99F,
+                "The most popular novel this year",
+                new SerialBlob(new byte[0]), 4.8F);
+
+        Product backpack = new Product("Travel Backpack", 49.99F,
+                "Durable backpack for travelers",
+                new SerialBlob(new byte[0]), 4.3F);
+
+        // Guardar productos
+        productService.save(laptop);
+        productService.save(smartphone);
+        productService.save(tshirt);
+        productService.save(novel);
+        productService.save(backpack);
+
+        categoryService.addProductToCategory(electronics.getId(), laptop.getId());
+        categoryService.addProductToCategory(electronics.getId(), smartphone.getId());
+        categoryService.addProductToCategory(clothing.getId(), tshirt.getId());
+        categoryService.addProductToCategory(books.getId(), novel.getId());
+        categoryService.addProductToCategory(travel.getId(), backpack.getId());
+
+        //PÑroducto en muchas categorias:
+        // Opcional: Producto en múltiples categorías
+        Product smartwatch = new Product("Smart Watch", 199.99F,
+                "Fitness tracker with notifications",
+                new SerialBlob(new byte[0]), 4.0F);
+        productService.save(smartwatch);
+        categoryService.addProductToCategory(electronics.getId(), smartwatch.getId());
+        categoryService.addProductToCategory(clothing.getId(), smartwatch.getId());
 
 
-            Category electronics = new Category("Electronics");
-            Category clothing = new Category("Clothing");
 
-            categoryService.addCategory(electronics.getName());
-            categoryService.addCategory(clothing.getName());
-
-            Product smartphone = productService.addProduct("Smartphone", "High-end smartphone", 499.99, categoryService.getCategoryByName("Electronics"), "smartphone.jpg");
-            Product tshirt = productService.addProduct("T-shirt", "Comfortable cotton t-shirt", 19.99, categoryService.getCategoryByName("Clothing"), "tshirt.jpg");
-
-            categoryService.addProductToCategory(smartphone, electronics.getId());
-            categoryService.addProductToCategory(tshirt, clothing.getId());
-
-            User user1 = new User("user1", "user1@gmail.com", "123", null, null);
-            User user2 = new User("user2", "user2@gmail.com", "123", null, null);
-
-            userService.addUser(user1);
-            userService.addUser(user2);
-
-            shoppingCarService.addProductToUserShoppingCar(1,1);
-            shoppingCarService.addProductToUserShoppingCar(1,2);
-            shoppingCarService.addProductToUserShoppingCar(1,2);
-            shoppingCarService.addProductToUserShoppingCar(1,1);
-            shoppingCarService.endPurchaseByIdUser(1);
-            shoppingCarService.addProductToUserShoppingCar(1,1);
-            shoppingCarService.addProductToUserShoppingCar(1,1);
-            shoppingCarService.addProductToUserShoppingCar(1,1);
-
-        }
+        userService.save(new User("Admin", "PepeAdmin", "Pepe", "Montero", "123", "pepe@mail.com", "098", "q"));
+        userService.save(new User("Cliente", "User2", "Maria", "Carrera ", "321", "maria@mail.com", "100", "p"));
 
 
+
+        System.out.println("Categorías creadas correctamente.");
+    }
 }
-*/
