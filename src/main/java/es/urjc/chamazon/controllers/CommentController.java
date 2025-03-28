@@ -35,13 +35,16 @@ public class CommentController {
 
 
     //Read Operations: method getAllComments(GET) to get all comments and getCommentById(GET) to get
+    /*
     @GetMapping("/comments")
     public String getAllComments(Model model) {
         List<Comment> comments = commentService.findAll();
         model.addAttribute("comments", comments);
         return "comment/comments";
     }
+    */
 
+    /*
     @GetMapping("/{id}")
     public String getCommentById(@PathVariable Long id, Model model) {
         Optional<Comment> comment = commentService.findById(id);
@@ -52,7 +55,7 @@ public class CommentController {
             return "error/error";
         }
     }
-
+    */
 
     //Update Operations: method getEditCommentPage(GET) and updateComment(POST) to update a comment
     @GetMapping("/edit/{id}")

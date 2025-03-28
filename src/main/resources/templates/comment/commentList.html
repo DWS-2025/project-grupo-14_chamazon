@@ -1,0 +1,35 @@
+{{>header}}
+</head>
+<body>
+{{>navBar}}
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between">
+        <div>
+            <select id="productSelect" class="form-select" onchange="loadComments()">
+                <option value="">Selecciona un producto</option>
+                <!-- Aquí se llenarán los productos dinámicamente -->
+            </select>
+        </div>
+        <div>
+            <a class="btn btn-primary" href="/comments/add">Añadir Comentario</a>
+        </div>
+    </div>
+
+    <div id="commentsList" class="mt-4">
+        <!-- Aquí se mostrarán los comentarios dinámicamente -->
+    </div>
+</div>
+
+<script>
+    function loadComments() {
+        const productId = document.getElementById('productSelect').value;
+        if (productId) {
+            window.location.href = `/comments/${productId}`;
+        }
+    }
+</script>
+
+{{>footer}}
+</body>
+</html>
