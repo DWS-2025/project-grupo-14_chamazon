@@ -4,6 +4,7 @@ package es.urjc.chamazon.services;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.ShoppingCar;
 import es.urjc.chamazon.models.User;
+import es.urjc.chamazon.repositories.ProductRepository;
 import es.urjc.chamazon.repositories.ShoppingCarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ public class ShoppingCarService {
 
     @Autowired
     private ShoppingCarRepository shoppingCarRepository;
+
+    @Autowired
+    private ProductService productService;
 
     private ShoppingCar shoppingCar;
     private User user;
@@ -93,26 +97,21 @@ public class ShoppingCarService {
 
         public ShoppingCar addProductToUserShoppingCar(Long idProduct, Long idUser) {
             ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-            /*
-            Product product = productService.gtProductById(idProduct);
-            if (product != null) {
-                sc.getProductList().add(product);
-                shoppingCarRepository.update(sc);
+            Optional <Product> prOpt = productService.findById(idProduct);
+            if (prOpt.isPresent()) {
+                sc.getProductList().add(prOpt.get());
+                shoppingCarRepository.save(sc);
             }
-            */
             return sc;
         }
 
-
         public ShoppingCar removeProductsFromShoppingCar(Long idProduct, Long idUser, boolean dellAll) {
             ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-            /*
-            Product product = productService.gtProductById(idProduct);
-            if (product != null) {
-                sc.getProductList().remove(product);
-                shoppingCarRepository.update(sc);
+            Optional <Product> prOpt = productService.findById(idProduct);
+            if (prOpt.isPresent()) {
+                sc.getProductList().remove(prOpt.get());
+                shoppingCarRepository.save(sc);
             }
-            */
             return sc;
         }
 
@@ -143,6 +142,9 @@ public class ShoppingCarService {
             return sc.getProductList();
         }
 
+
+
+        //public Long getShoppingCarSizeFromActualShoppingCar(Long idUser) {}
 
 
     //DEPRECATED Methods / Delete on future
