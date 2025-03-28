@@ -1,7 +1,9 @@
 package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.models.Comment;
+import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.services.CommentService;
+import es.urjc.chamazon.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +21,9 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private ProductService productService;
+
 
     //Create Operations: method addCommentForm(GET) and addComment(POST) to add a new comment
     @GetMapping("/add")
@@ -35,6 +40,21 @@ public class CommentController {
 
 
     //Read Operations: method getAllComments(GET) to get all comments and getCommentById(GET) to get
+    @GetMapping("/commentList")
+    public String getCommentList(@RequestParam(required = false) Long productId, Model model) {
+        List<Product> products = (List <Product>) productService.findAllProducts();
+        model.addAttribute("products", products);
+
+        if (productId != null) {
+            List<Comment> comments = commentService.findByProductId(productId);
+            model.addAttribute("comments", comments);
+        }
+
+        return "comment/commentList";
+    }
+
+
+
     /*
     @GetMapping("/comments")
     public String getAllComments(Model model) {
