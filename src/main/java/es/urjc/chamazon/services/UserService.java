@@ -3,11 +3,13 @@ package es.urjc.chamazon.services;
 
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.User;
+import es.urjc.chamazon.repositories.ShoppingCarRepository;
 import es.urjc.chamazon.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -15,14 +17,14 @@ import java.util.concurrent.ConcurrentMap;
 @Service
 public class UserService {
 
-    /*@Autowired
-    private ShoppingCarService shoppingCarService;*/
+    @Autowired
+    private ShoppingCarRepository shoppingCarRepository;
 
     @Autowired
     private UserRepository userRepository;
 
 
-    public Collection<User> findAll() {
+    public List<User> findAll() {
         return userRepository.findAll();
     }
 
@@ -38,6 +40,7 @@ public class UserService {
         userRepository.save(user);
         //falta añadir la parte del carrito
     }
+
 
     /*
     public void addUser(User user) {

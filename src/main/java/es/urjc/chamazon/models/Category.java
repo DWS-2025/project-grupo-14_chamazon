@@ -2,6 +2,7 @@ package es.urjc.chamazon.models;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,7 +15,7 @@ public class Category {
     private String description;
 
     @ManyToMany(mappedBy = "categoryList")
-    private List<Product> productList;
+    private List<Product> productList = new ArrayList<Product>();
 
     public Category() {
 

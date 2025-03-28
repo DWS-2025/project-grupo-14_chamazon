@@ -1,5 +1,6 @@
 package es.urjc.chamazon.models;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.sql.Blob;
 
@@ -25,7 +26,7 @@ public class Product {
     private User user;
 
     @ManyToMany()
-    private List<Category> categoryList;
+    private List<Category> categoryList = new ArrayList<Category>();
 
     @ManyToMany
     private List<ShoppingCar> shoppingCarList;
@@ -40,6 +41,13 @@ public class Product {
         this.rating = rating;
     }
 
+
+    public List<Category> getCategoryList() {
+        return categoryList;
+    }
+    public void setCategoryList(List<Category> categoryList) {
+        this.categoryList = categoryList;
+    }
 
     public Long getId() {
         return id;
