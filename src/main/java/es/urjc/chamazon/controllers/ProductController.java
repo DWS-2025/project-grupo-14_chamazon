@@ -195,16 +195,17 @@ public class ProductController {
         boolean hasFilters = categoryId != null || minPrice != null || maxPrice != null || rating != null;
 
         if (hasFilters) {
-            // Aplica los filtros específicos
+            // If filters are applied, show filtered products
             filteredProducts = productService.findByFilters(categoryId, minPrice, maxPrice, rating);
         } else {
-            // Si no hay filtros, obtén todos los productos
+            // If no filters are applied, show all products
             productService.findAllProducts();
         }
 
         // Add all necessary attributes to the model
+        List<Category> allCategories = categoryService.findAll();
         model.addAttribute("products", filteredProducts);
-        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("categories", allCategories);
         model.addAttribute("users", userService.findAll());
 
         // Preserve filter parameters in the model
