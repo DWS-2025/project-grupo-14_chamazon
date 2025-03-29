@@ -58,7 +58,7 @@ public class ProductService {
 
     public List<Product> findByFilters(Long categoryId, Float minPrice, Float maxPrice, Float rating) {
         // Apply filters
-        /*if (categoryId != null) {
+        if (categoryId != null) {
             if (minPrice != null && maxPrice != null) {
                 return productRepository.findByCategoryIdAndPriceBetween(categoryId, minPrice, maxPrice);
             } else if (rating != null) {
@@ -83,7 +83,6 @@ public class ProductService {
         } else {
             // No filters - return all
             return productRepository.findAll();
-        }*/
-        return productRepository.findProductsWithFilters(categoryId, minPrice, maxPrice, rating);
+        }
     }
 }
