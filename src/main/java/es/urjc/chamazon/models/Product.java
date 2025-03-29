@@ -21,8 +21,6 @@ public class Product {
     @Lob
     private Blob imageFile;
 
-    @OneToMany(mappedBy = "product")
-    private List<Comment> commentList;
 
     @ManyToOne
     private User user;
