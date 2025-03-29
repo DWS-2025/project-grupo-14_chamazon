@@ -51,6 +51,7 @@ public class ProductController {
     public String products(Model model, @RequestParam(required = false) Long userId) {
         model.addAttribute("products", productService.findAllProducts());
         model.addAttribute("users", userService.findAll());
+        model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("selectedUserId", userId);
         return "product/products_list";
     }
@@ -202,10 +203,13 @@ public class ProductController {
             productService.findAllProducts();
         }
 
+        List<Category> categories = categoryService.findAll();
+        System.out.println("Número de categorías cargadas: " + categories.size()); // Debug
         // Add all necessary attributes to the model
         List<Category> allCategories = categoryService.findAll();
         model.addAttribute("products", filteredProducts);
         model.addAttribute("categories", allCategories);
+        model.addAttribute("categories", categories);
         model.addAttribute("users", userService.findAll());
 
         // Preserve filter parameters in the model

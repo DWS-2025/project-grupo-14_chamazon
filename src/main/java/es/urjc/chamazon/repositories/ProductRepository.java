@@ -12,8 +12,9 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     
     Optional<Product> findByName(String name);
-    
     Optional<Product> findByRating(Float rating);
+    
+    /*
     
     @Query("SELECT p FROM Product p JOIN p.categoryList c WHERE c.id = :categoryId")
     List<Product> findByCategoryId(@Param("categoryId") Long categoryId);
@@ -34,5 +35,17 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByCategoryIdAndRatingGreaterThanEqual(
         @Param("categoryId") Long categoryId, 
         @Param("minRating") Float minRating);
-
+*/
+    @Query("SELECT p FROM Product p "
+            + "LEFT JOIN p.categoryList c "
+            + "WHERE (:categoryId IS NULL OR c.id = :categoryId) "
+            + "AND (:minPrice IS NULL OR p.price >= :minPrice) "
+            + "AND (:maxPrice IS NULL OR p.price <= :maxPrice) "
+            + "AND (:rating IS NULL OR p.rating >= :rating)")
+    List<Product> findProductsWithFilters(
+            @Param("categoryId") Long categoryId,
+            @Param("minPrice") Float minPrice,
+            @Param("maxPrice") Float maxPrice,
+            @Param("rating") Float rating
+    );
 }
