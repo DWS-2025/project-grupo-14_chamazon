@@ -191,18 +191,28 @@ public class ProductController {
 
         List<Product> filteredProducts = productService.findByFilters(categoryId, minPrice, maxPrice, rating);
 
+        // Verify filters
+        boolean hasFilters = categoryId != null || minPrice != null || maxPrice != null || rating != null;
+
+        if (hasFilters) {
+            // Aplica los filtros específicos
+            filteredProducts = productService.findByFilters(categoryId, minPrice, maxPrice, rating);
+        } else {
+            // Si no hay filtros, obtén todos los productos
+            productService.findAllProducts();
+        }
+
         // Add all necessary attributes to the model
         model.addAttribute("products", filteredProducts);
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("users", userService.findAll());
-        
 
         // Preserve filter parameters in the model
-        model.addAttribute("categoryId", categoryId);
-        model.addAttribute("minPrice", minPrice);
-        model.addAttribute("maxPrice", maxPrice);
-        model.addAttribute("rating", rating);
-        
+        model.addAttribute("categoryId", categoryId != null ? categoryId.toString() : "");
+        model.addAttribute("minPrice", minPrice != null ? minPrice.toString() : "");
+        model.addAttribute("maxPrice", maxPrice != null ? maxPrice.toString() : "");
+        model.addAttribute("rating", rating != null ? rating.toString() : "");
+
         return "product/products_list";
     }
 

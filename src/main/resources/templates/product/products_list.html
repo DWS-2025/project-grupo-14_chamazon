@@ -1,9 +1,10 @@
 {{>header}}
 {{>navBar}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.css">
 
 <div class="container-fluid py-4">
     <div class="row">
-        <!-- Barra lateral de filtros -->
+        <!-- Filter's sidebar -->
         <div class="col-lg-3">
             <div class="card mb-4 shadow-sm">
                 <div class="card-header bg-primary text-white">
@@ -11,10 +12,10 @@
                 </div>
                 <div class="card-body">
                     <form action="/products/filter" method="GET">
-                        <!-- Filtro de Categoría -->
+                        <!-- Categories filter -->
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Categoría</label>
-                            <select name="categoryId" class="form-select">
+                            <label for="categoryIdSelect" class="form-label fw-bold">Categoría</label>
+                            <select name="categoryId" id="categoryIdSelect" class="form-select">
                                 <option value="">Todas las categorías</option>
                                 {{#categories}}
                                 <option value="{{id}}">{{name}}</option>
@@ -22,41 +23,48 @@
                             </select>
                         </div>
 
-                        <!-- Filtro de Precio -->
-                        <!-- Replace the price filter section with this -->
-                        <div class="mb-3">
+                        <!-- Price Filter -->
+
+                        <div class="mb-4">
                             <label class="form-label fw-bold">Rango de Precio</label>
-                            <div class="row g-2">
+                            <div id="price-range-slider" class="mb-2"></div>
+                            <p id="price-range-text" class="text-center text-muted mb-2">
+                                {{#minPrice}}{{.}}{{/minPrice}}{{^minPrice}}0{{/minPrice}} - 
+                                {{#maxPrice}}{{.}}{{/maxPrice}}{{^maxPrice}}1000{{/maxPrice}}
+                            </p>
+                            
+                            <!-- Hidden inputs for form submission -->
+                            <div class="row g-2" style="display: none;">
                                 <div class="col">
-                                    <input type="number" class="form-control" placeholder="Mínimo" name="minPrice"
+                                    <input type="number" class="form-control" id="minPrice" name="minPrice"
                                         value="{{#minPrice}}{{.}}{{/minPrice}}" min="0" step="0.01">
                                 </div>
                                 <div class="col">
-                                    <input type="number" class="form-control" placeholder="Máximo" name="maxPrice"
+                                    <input type="number" class="form-control" id="maxPrice" name="maxPrice"
                                         value="{{#maxPrice}}{{.}}{{/maxPrice}}" min="0" step="0.01">
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Filtro de Valoración -->
+                        <!-- Rating Filter -->
                         <div class="mb-3">
-                            <label for="rating" class="form-label fw-bold">Valoración mínima</label>
-                            <select class="form-select" id="rating" name="rating">
+                            <label for="ratingSelect" class="form-label fw-bold">Valoración mínima</label>
+                            <select class="form-select" id="ratingSelect" name="rating">
                                 <option value="">Cualquier valoración</option>
-                                <option value="1">1★ o superior</option>
-                                <option value="2">2★ o superior</option>
-                                <option value="3">3★ o superior</option>
-                                <option value="4">4★ o superior</option>
-                                <option value="5">5★</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
                             </select>
                         </div>
 
-                        <!-- Pass selected user ID if present -->
+                        <!-- Check userID if present -->
                         {{#selectedUserId}}
                         <input type="hidden" name="userId" value="{{selectedUserId}}">
                         {{/selectedUserId}}
 
-                        <!-- Botones de acción -->
+                        <!-- Apply or clean selected filters -->
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-filter me-1"></i> Aplicar Filtros
@@ -69,7 +77,7 @@
                 </div>
             </div>
 
-            <!-- Selector de Usuario -->
+            <!-- Select users -->
             <div class="card shadow-sm">
                 <div class="card-header bg-info text-white">
                     <h5 class="mb-0">Seleccionar Usuario</h5>
@@ -82,7 +90,7 @@
                         {{#maxPrice}}<input type="hidden" name="maxPrice" value="{{maxPrice}}">{{/maxPrice}}
                         {{#rating}}<input type="hidden" name="rating" value="{{rating}}">{{/rating}}
 
-                        <select name="userId" class="form-select" onchange="this.form.submit()">
+                        <select name="userId" id="userIdSelect" class="form-select" onchange="this.form.submit()">
                             <option value="">Seleccionar Usuario</option>
                             {{#users}}
                             <option value="{{id}}">{{userName}}</option>
@@ -93,9 +101,9 @@
             </div>
         </div>
 
-        <!-- Contenido Principal -->
+        <!-- Main content -->
         <div class="col-lg-9">
-            <!-- Sección superior con título y botón añadir -->
+            <!-- Product Title and Add Products BUtton -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2>Productos</h2>
                 <a href="/products/add" class="btn btn-success">
@@ -103,12 +111,12 @@
                 </a>
             </div>
 
-            <!-- Grid de Productos -->
+            <!-- Prorduct's grid -->
             <div class="row">
                 {{#products}}
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 shadow-sm">
-                        <!-- Imagen del producto (con placeholder si no hay imagen) -->
+                        <!-- Products' image -->
                         {{#imageFile}}
                         <img src="/products/{{id}}/image" class="card-img-top img-thumbnail" alt="{{name}}"
                             style="height: 200px; object-fit: contain; padding: 10px;">
@@ -122,29 +130,21 @@
                         <div class="card-body">
                             <h5 class="card-title">{{name}}</h5>
                             <p class="card-text">{{description}}</p>
-                            <h6 class="card-subtitle mb-2 text-primary">{{price}}€</h6>
+                            <h6 class="card-subtitle mb-2 text-primary">{{price}}</h6>
                             {{#category}}
                             <p class="card-subtitle mb-2 text-muted">{{name}}</p>
                             {{/category}}
                         </div>
 
-                        <!-- Footer de la tarjeta con botones -->
+                        <!-- Products' button -->
                         <div class="card-footer bg-white border-top-0">
                             <div class="d-flex justify-content-between flex-wrap">
-                                <!-- Botones originales -->
+
                                 <form action="/products/{{id}}/edit" method="GET">
                                     <button type="submit" class="btn btn-outline-secondary btn-sm mb-1">
                                         <i class="fas fa-edit"></i> Editar
                                     </button>
                                 </form>
-
-                                <a href="/commentView/product/{{id}}/add" class="btn btn-outline-primary btn-sm mb-1">
-                                    <i class="fas fa-comment-plus"></i> Comentar
-                                </a>
-
-                                <a href="/commentView/product/{{id}}" class="btn btn-outline-info btn-sm mb-1">
-                                    <i class="fas fa-comments"></i> Ver Comentarios
-                                </a>
 
                                 <form action="/products/{{id}}/delete" method="POST">
                                     <button type="submit" class="btn btn-outline-danger btn-sm mb-1"
@@ -153,7 +153,7 @@
                                     </button>
                                 </form>
 
-                                <!-- Botón Añadir al Carrito (condicional) -->
+                                <!-- Add to cart button when user is selected -->
                                 {{#selectedUserId}}
                                 <form action="/products/{{id}}/addToCard/{{selectedUserId}}" method="POST"
                                     class="w-100 mt-2">
@@ -169,7 +169,7 @@
                 {{/products}}
             </div>
 
-            <!-- Mensaje sin productos -->
+            <!-- Products not avaible warning -->
             {{^products}}
             <div class="alert alert-info text-center p-5" role="alert">
                 <i class="fas fa-info-circle fa-3x mb-3"></i>
@@ -180,5 +180,9 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.js"></script>
+<script src="/js/price-range-slider.js"></script>
+
 
 {{>footer}}
