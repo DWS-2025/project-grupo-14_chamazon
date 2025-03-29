@@ -37,13 +37,12 @@ public class ProductController {
     @Autowired
     private CategoryService categoryService;
 
-
     @Autowired
     private UserService userService;
 
     @Autowired
     private ShoppingCarService shoppingCarService;
-    
+
     @Autowired
     private CommentService commentService;
 
@@ -51,7 +50,7 @@ public class ProductController {
     public String products(Model model, @RequestParam(required = false) Long userId) {
         model.addAttribute("products", productService.findAllProducts());
         model.addAttribute("users", userService.findAll());
-        model.addAttribute("selectedUserId",userId);
+        model.addAttribute("selectedUserId", userId);
         return "product/products_list";
     }
 
@@ -88,8 +87,21 @@ public class ProductController {
 
     @PostMapping("/products/add")
     public String addProduct(Model model, @ModelAttribute Product product,
-                             @RequestParam("imageFileParameter") MultipartFile imageFileParameter) throws IOException {
+            @RequestParam(value = "categoryId", required = false) List<Long> categoryId,
+            @RequestParam("imageFileParameter") MultipartFile imageFileParameter) throws IOException {
+        // Save the product with the img file to get the id first before saving to
+        // category list and then save the product to the category list.
+
         productService.save(product, imageFileParameter);
+
+        // Get the id of the product to add it to the category list
+        Long productId = product.getId();
+        if (categoryId != null && !categoryId.isEmpty()) {
+            for (Long categoryIdentified : categoryId) {
+                categoryService.addProductToCategory(categoryIdentified, productId);
+            }
+        }
+
         return "redirect:/products";
     }
 
@@ -99,8 +111,9 @@ public class ProductController {
         if (optionalProduct.isPresent()) { // using optional and get product's information
             Product product = optionalProduct.get();
             model.addAttribute("product", product);
-            model.addAttribute("categories", categoryService.findAll());
 
+            List<Category> categories = categoryService.findAll();
+            model.addAttribute("categories", categories);
             return "product/editProduct";
         } else {
             return "redirect:/products";
@@ -109,7 +122,8 @@ public class ProductController {
 
     @PostMapping("products/{id}/edit")
     public String updateProduct(@PathVariable long id, Model model, @ModelAttribute("product") Product newProduct,
-                                @RequestParam("imageFileParameter") MultipartFile imageFileParameter)
+            @RequestParam(value = "categoryId", required = false) List<Long> newCategoryIds,
+            @RequestParam("imageFileParameter") MultipartFile imageFileParameter)
             throws IOException {
         // Get existing product at the exact moment by editing
         Optional<Product> existProductActually = productService.findById(id);
@@ -122,12 +136,27 @@ public class ProductController {
         existProduct.setDescription(newProduct.getDescription());
         existProduct.setPrice(newProduct.getPrice());
 
-        //make sure the image works properly depending on which option did they choose
+        // make sure the image works properly depending on which option did they choose
         if (!imageFileParameter.isEmpty()) {
             productService.save(existProduct, imageFileParameter);
         } else {
             // keep the existing image and just save the updated product
             productService.save(existProduct);
+        }
+
+        //  Remove the product from ALL its current categories
+        List<Category> allCategories = categoryService.findAll();
+        for (Category category : allCategories) {
+            if (category.getProductList().contains(existProduct)) {              
+                categoryService.removeProductFromCategory(category.getId(), existProduct.getId());
+            }
+        }
+
+        // Add the product to its new selected categories
+        if (newCategoryIds != null) {
+            for (Long categoryId : newCategoryIds) {
+                categoryService.addProductToCategory(categoryId, existProduct.getId());
+            }
         }
         return "redirect:/products";
     }
@@ -142,11 +171,10 @@ public class ProductController {
         return "redirect:/products";
     }
 
-
     @PostMapping("/products/{id}/addToCard/{idUser}")
     public String addToCart(@PathVariable long id, @PathVariable long idUser) {
         Optional<Product> product = productService.findById(id);
-        Optional <User> user = userService.findById(idUser);
+        Optional<User> user = userService.findById(idUser);
         if (product.isPresent() && user.isPresent()) {
             shoppingCarService.addProductToUserShoppingCar(id, idUser);
         }
