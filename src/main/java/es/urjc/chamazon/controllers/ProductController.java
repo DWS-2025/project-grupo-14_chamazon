@@ -140,11 +140,6 @@ public class ProductController {
         return "redirect:/products";
     }
 
-    @GetMapping("/api/products")
-    @ResponseBody
-    public Collection<Product> getAllProducts() {
-        return productService.findAllProducts();
-    }
 
     /*
      * @PostMapping("/products/{id}/addToCard/{idUser}")

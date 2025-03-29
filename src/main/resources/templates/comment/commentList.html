@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista Comentarios</title>
+    <title>CommentList</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
 </head>
 <body>
@@ -13,42 +13,46 @@
         <div>
             <select id="productSelect" name="product" class="form-select" onchange="loadComments()">
                 <option value="">Seleccione un producto</option>
-                <!-- Aquí se llenarán los productos dinámicamente -->
+                {{#products}}
+                <option value="{{id}}"> {{#selectedProduct}}selected{{/selectedProduct}}>{{name}}</option>                {{/products}}
             </select>
         </div>
         <div>
-            <a class="btn btn-primary" href="/commentView/add">Añadir Comentario</a>
+            <a id="addCommentButton" class="btn btn-primary" href="#" style="display: none;">Añadir Comentario</a>
         </div>
     </div>
 
     <div id="commentsList" class="mt-4">
-        <!-- Aquí se mostrarán los comentarios dinámicamente -->
+        {{#comments}}
+        <div class="list-group-item">
+            <p><strong>Usuario:</strong> {{user.name}}</p>
+            <p><strong>Calificación:</strong> {{rating}}</p>
+            <p><strong>Comentario:</strong> {{comment}}</p>
+            <a class="btn btn-warning" href="/commentView/edit/{{id}}">Editar</a>
+            <form action="/commentView/delete/{{id}}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </form>
+        </div>
+        {{/comments}}
     </div>
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const productId = new URLSearchParams(window.location.search).get('productId');
+        const addCommentButton = document.getElementById('addCommentButton');
+        if (productId) {
+            addCommentButton.href = `/commentView/add?productId=${productId}`;
+            addCommentButton.style.display = 'block';
+        }
+    });
+
     function loadComments() {
         const productId = document.getElementById('productSelect').value;
         if (productId) {
             window.location.href = `/commentView/commentList?productId=${productId}`;
         }
     }
-
-    async function loadProducts() {
-        const response = await fetch('/api/products');
-        const products = await response.json();
-        const productSelect = document.getElementById('productSelect');
-        productSelect.innerHTML = '<option value="">Seleccione un producto</option>'; // Limpiar el desplegable antes de llenarlo
-        products.forEach(product => {
-            const option = document.createElement('option');
-            option.value = product.id;
-            option.textContent = product.name;
-            productSelect.appendChild(option);
-        });
-    }
-
-    // Llamar a la función cuando se cargue la página
-    document.addEventListener('DOMContentLoaded', loadProducts);
 </script>
 
 {{>footer}}

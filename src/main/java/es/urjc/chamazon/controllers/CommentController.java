@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.List;
 
@@ -27,7 +28,9 @@ public class CommentController {
 
     //Create Operations: method addCommentForm(GET) and addComment(POST) to add a new comment
     @GetMapping("/add")
-    public String addCommentForm(Model model) {
+    public String addCommentForm(@RequestParam("productId") Long productId, Model model) {
+        Optional <Product> product = productService.findById(productId);
+        model.addAttribute("product", product);
         model.addAttribute("comment", new Comment());
         return "comment/addNewComment";
     }
@@ -39,7 +42,6 @@ public class CommentController {
     }
 
 
-    //Read Operations: method getAllComments(GET) to get all comments and getCommentById(GET) to get
     @GetMapping("/commentList")
     public String getCommentList(@RequestParam(required = false) Long productId, Model model) {
         List<Product> products = (List <Product>) productService.findAllProducts();
@@ -48,6 +50,8 @@ public class CommentController {
         if (productId != null) {
             List<Comment> comments = commentService.findByProductId(productId);
             model.addAttribute("comments", comments);
+        } else {
+            model.addAttribute("comments", new ArrayList <>());
         }
 
         return "comment/commentList";
@@ -88,25 +92,32 @@ public class CommentController {
         }
     }
 
-    @PostMapping("/edit/{id}")
+    @PostMapping("/edit/{id}") //Potential SQL Injection vulnerability
     public String updateComment(@PathVariable Long id, @ModelAttribute Comment commentDetails) {
         Comment comment = commentService.findById(id).orElse(null);
         if (comment != null) {
             comment.setComment(commentDetails.getComment());
             comment.setRating(commentDetails.getRating());
             comment.setUser(commentDetails.getUser());
-            //comment.setProduct(commentDetails.getProduct());
             commentService.save(comment);
+            if (comment.getProduct() != null) {
+                return "redirect:/commentView/commentList?productId=" + comment.getProduct().getId();
+            }
         }
-        return "redirect:/commentView/comments";
+        return "redirect:/commentView/commentList";
     }
 
 
     //Delete Operation: method deleteComment(POST) to delete a comment (delete with a button in the comment view)
     @PostMapping("/delete/{id}")
     public String deleteComment(@PathVariable Long id) {
-        commentService.deleteById(id);
-        return "redirect:/commentView/comments";
+        Comment comment = commentService.findById(id).orElse(null);
+        if (comment != null) {
+            Long productId = comment.getProduct().getId();
+            commentService.deleteById(id);
+            return "redirect:/commentView/commentList?productId=" + productId;
+        }
+        return "redirect:/commentView/commentList";
     }
 
 }
