@@ -16,9 +16,7 @@
         <div class="col-md-6">
             <div class="card shadow-sm p-4">
                 <h2 class="mb-3 text-center text-primary">Añadir Comentario</h2>
-                <form action="/commentView/add" method="post">
-
-                    <input type="hidden" name="productId" value="{{productId}}">
+                <form action="/commentView/add?productId={{product.id}}" method="post">
 
                     <div class="mb-3">
                         <label for="userId" class="form-label">Usuario:</label>
@@ -27,7 +25,7 @@
 
                     <div class="mb-3">
                         <label for="commentText" class="form-label">Comentario:</label>
-                        <textarea class="form-control" id="commentText" name="comment" required></textarea>
+                        <textarea class="form-control" id="commentText" name="comment" rows="3" required></textarea>
                     </div>
 
                     <div class="mb-3">
@@ -36,8 +34,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="productName" class="form-label">Producto:</label>
-                        <input type="text" class="form-control" id="productName" name="productName" value="{{product.name}}" readonly>
+                        <label for="product" class="form-label">Producto:</label>
+                        <input type="text" class="form-control" id="product" name="product" value="{{product.name}}" readonly>
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100">Enviar</button>

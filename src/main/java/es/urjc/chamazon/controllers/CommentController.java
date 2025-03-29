@@ -29,18 +29,30 @@ public class CommentController {
     //Create Operations: method addCommentForm(GET) and addComment(POST) to add a new comment
     @GetMapping("/add")
     public String addCommentForm(@RequestParam("productId") Long productId, Model model) {
-        Optional <Product> product = productService.findById(productId);
-        model.addAttribute("product", product);
+        Optional<Product> product = productService.findById(productId);
+        if (product.isPresent()) {
+            model.addAttribute("product", product.get());
+        } else {
+            model.addAttribute("errorMessage", "Producto no encontrado");
+            return "error/error";
+        }
         model.addAttribute("comment", new Comment());
         return "comment/addNewComment";
     }
 
     @PostMapping("/add")
-    public String addComment(@ModelAttribute Comment comment) {
-        commentService.save(comment);
-        return "redirect:/commentView/comments";
+    public String addComment(@ModelAttribute Comment comment, @RequestParam("productId") Long productId) {
+        Optional<Product> optionalProduct = productService.findById(productId);
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+            comment.setProduct(product);
+            commentService.save(comment);
+            return "redirect:/commentView/commentList?productId=" + productId;
+        } else {
+            // Manejar el caso en que el producto no se encuentra
+            return "redirect:/commentView/commentList";
+        }
     }
-
 
     @GetMapping("/commentList")
     public String getCommentList(@RequestParam(required = false) Long productId, Model model) {
