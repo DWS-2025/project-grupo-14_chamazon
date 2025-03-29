@@ -5,6 +5,7 @@ import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.UrlResource;
@@ -144,15 +145,15 @@ public class ProductController {
             productService.save(existProduct);
         }
 
-        //  Remove the product from ALL its current categories
+        // remove the product from ALL its current categories
         List<Category> allCategories = categoryService.findAll();
         for (Category category : allCategories) {
-            if (category.getProductList().contains(existProduct)) {              
+            if (category.getProductList().contains(existProduct)) {
                 categoryService.removeProductFromCategory(category.getId(), existProduct.getId());
             }
         }
 
-        // Add the product to its new selected categories
+        // add the product to its new selected categories
         if (newCategoryIds != null) {
             for (Long categoryId : newCategoryIds) {
                 categoryService.addProductToCategory(categoryId, existProduct.getId());
@@ -179,6 +180,30 @@ public class ProductController {
             shoppingCarService.addProductToUserShoppingCar(id, idUser);
         }
         return "redirect:/products";
+    }
+
+    @GetMapping("products/filter")
+    public String filterProducts(Model model,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Float minPrice,
+            @RequestParam(required = false) Float maxPrice,
+            @RequestParam(required = false) Float rating) {
+
+        List<Product> filteredProducts = productService.findByFilters(categoryId, minPrice, maxPrice, rating);
+
+        // Add all necessary attributes to the model
+        model.addAttribute("products", filteredProducts);
+        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("users", userService.findAll());
+        
+
+        // Preserve filter parameters in the model
+        model.addAttribute("categoryId", categoryId);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("rating", rating);
+        
+        return "product/products_list";
     }
 
 }
