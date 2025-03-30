@@ -32,7 +32,7 @@ public class CategoryService {
     }
 
     public void save(Category category) {
-         categoryRepository.save(category);
+        categoryRepository.save(category);
     }
 
     public void deleteById(Long categoryId) {
@@ -40,11 +40,11 @@ public class CategoryService {
         if (category.isPresent()){
             for (Product product : new ArrayList<>(category.get().getProductList())) {
                 product.getCategoryList().remove(category.get());
-                productService.save(product); 
+                productService.save(product);
             }
 
             category.get().getProductList().clear();
-            categoryRepository.save(category.get()); 
+            categoryRepository.save(category.get());
 
             categoryRepository.delete(category.get());
         }
@@ -62,14 +62,14 @@ public class CategoryService {
         if (categoryOpt.isPresent() && productOpt.isPresent()) {
             categoryOpt.get().getProductList().add(productOpt.get());
             productOpt.get().getCategoryList().add(categoryOpt.get());
-            categoryRepository.save(categoryOpt.get());    
+            categoryRepository.save(categoryOpt.get());
         }
     }
 
     public void removeProductFromCategory(Long categoryId, Long productId) {
         Optional <Category> categoryOpt = categoryRepository.findById(categoryId);
         Optional<Product> productOpt = productService.findById(productId);
-    
+
         if (categoryOpt.isPresent() && productOpt.isPresent()) {
             Category category = categoryOpt.get();
             Product product = productOpt.get();

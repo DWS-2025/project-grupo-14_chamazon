@@ -89,8 +89,8 @@ public class ProductController {
 
     @PostMapping("/products/add")
     public String addProduct(Model model, @ModelAttribute Product product,
-            @RequestParam(value = "categoryId", required = false) List<Long> categoryId,
-            @RequestParam("imageFileParameter") MultipartFile imageFileParameter) throws IOException {
+                             @RequestParam(value = "categoryId", required = false) List<Long> categoryId,
+                             @RequestParam("imageFileParameter") MultipartFile imageFileParameter) throws IOException {
         // Save the product with the img file to get the id first before saving to
         // category list and then save the product to the category list.
 
@@ -124,8 +124,8 @@ public class ProductController {
 
     @PostMapping("products/{id}/edit")
     public String updateProduct(@PathVariable long id, Model model, @ModelAttribute("product") Product newProduct,
-            @RequestParam(value = "categoryId", required = false) List<Long> newCategoryIds,
-            @RequestParam("imageFileParameter") MultipartFile imageFileParameter)
+                                @RequestParam(value = "categoryId", required = false) List<Long> newCategoryIds,
+                                @RequestParam("imageFileParameter") MultipartFile imageFileParameter)
             throws IOException {
         // Get existing product at the exact moment by editing
         Optional<Product> existProductActually = productService.findById(id);
@@ -185,11 +185,11 @@ public class ProductController {
 
     @GetMapping("products/filter")
     public String filterProducts(Model model,
-            @RequestParam(required = false) Long categoryId,
-            @RequestParam(required = false) Float minPrice,
-            @RequestParam(required = false) Float maxPrice,
-            @RequestParam(required = false) Float rating,
-            @RequestParam(required = false) Long userId) {
+                                 @RequestParam(required = false) Long categoryId,
+                                 @RequestParam(required = false) Float minPrice,
+                                 @RequestParam(required = false) Float maxPrice,
+                                 @RequestParam(required = false) Float rating,
+                                 @RequestParam(required = false) Long userId) {
 
         List<Product> filteredProducts = productService.findByFilters(categoryId, minPrice, maxPrice, rating);
 
