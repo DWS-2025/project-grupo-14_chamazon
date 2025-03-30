@@ -188,7 +188,8 @@ public class ProductController {
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) Float minPrice,
             @RequestParam(required = false) Float maxPrice,
-            @RequestParam(required = false) Float rating) {
+            @RequestParam(required = false) Float rating,
+            @RequestParam(required = false) Long userId) {
 
         List<Product> filteredProducts = productService.findByFilters(categoryId, minPrice, maxPrice, rating);
 
@@ -217,6 +218,7 @@ public class ProductController {
         model.addAttribute("minPrice", minPrice != null ? minPrice.toString() : "");
         model.addAttribute("maxPrice", maxPrice != null ? maxPrice.toString() : "");
         model.addAttribute("rating", rating != null ? rating.toString() : "");
+        model.addAttribute("selectedUserId", userId);
 
         return "product/products_list";
     }
