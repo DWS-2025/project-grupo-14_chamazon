@@ -17,7 +17,7 @@ public class ShoppingCar {
     @ManyToOne
     private User user;
 
-    @ManyToMany(mappedBy = "shoppingCarList")
+    @ManyToMany
     private List<Product> productList;
 
     public ShoppingCar() {
@@ -65,4 +65,5 @@ public class ShoppingCar {
     public void setProductList(List<Product> productList) {
         this.productList = productList;
     }
+
 }

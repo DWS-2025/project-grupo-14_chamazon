@@ -2,11 +2,13 @@
 package es.urjc.chamazon.services;
 
 import es.urjc.chamazon.models.Product;
+import es.urjc.chamazon.models.ShoppingCar;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.repositories.ShoppingCarRepository;
 import es.urjc.chamazon.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
@@ -19,7 +21,7 @@ import java.util.concurrent.ConcurrentMap;
 public class UserService {
 
     @Autowired
-    private ShoppingCarRepository shoppingCarRepository;
+    private ShoppingCarService shoppingCarService;
 
     @Autowired
     private UserRepository userRepository;
@@ -37,9 +39,12 @@ public class UserService {
         userRepository.deleteById(Id);
     }
 
+
     public void save(User user) {
+
         userRepository.save(user);
         //falta añadir la parte del carrito
+        shoppingCarService.firstSC(user);
     }
     public void updateUser(Long id, String userName, String password, String email, String phone, String address) {
         Optional<User> userOptional = userRepository.findById(id);

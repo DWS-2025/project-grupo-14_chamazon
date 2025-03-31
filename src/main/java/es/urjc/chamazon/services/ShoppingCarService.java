@@ -24,14 +24,19 @@ public class ShoppingCarService {
     @Autowired
     private ProductService productService;
 
-    private ShoppingCar shoppingCar;
+    private UserService userService;
+
+    //private ShoppingCar shoppingCar;
     private User user;
+
 
     //UTILS//
 
-        private ShoppingCar clSC(){
-            shoppingCar = new ShoppingCar();
-            return shoppingCar;
+        protected ShoppingCar firstSC(User user){
+            ShoppingCar sc = new ShoppingCar();
+            sc.setUser(user);
+            shoppingCarRepository.save(sc);
+            return sc;
         }
 
     //ALIAS FOR CRUD REPOSITORY METHODS//
@@ -61,7 +66,7 @@ public class ShoppingCarService {
             if(shoppingCarRepository.existsByUser_IdAndDateSoldNull(idUser)){
                 return shoppingCarRepository.findByUser_IdAndDateSoldNull(idUser);
             }else{
-                return shoppingCarRepository.save(new ShoppingCar(user));
+                return shoppingCarRepository.save(new ShoppingCar(userService.findById(idUser).get()));
             }
 
         }
