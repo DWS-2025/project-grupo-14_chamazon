@@ -27,10 +27,10 @@ public class Product {
     @ManyToOne
     private User user;
 
-    @ManyToMany()
+    @ManyToMany
     private List<Category> categoryList = new ArrayList<Category>();
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "productList")
     private List<ShoppingCar> shoppingCarList;
 
     public Product() { }
@@ -40,6 +40,12 @@ public class Product {
         this.price = price;
         this.description = description;
         this.imageFile = imageFile;
+        this.rating = rating;
+    }
+    public Product(String name, Float price, String description, Float rating) {
+        this.name = name;
+        this.price = price;
+        this.description = description;
         this.rating = rating;
     }
 
@@ -97,6 +103,22 @@ public class Product {
 
     public void setRating(Float rating) {
         this.rating = rating;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<ShoppingCar> getShoppingCarList() {
+        return shoppingCarList;
+    }
+
+    public void setShoppingCarList(List<ShoppingCar> shoppingCarList) {
+        this.shoppingCarList = shoppingCarList;
     }
 
     @Override

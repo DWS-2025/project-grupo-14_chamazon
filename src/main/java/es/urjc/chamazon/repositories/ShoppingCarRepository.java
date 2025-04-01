@@ -2,9 +2,11 @@ package es.urjc.chamazon.repositories;
 
 import es.urjc.chamazon.models.ShoppingCar;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+
 
 public interface ShoppingCarRepository extends JpaRepository<ShoppingCar, Long> {
 
@@ -25,6 +27,9 @@ public interface ShoppingCarRepository extends JpaRepository<ShoppingCar, Long> 
     //getActualShoppingCarByIdUser
     Optional<ShoppingCar> findByUser_IdAndDateSoldNotNull(Long user_id);
     Boolean existsByUser_IdAndDateSoldNull(long idUser);
+
+    Long countById(Long idUser);
+
 
     //To check
     //Long findByUser_IdAndDateSoldNotNull(long idUser);

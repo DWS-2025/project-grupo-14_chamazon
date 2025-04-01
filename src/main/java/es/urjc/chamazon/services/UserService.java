@@ -6,11 +6,13 @@ import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.dto.UserMapper;
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
+import es.urjc.chamazon.models.ShoppingCar;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.repositories.ShoppingCarRepository;
 import es.urjc.chamazon.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.swing.text.html.Option;
@@ -25,7 +27,7 @@ import java.util.concurrent.ConcurrentMap;
 public class UserService {
 
     @Autowired
-    private ShoppingCarRepository shoppingCarRepository;
+    private ShoppingCarService shoppingCarService;
 
     @Autowired
     private UserRepository userRepository;
@@ -39,12 +41,16 @@ public class UserService {
     }
 
     public UserDTO getUser(Long Id) {
-        Optional<User> user = userRepository.findById(Id);
-        if (user.isPresent()) {
-            return toDTO(user.get());
+        User user = getUserById(Id);
+        if (user != null) {
+            return toDTO(user);
         }else{
             return null;
         }
+    }
+    User getUserById(Long Id) {
+        Optional<User> userOpt = userRepository.findById(Id);
+        return userOpt.orElse(null);
     }
 
     public void deleteUser(Long Id) {
@@ -55,6 +61,7 @@ public class UserService {
         User user = toUser(userDTO);
         userRepository.save(user);
         //falta añadir la parte del carrito
+        shoppingCarService.firstSC(user);
     }
     public void updateUser(Long id, UserDTO updatedUserDTO) {
         Optional<User> userOptional = userRepository.findById(id);

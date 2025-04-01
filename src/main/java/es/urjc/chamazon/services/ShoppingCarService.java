@@ -20,14 +20,22 @@ public class ShoppingCarService {
     @Autowired
     private ShoppingCarRepository shoppingCarRepository;
 
-    private ShoppingCar shoppingCar;
+    @Autowired
+    private ProductService productService;
+
+    private UserService userService;
+
+    //private ShoppingCar shoppingCar;
     private User user;
+
 
     //UTILS//
 
-        private ShoppingCar clSC(){
-            shoppingCar = new ShoppingCar();
-            return shoppingCar;
+        protected ShoppingCar firstSC(User user){
+            ShoppingCar sc = new ShoppingCar();
+            sc.setUser(user);
+            shoppingCarRepository.save(sc);
+            return sc;
         }
 
     //ALIAS FOR CRUD REPOSITORY METHODS//
@@ -56,10 +64,10 @@ public class ShoppingCarService {
         public ShoppingCar getActualShoppingCarByIdUser(Long idUser) {
             if(shoppingCarRepository.existsByUser_IdAndDateSoldNull(idUser)){
                 return shoppingCarRepository.findByUser_IdAndDateSoldNull(idUser);
-            }else{
-                return shoppingCarRepository.save(new ShoppingCar(user));
+            }else if (shoppingCarRepository.existsByUser_Id(idUser)){
+                return shoppingCarRepository.save(new ShoppingCar(userService.getUserById(idUser)));
             }
-
+            return null;
         }
 
         //Return the ended ShoppingCar Purchase
@@ -93,26 +101,21 @@ public class ShoppingCarService {
 
         public ShoppingCar addProductToUserShoppingCar(Long idProduct, Long idUser) {
             ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-            /*
-            Product product = productService.gtProductById(idProduct);
-            if (product != null) {
-                sc.getProductList().add(product);
-                shoppingCarRepository.update(sc);
+            Optional <Product> prOpt = productService.findById(idProduct);
+            if (prOpt.isPresent()) {
+                sc.getProductList().add(prOpt.get());
+                shoppingCarRepository.save(sc);
             }
-            */
             return sc;
         }
 
-
         public ShoppingCar removeProductsFromShoppingCar(Long idProduct, Long idUser, boolean dellAll) {
             ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-            /*
-            Product product = productService.gtProductById(idProduct);
-            if (product != null) {
-                sc.getProductList().remove(product);
-                shoppingCarRepository.update(sc);
+            Optional <Product> prOpt = productService.findById(idProduct);
+            if (prOpt.isPresent()) {
+                sc.getProductList().remove(prOpt.get());
+                shoppingCarRepository.save(sc);
             }
-            */
             return sc;
         }
 
@@ -143,6 +146,9 @@ public class ShoppingCarService {
             return sc.getProductList();
         }
 
+
+
+        //public Long getShoppingCarSizeFromActualShoppingCar(Long idUser) {}
 
 
     //DEPRECATED Methods / Delete on future
