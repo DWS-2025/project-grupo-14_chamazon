@@ -5,6 +5,7 @@ import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.UrlResource;
@@ -31,25 +32,27 @@ import java.sql.Blob;
 
 @Controller
 public class ProductController {
-    private static final long NO_CATEGORY_SELECTED = 0;
-
     @Autowired
     private ProductService productService;
 
     @Autowired
     private CategoryService categoryService;
 
-    /*
-     * @Autowired
-     * private UserService userService;
-     * 
-     * @Autowired
-     * private ShoppingCarService shoppingCarService;
-     */
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ShoppingCarService shoppingCarService;
+
+    @Autowired
+    private CommentService commentService;
 
     @GetMapping("/products")
-    public String products(Model model) {
+    public String products(Model model, @RequestParam(required = false) Long userId) {
         model.addAttribute("products", productService.findAllProducts());
+        model.addAttribute("users", userService.findAll());
+        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("selectedUserId", userId);
         return "product/products_list";
     }
 
@@ -86,8 +89,21 @@ public class ProductController {
 
     @PostMapping("/products/add")
     public String addProduct(Model model, @ModelAttribute Product product,
-            @RequestParam("imageFileParameter") MultipartFile imageFileParameter) throws IOException {
+                             @RequestParam(value = "categoryId", required = false) List<Long> categoryId,
+                             @RequestParam("imageFileParameter") MultipartFile imageFileParameter) throws IOException {
+        // Save the product with the img file to get the id first before saving to
+        // category list and then save the product to the category list.
+
         productService.save(product, imageFileParameter);
+
+        // Get the id of the product to add it to the category list
+        Long productId = product.getId();
+        if (categoryId != null && !categoryId.isEmpty()) {
+            for (Long categoryIdentified : categoryId) {
+                categoryService.addProductToCategory(categoryIdentified, productId);
+            }
+        }
+
         return "redirect:/products";
     }
 
@@ -97,8 +113,9 @@ public class ProductController {
         if (optionalProduct.isPresent()) { // using optional and get product's information
             Product product = optionalProduct.get();
             model.addAttribute("product", product);
-            model.addAttribute("categories", categoryService.findAll());
 
+            List<Category> categories = categoryService.findAll();
+            model.addAttribute("categories", categories);
             return "product/editProduct";
         } else {
             return "redirect:/products";
@@ -107,7 +124,8 @@ public class ProductController {
 
     @PostMapping("products/{id}/edit")
     public String updateProduct(@PathVariable long id, Model model, @ModelAttribute("product") Product newProduct,
-            @RequestParam("imageFileParameter") MultipartFile imageFileParameter)
+                                @RequestParam(value = "categoryId", required = false) List<Long> newCategoryIds,
+                                @RequestParam("imageFileParameter") MultipartFile imageFileParameter)
             throws IOException {
         // Get existing product at the exact moment by editing
         Optional<Product> existProductActually = productService.findById(id);
@@ -119,13 +137,28 @@ public class ProductController {
         existProduct.setName(newProduct.getName());
         existProduct.setDescription(newProduct.getDescription());
         existProduct.setPrice(newProduct.getPrice());
-        
-        //make sure the image works properly depending on which option did they choose
+
+        // make sure the image works properly depending on which option did they choose
         if (!imageFileParameter.isEmpty()) {
             productService.save(existProduct, imageFileParameter);
         } else {
-        // keep the existing image and just save the updated product
+            // keep the existing image and just save the updated product
             productService.save(existProduct);
+        }
+
+        // remove the product from ALL its current categories
+        List<Category> allCategories = categoryService.findAll();
+        for (Category category : allCategories) {
+            if (category.getProductList().contains(existProduct)) {
+                categoryService.removeProductFromCategory(category.getId(), existProduct.getId());
+            }
+        }
+
+        // add the product to its new selected categories
+        if (newCategoryIds != null) {
+            for (Long categoryId : newCategoryIds) {
+                categoryService.addProductToCategory(categoryId, existProduct.getId());
+            }
         }
         return "redirect:/products";
     }
@@ -140,16 +173,54 @@ public class ProductController {
         return "redirect:/products";
     }
 
-    /*
-     * @PostMapping("/products/{id}/addToCard/{idUser}")
-     * public String addToCart(@PathVariable long id, @PathVariable long
-     * idUser, @RequestParam long userId) {
-     * //Product product = productService.getProduct(id);
-     * //if (product != null) {
-     * shoppingCarService.addProductToUserShoppingCar(id, idUser);
-     * //}
-     * return "redirect:/products";
-     * }
-     */
+    @PostMapping("/products/{id}/addToCard/{idUser}")
+    public String addToCart(@PathVariable long id, @PathVariable long idUser) {
+        Optional<Product> product = productService.findById(id);
+        Optional<User> user = userService.findById(idUser);
+        if (product.isPresent() && user.isPresent()) {
+            shoppingCarService.addProductToUserShoppingCar(id, idUser);
+        }
+        return "redirect:/products";
+    }
+
+    @GetMapping("products/filter")
+    public String filterProducts(Model model,
+                                 @RequestParam(required = false) Long categoryId,
+                                 @RequestParam(required = false) Float minPrice,
+                                 @RequestParam(required = false) Float maxPrice,
+                                 @RequestParam(required = false) Float rating,
+                                 @RequestParam(required = false) Long userId) {
+
+        List<Product> filteredProducts = productService.findByFilters(categoryId, minPrice, maxPrice, rating);
+
+        // Verify filters
+        boolean hasFilters = categoryId != null || minPrice != null || maxPrice != null || rating != null;
+
+        if (hasFilters) {
+            // If filters are applied, show filtered products
+            filteredProducts = productService.findByFilters(categoryId, minPrice, maxPrice, rating);
+        } else {
+            // If no filters are applied, show all products
+            productService.findAllProducts();
+        }
+
+        List<Category> categories = categoryService.findAll();
+        System.out.println("Número de categorías cargadas: " + categories.size()); // Debug
+        // Add all necessary attributes to the model
+        List<Category> allCategories = categoryService.findAll();
+        model.addAttribute("products", filteredProducts);
+        model.addAttribute("categories", allCategories);
+        model.addAttribute("categories", categories);
+        model.addAttribute("users", userService.findAll());
+
+        // Preserve filter parameters in the model
+        model.addAttribute("categoryId", categoryId != null ? categoryId.toString() : "");
+        model.addAttribute("minPrice", minPrice != null ? minPrice.toString() : "");
+        model.addAttribute("maxPrice", maxPrice != null ? maxPrice.toString() : "");
+        model.addAttribute("rating", rating != null ? rating.toString() : "");
+        model.addAttribute("selectedUserId", userId);
+
+        return "product/products_list";
+    }
 
 }

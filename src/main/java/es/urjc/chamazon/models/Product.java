@@ -11,7 +11,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    
+
     private Long id;
     private String name;
     private Float price;
@@ -21,6 +21,8 @@ public class Product {
     @Lob
     private Blob imageFile;
 
+    @OneToMany(mappedBy = "product")
+    private List<Comment> commentList;
 
     @ManyToOne
     private User user;
@@ -82,7 +84,7 @@ public class Product {
     public void setId(Long id) {
         this.id = id;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
