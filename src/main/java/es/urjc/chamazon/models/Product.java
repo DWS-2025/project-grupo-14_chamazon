@@ -1,5 +1,6 @@
 package es.urjc.chamazon.models;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.sql.Blob;
 
@@ -10,7 +11,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    
+
     private Long id;
     private String name;
     private Float price;
@@ -20,14 +21,16 @@ public class Product {
     @Lob
     private Blob imageFile;
 
+    @OneToMany(mappedBy = "product")
+    private List<Comment> commentList;
 
     @ManyToOne
     private User user;
 
-    @ManyToMany()
-    private List<Category> categoryList;
-
     @ManyToMany
+    private List<Category> categoryList = new ArrayList<Category>();
+
+    @ManyToMany(mappedBy = "productList")
     private List<ShoppingCar> shoppingCarList;
 
     public Product() { }
@@ -39,7 +42,20 @@ public class Product {
         this.imageFile = imageFile;
         this.rating = rating;
     }
+    public Product(String name, Float price, String description, Float rating) {
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.rating = rating;
+    }
 
+
+    public List<Category> getCategoryList() {
+        return categoryList;
+    }
+    public void setCategoryList(List<Category> categoryList) {
+        this.categoryList = categoryList;
+    }
 
     public Long getId() {
         return id;
@@ -68,7 +84,7 @@ public class Product {
     public void setId(Long id) {
         this.id = id;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
@@ -87,6 +103,22 @@ public class Product {
 
     public void setRating(Float rating) {
         this.rating = rating;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<ShoppingCar> getShoppingCarList() {
+        return shoppingCarList;
+    }
+
+    public void setShoppingCarList(List<ShoppingCar> shoppingCarList) {
+        this.shoppingCarList = shoppingCarList;
     }
 
     @Override

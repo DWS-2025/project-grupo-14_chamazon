@@ -17,7 +17,7 @@ public class ShoppingCar {
     @ManyToOne
     private User user;
 
-    @ManyToMany(mappedBy = "shoppingCarList")
+    @ManyToMany
     private List<Product> productList;
 
     public ShoppingCar() {
@@ -50,6 +50,9 @@ public class ShoppingCar {
     public User getUser() {
         return user;
     }
+    public Long getUserId() {
+        return user.getId();
+    }
 
     public void setUser(User userSc) {
         this.user = userSc;
@@ -62,4 +65,5 @@ public class ShoppingCar {
     public void setProductList(List<Product> productList) {
         this.productList = productList;
     }
+
 }

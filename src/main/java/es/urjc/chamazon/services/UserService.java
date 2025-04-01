@@ -2,12 +2,17 @@
 package es.urjc.chamazon.services;
 
 import es.urjc.chamazon.models.Product;
+import es.urjc.chamazon.models.ShoppingCar;
 import es.urjc.chamazon.models.User;
+import es.urjc.chamazon.repositories.ShoppingCarRepository;
 import es.urjc.chamazon.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -15,14 +20,14 @@ import java.util.concurrent.ConcurrentMap;
 @Service
 public class UserService {
 
-    /*@Autowired
-    private ShoppingCarService shoppingCarService;*/
+    @Autowired
+    private ShoppingCarService shoppingCarService;
 
     @Autowired
     private UserRepository userRepository;
 
 
-    public Collection<User> findAll() {
+    public List<User> findAll() {
         return userRepository.findAll();
     }
 
@@ -34,10 +39,28 @@ public class UserService {
         userRepository.deleteById(Id);
     }
 
+
     public void save(User user) {
+
         userRepository.save(user);
         //falta añadir la parte del carrito
+        shoppingCarService.firstSC(user);
     }
+    public void updateUser(Long id, String userName, String password, String email, String phone, String address) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            User existingUser = userOptional.get();
+            existingUser.setUserName(userName);
+            existingUser.setEmail(email);
+            existingUser.setAddress(address != null ? address : "");
+            existingUser.setPassword(password);
+            existingUser.setPhone(phone != null ? phone : "");
+            userRepository.save(existingUser);
+        }
+    }
+
+
+
 
     /*
     public void addUser(User user) {

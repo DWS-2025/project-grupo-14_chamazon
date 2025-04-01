@@ -35,6 +35,18 @@ public class User {
 
     }
 
+    public User(String type, String userName, String firstName, String surname, String password, String email, String phone, String address) {
+        this.type = type;
+        this.userName = userName;
+        this.firstName = firstName;
+        this.surname = surname;
+        this.password = password;
+        this.email = (email != null) ? email : "no-email@example.com";  // Evita nulo        this.phone = phone;
+        this.address = address;
+        this.phone = phone;
+    }
+
+
     //GETTERS AND SETTERS//
 
 
