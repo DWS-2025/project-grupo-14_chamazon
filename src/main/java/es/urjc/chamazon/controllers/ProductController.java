@@ -93,9 +93,7 @@ public class ProductController {
         // Save the product with the img file to get the id first before saving to
         // category list and then save the product to the category list.
 
-        //Mapper to convert entity to DTO
-        ProductDTO productDTO = productMapper.toDTO(product);
-        productService.save(productDTO, imageFileParameter);
+        productService.save(product, imageFileParameter);
 
         // Get the id of the product to add it to the category list
         Long productId = product.getId();
@@ -139,15 +137,13 @@ public class ProductController {
         existProduct.setDescription(newProduct.getDescription());
         existProduct.setPrice(newProduct.getPrice());
 
-        //Convert entity to DTO
-        ProductDTO productDTO = productMapper.toDTO(existProduct);
 
         // make sure the image works properly depending on which option did they choose
         if (!imageFileParameter.isEmpty()) {
-            productService.save(productDTO, imageFileParameter);
+            productService.save(existProduct, imageFileParameter);
         } else {
             // keep the existing image and just save the updated product
-            productService.save(productDTO);
+            productService.save(existProduct);
         }
 
         // remove the product from ALL its current categories

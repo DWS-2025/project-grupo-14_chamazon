@@ -71,18 +71,21 @@ public class ProductService {
         return productRepository.findByRating(rating);
     }
 
-    public void save(ProductDTO productDTO) {
+    public void createProduct(ProductDTO productDTO) {
         Product product = toProduct(productDTO);
+        this.save(product);
+    }
+
+    public void save(Product product) {
         productRepository.save(product);
     }
 
     //do mapper about product
-    public void save(ProductDTO productDTO, MultipartFile imageFile) throws IOException {
-        Product product = toProduct(productDTO);
+    public void save(Product product, MultipartFile imageFile) throws IOException {
         if (!imageFile.isEmpty()) {
             product.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
         }
-        productRepository.save(product);
+        this.save(product);
     }
 
     public void deleteById(long id) {
