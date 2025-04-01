@@ -1,5 +1,7 @@
 package es.urjc.chamazon.controllers;
 
+import es.urjc.chamazon.dto.ProductDTO;
+import es.urjc.chamazon.dto.ProductMapper;
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.User;
@@ -32,6 +34,10 @@ import java.sql.Blob;
 
 @Controller
 public class ProductController {
+
+    @Autowired
+    private ProductMapper productMapper;
+
     @Autowired
     private ProductService productService;
 
@@ -59,9 +65,9 @@ public class ProductController {
     // check this again
     @GetMapping("/products/{id}")
     public String product(@PathVariable long id, Model model) {
-        Optional<Product> product = productService.getProduct(id);
-        if (product.isPresent()) {
-            model.addAttribute("product", product.get());
+        ProductDTO productDTO = productService.getProduct(id); // findById with DTO
+        if (productDTO != null) {
+            model.addAttribute("product", productDTO);
             return "product/product_detail";
         } else {
             return "redirect:/products";
@@ -70,7 +76,7 @@ public class ProductController {
 
     @GetMapping("/products/{id}/image")
     public ResponseEntity<Resource> downloadImage(@PathVariable long id) throws SQLException {
-        Optional<Product> product = productService.findById(id);
+        Optional<Product> product = productService.findById(id); // findById with entity
         if (product.isPresent() && product.get().getImageFile() != null) {
             Blob image = product.get().getImageFile();
             Resource file = new InputStreamResource(image.getBinaryStream());
@@ -84,7 +90,7 @@ public class ProductController {
     @GetMapping("/products/add")
     public String addProduct(Model model) {
         model.addAttribute("product", new Product());
-        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("categories", categoryService.getCategories());
         return "product/addProduct";
     }
 
@@ -95,13 +101,15 @@ public class ProductController {
         // Save the product with the img file to get the id first before saving to
         // category list and then save the product to the category list.
 
-        productService.save(product, imageFileParameter);
+        //Mapper to convert entity to DTO
+        ProductDTO productDTO = productMapper.toDTO(product);
+        productService.save(productDTO, imageFileParameter);
 
         // Get the id of the product to add it to the category list
         Long productId = product.getId();
         if (categoryId != null && !categoryId.isEmpty()) {
             for (Long categoryIdentified : categoryId) {
-                categoryService.addProductToCategory(categoryIdentified, productId);
+                //categoryService.addProductToCategory(categoryIdentified, productId);
             }
         }
 
@@ -115,7 +123,7 @@ public class ProductController {
             Product product = optionalProduct.get();
             model.addAttribute("product", product);
 
-            List<Category> categories = categoryService.findAll();
+            List<CategoryDTO> categories = categoryService.getCategories();
             model.addAttribute("categories", categories);
             return "product/editProduct";
         } else {
@@ -139,26 +147,29 @@ public class ProductController {
         existProduct.setDescription(newProduct.getDescription());
         existProduct.setPrice(newProduct.getPrice());
 
+        //Convert entity to DTO
+        ProductDTO productDTO = productMapper.toDTO(existProduct);
+
         // make sure the image works properly depending on which option did they choose
         if (!imageFileParameter.isEmpty()) {
-            productService.save(existProduct, imageFileParameter);
+            productService.save(productDTO, imageFileParameter);
         } else {
             // keep the existing image and just save the updated product
-            productService.save(existProduct);
+            productService.save(productDTO);
         }
 
         // remove the product from ALL its current categories
         List<Category> allCategories = categoryService.findAll();
         for (Category category : allCategories) {
-            if (category.getProductList().contains(existProduct)) {
+            /*if (category.getProductList().contains(existProduct)) {
                 categoryService.removeProductFromCategory(category.getId(), existProduct.getId());
-            }
+            }*/
         }
 
         // add the product to its new selected categories
         if (newCategoryIds != null) {
             for (Long categoryId : newCategoryIds) {
-                categoryService.addProductToCategory(categoryId, existProduct.getId());
+                //categoryService.addProductToCategory(categoryId, existProduct.getId());
             }
         }
         return "redirect:/products";
@@ -177,10 +188,10 @@ public class ProductController {
     @PostMapping("/products/{id}/addToCard/{idUser}")
     public String addToCart(@PathVariable long id, @PathVariable long idUser) {
         Optional<Product> product = productService.findById(id);
-        Optional<User> user = userService.findById(idUser);
+        /*UserDTO user = userService.getUser(idUser);
         if (product.isPresent() && user.isPresent()) {
             shoppingCarService.addProductToUserShoppingCar(id, idUser);
-        }
+        }*/
         return "redirect:/products";
     }
 
@@ -202,17 +213,14 @@ public class ProductController {
             filteredProducts = productService.findByFilters(categoryId, minPrice, maxPrice, rating);
         } else {
             // If no filters are applied, show all products
-            productService.findAllProducts();
+            productService.getProducts();
         }
 
-        List<Category> categories = categoryService.findAll();
-        System.out.println("Número de categorías cargadas: " + categories.size()); // Debug
         // Add all necessary attributes to the model
-        List<Category> allCategories = categoryService.findAll();
+        //List<Category> allCategories = categoryService.getCategories();
         model.addAttribute("products", filteredProducts);
-        model.addAttribute("categories", allCategories);
-        model.addAttribute("categories", categories);
-        model.addAttribute("users", userService.findAll());
+        //model.addAttribute("categories", allCategories);
+        model.addAttribute("users", userService.getAllUsers());
 
         // Preserve filter parameters in the model
         model.addAttribute("categoryId", categoryId != null ? categoryId.toString() : "");

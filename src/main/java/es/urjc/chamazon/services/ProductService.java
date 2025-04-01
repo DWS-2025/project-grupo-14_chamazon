@@ -38,7 +38,11 @@ public class ProductService {
         return productMapper.toDTOs(products);
     }
 
-    public ProductDTO getProduct(long id) {   //findById
+    public Optional<Product> findById(long id) {   //Return as entity not DTO like before (made for blob img)
+        return productRepository.findById(id);
+    }
+
+    public ProductDTO getProduct(long id) {   //findById with DTO
         Optional<Product> product = productRepository.findById(id);
         if (product.isPresent()) {
             return toDTO(product.get());
