@@ -2,31 +2,61 @@ package es.urjc.chamazon.services;
 
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
+import es.urjc.chamazon.dto.ProductDTO;
+import es.urjc.chamazon.dto.ProductMapper;
 
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.Collection;
 import java.util.List;
 
+
 import es.urjc.chamazon.repositories.ProductRepository;
+
 
 @Service
 public class ProductService {
 
     @Autowired
-    ProductRepository productRepository;
+    private ProductRepository productRepository;
 
-    public Collection<Product> findAllProducts() {
-        return productRepository.findAll();
+    @Autowired
+    private ProductMapper productMapper;
+
+
+    public Collection<ProductDTO> getProducts() { // findAllProducts
+        return toDTOs(productRepository.findAll());
+    } //findAllProducts
+
+    private Collection<ProductDTO> toDTOs(Collection<Product> products) {
+        return productMapper.toDTOs(products);
     }
 
-    public Optional<Product> findById(long id) {
-        return productRepository.findById(id);
+    public ProductDTO getProduct(long id) {   //findById
+        Optional<Product> product = productRepository.findById(id);
+        if (product.isPresent()) {
+            return toDTO(product.get());
+        } else {
+            return null;
+        }
+    }
+
+    private ProductDTO toDTO(Product product) {
+        return productMapper.toDTO(product);
+    }
+
+    private Collection<Product> toProducts(Collection<ProductDTO> productDTOs) {
+        return productMapper.toProduct(productDTOs);
+    }
+
+    private Product toProduct(ProductDTO productDTO) {
+        return productMapper.toProduct(productDTO);
     }
 
     public Optional<Product> findByName(String name) {
@@ -37,15 +67,18 @@ public class ProductService {
         return productRepository.findByRating(rating);
     }
 
-    public void save(Product product) {
+    public void save(ProductDTO productDTO) {
+        Product product = toProduct(productDTO);
         productRepository.save(product);
     }
 
-    public void save(Product product, MultipartFile imageFile) throws IOException {
+    //do mapper about product
+    public void save(ProductDTO productDTO, MultipartFile imageFile) throws IOException {
+        Product product = toProduct(productDTO);
         if (!imageFile.isEmpty()) {
             product.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
         }
-        this.save(product);
+        productRepository.save(product);
     }
 
     public void deleteById(long id) {

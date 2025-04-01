@@ -49,16 +49,17 @@ public class ProductController {
 
     @GetMapping("/products")
     public String products(Model model, @RequestParam(required = false) Long userId) {
-        model.addAttribute("products", productService.findAllProducts());
+        model.addAttribute("products", productService.getProducts());
         model.addAttribute("users", userService.findAll());
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("selectedUserId", userId);
         return "product/products_list";
     }
 
+    // check this again
     @GetMapping("/products/{id}")
     public String product(@PathVariable long id, Model model) {
-        Optional<Product> product = productService.findById(id);
+        Optional<Product> product = productService.getProduct(id);
         if (product.isPresent()) {
             model.addAttribute("product", product.get());
             return "product/product_detail";
