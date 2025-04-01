@@ -2,31 +2,24 @@ package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.dto.ProductMapper;
+import es.urjc.chamazon.dto.CategoryDTO;
+import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.Optional;
 import java.util.List;
 
@@ -56,13 +49,12 @@ public class ProductController {
     @GetMapping("/products")
     public String products(Model model, @RequestParam(required = false) Long userId) {
         model.addAttribute("products", productService.getProducts());
-        model.addAttribute("users", userService.findAll());
-        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("categories", categoryService.getCategories());
         model.addAttribute("selectedUserId", userId);
         return "product/products_list";
     }
 
-    // check this again
     @GetMapping("/products/{id}")
     public String product(@PathVariable long id, Model model) {
         ProductDTO productDTO = productService.getProduct(id); // findById with DTO
@@ -159,9 +151,9 @@ public class ProductController {
         }
 
         // remove the product from ALL its current categories
-        List<Category> allCategories = categoryService.findAll();
-        for (Category category : allCategories) {
-            /*if (category.getProductList().contains(existProduct)) {
+        List<CategoryDTO> allCategories = categoryService.getCategories();
+        for (CategoryDTO CategoryDTO : allCategories) {
+            /*if (CategoryDTO.getProductList().contains(existProduct)) {
                 categoryService.removeProductFromCategory(category.getId(), existProduct.getId());
             }*/
         }
