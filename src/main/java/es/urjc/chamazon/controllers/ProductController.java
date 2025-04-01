@@ -1,30 +1,23 @@
 package es.urjc.chamazon.controllers;
 
+import es.urjc.chamazon.dto.CategoryDTO;
+import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.Optional;
 import java.util.List;
 
@@ -50,8 +43,8 @@ public class ProductController {
     @GetMapping("/products")
     public String products(Model model, @RequestParam(required = false) Long userId) {
         model.addAttribute("products", productService.findAllProducts());
-        model.addAttribute("users", userService.findAll());
-        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("categories", categoryService.getCategories());
         model.addAttribute("selectedUserId", userId);
         return "product/products_list";
     }
@@ -83,7 +76,7 @@ public class ProductController {
     @GetMapping("/products/add")
     public String addProduct(Model model) {
         model.addAttribute("product", new Product());
-        model.addAttribute("categories", categoryService.findAll());
+        model.addAttribute("categories", categoryService.getCategories());
         return "product/addProduct";
     }
 
@@ -100,7 +93,7 @@ public class ProductController {
         Long productId = product.getId();
         if (categoryId != null && !categoryId.isEmpty()) {
             for (Long categoryIdentified : categoryId) {
-                categoryService.addProductToCategory(categoryIdentified, productId);
+                //categoryService.addProductToCategory(categoryIdentified, productId);
             }
         }
 
@@ -114,7 +107,7 @@ public class ProductController {
             Product product = optionalProduct.get();
             model.addAttribute("product", product);
 
-            List<Category> categories = categoryService.findAll();
+            List<CategoryDTO> categories = categoryService.getCategories();
             model.addAttribute("categories", categories);
             return "product/editProduct";
         } else {
@@ -147,17 +140,17 @@ public class ProductController {
         }
 
         // remove the product from ALL its current categories
-        List<Category> allCategories = categoryService.findAll();
-        for (Category category : allCategories) {
-            if (category.getProductList().contains(existProduct)) {
+        List<CategoryDTO> allCategories = categoryService.getCategories();
+        for (CategoryDTO CategoryDTO : allCategories) {
+            /*if (CategoryDTO.getProductList().contains(existProduct)) {
                 categoryService.removeProductFromCategory(category.getId(), existProduct.getId());
-            }
+            }*/
         }
 
         // add the product to its new selected categories
         if (newCategoryIds != null) {
             for (Long categoryId : newCategoryIds) {
-                categoryService.addProductToCategory(categoryId, existProduct.getId());
+                //categoryService.addProductToCategory(categoryId, existProduct.getId());
             }
         }
         return "redirect:/products";
@@ -176,10 +169,10 @@ public class ProductController {
     @PostMapping("/products/{id}/addToCard/{idUser}")
     public String addToCart(@PathVariable long id, @PathVariable long idUser) {
         Optional<Product> product = productService.findById(id);
-        Optional<User> user = userService.findById(idUser);
+        /*UserDTO user = userService.getUser(idUser);
         if (product.isPresent() && user.isPresent()) {
             shoppingCarService.addProductToUserShoppingCar(id, idUser);
-        }
+        }*/
         return "redirect:/products";
     }
 
@@ -204,14 +197,11 @@ public class ProductController {
             productService.findAllProducts();
         }
 
-        List<Category> categories = categoryService.findAll();
-        System.out.println("Número de categorías cargadas: " + categories.size()); // Debug
         // Add all necessary attributes to the model
-        List<Category> allCategories = categoryService.findAll();
+        //List<Category> allCategories = categoryService.getCategories();
         model.addAttribute("products", filteredProducts);
-        model.addAttribute("categories", allCategories);
-        model.addAttribute("categories", categories);
-        model.addAttribute("users", userService.findAll());
+        //model.addAttribute("categories", allCategories);
+        model.addAttribute("users", userService.getAllUsers());
 
         // Preserve filter parameters in the model
         model.addAttribute("categoryId", categoryId != null ? categoryId.toString() : "");

@@ -12,5 +12,5 @@ import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("SELECT p FROM Category c JOIN c.productList p WHERE c.id = :categoryId")
-    List<Product> findProductsByCategoryId(@Param("categoryId") Long categoryId);
+    Optional<List<Product>> findProductsByCategoryId(@Param("categoryId") Long categoryId);
 }

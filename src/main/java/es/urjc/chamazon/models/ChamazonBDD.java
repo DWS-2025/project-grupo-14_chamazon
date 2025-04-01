@@ -1,6 +1,5 @@
 package es.urjc.chamazon.models;
 
-import com.mysql.cj.jdbc.Blob;
 import es.urjc.chamazon.repositories.CategoryRepository;
 import es.urjc.chamazon.services.CategoryService;
 import es.urjc.chamazon.services.ProductService;
@@ -11,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.sql.SQLException;
-
+/*
 @Component
 public class ChamazonBDD implements CommandLineRunner {
 
@@ -35,10 +34,16 @@ public class ChamazonBDD implements CommandLineRunner {
         Category books = new Category("Books", "A collection of books");
         Category travel = new Category("Travel", "Travel gear");
 
-        categoryService.save(electronics);
-        categoryService.save(clothing);
-        categoryService.save(books);
-        categoryService.save(travel);
+        /*categoryService.createCategory(electronics);
+        categoryService.createCategory(clothing);
+        categoryService.createCategory(books);
+        categoryService.createCategory(travel);
+
+
+        categoryRepository.save(electronics);
+        categoryRepository.save(clothing);
+        categoryRepository.save(books);
+        categoryRepository.save(travel);
 
         Product laptop = new Product("Laptop Premium", 999.99F,
                 "High performance laptop with 16GB RAM",
@@ -91,4 +96,4 @@ public class ChamazonBDD implements CommandLineRunner {
 
         System.out.println("Categorías creadas correctamente.");
     }
-}
+}*/

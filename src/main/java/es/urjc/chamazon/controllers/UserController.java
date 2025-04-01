@@ -1,6 +1,7 @@
 
 package es.urjc.chamazon.controllers;
 
+import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.UserService;
 import org.springframework.beans.factory.ObjectProvider;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Controller
@@ -24,59 +26,61 @@ public class UserController {
 
     @GetMapping("/users")
     public String users(Model model) {
-        List<User> users = userService.findAll();
-        model.addAttribute("users", users);
-       return "/user/users";
+        try {
+            model.addAttribute("users", userService.getAllUsers());
+            return "/user/users";
+        }catch (NoSuchElementException e){
+            return "/error/error";
+        }
     }
 
     @GetMapping("/users/add")
     public String addUser(Model model) {
-        List<User> users = userService.findAll();
-        model.addAttribute("user", users.iterator().next());
+        List<UserDTO> users = userService.getAllUsers();
+
+        if (!users.isEmpty()) {
+            model.addAttribute("user", users.get(0));
+        } else {
+            model.addAttribute("user");
+        }
         return "/user/addUser";
     }
 
     @PostMapping("/users/add")
-    public String addUser(User newUser, Model model) {
-        System.out.println(newUser.getUserName());
-        System.out.println(newUser.getFirstName());
-        System.out.println(newUser.getId());
-        System.out.println(newUser.getEmail());
-
-        userService.save(newUser);
+    public String addUser(UserDTO newUserDTO, Model model) {
+        userService.save(newUserDTO);
         return "redirect:/users";
     }
 
     @GetMapping("user/delete")
     public String deleteUser(@RequestParam long id, Model model) {
-        userService.deleteById(id);
+        userService.deleteUser(id);
         return "redirect:/users";
     }
 
     @PostMapping("user/delete")
     public String deleteUser(@RequestParam long id) {
-        userService.deleteById(id);
+        userService.deleteUser(id);
         return "redirect:/users";
     }
 
     @GetMapping("users/edit")
     public String editUser(@RequestParam Long id, Model model) {
-        Optional<User> user = userService.findById(id);
-        if (user.isPresent()) {
-            model.addAttribute("user", user.get());
-            return "user/editUser";
-        }else{
+        try{
+            UserDTO userDTO = userService.getUser(id);
+            model.addAttribute("user", userDTO);
+            return "/user/editUser";
+        }catch (NoSuchElementException e){
             return "error/error";
         }
     }
 
     @PostMapping("/users/edit")
-    public String editUser(@RequestParam Long id, @RequestParam String userName, @RequestParam String password, @RequestParam String email, @RequestParam(required = false) String phone, @RequestParam(required = false) String address,  Model model) {
-        Optional<User> existingUser = userService.findById(id);
-        if (existingUser.isPresent()) {
-            userService.updateUser(id, userName, password, email, phone, address);
+    public String editUser(@RequestParam Long id, UserDTO userDTO) {
+        try {
+            userService.updateUser(userDTO.id(), userDTO);
             return "redirect:/users";
-        }else {
+        }catch (NoSuchElementException e){
             return "error/error";
         }
     }
