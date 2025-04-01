@@ -20,6 +20,12 @@
 
                     <div class="mb-3">
                         <label for="userId" class="form-label">Usuario:</label>
+                        <select name="userId" class="form-select" required>
+                            <option value="">Seleccione un usuario</option>
+                            {{#users}}
+                            <option value="{{id}}">{{name}}</option>
+                            {{/users}}
+                        </select>
                         <input type="text" class="form-control" id="userId" name="user" required>
                     </div>
 

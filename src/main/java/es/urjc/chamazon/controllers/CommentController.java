@@ -2,8 +2,10 @@ package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.models.Comment;
 import es.urjc.chamazon.models.Product;
+import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.CommentService;
 import es.urjc.chamazon.services.ProductService;
+import es.urjc.chamazon.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +26,8 @@ public class CommentController {
 
     @Autowired
     private ProductService productService;
+    @Autowired
+    private UserService userService;
 
 
     //Create Operations: method addCommentForm(GET) and addComment(POST) to add a new comment
@@ -36,15 +40,19 @@ public class CommentController {
             model.addAttribute("errorMessage", "Producto no encontrado");
             return "error/error";
         }
+        List<User> users = (List <User>) userService.findAll();
+        model.addAttribute("users", users);
         model.addAttribute("comment", new Comment());
         return "comment/addNewComment";
     }
 
     @PostMapping("/add")
-    public String addComment(@ModelAttribute Comment comment, @RequestParam("productId") Long productId) {
+    public String addComment(@RequestParam String commentTxt, @RequestParam int rating, @RequestParam("productId") Long productId) {
         Optional<Product> optionalProduct = productService.findById(productId);
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
+            Comment comment = new Comment(commentTxt,rating, null, null); //ptregutar a victor
+            //Crear objeto comment con los parámetros
             comment.setProduct(product);
             commentService.save(comment);
             return "redirect:/commentView/commentList?productId=" + productId;
@@ -104,7 +112,7 @@ public class CommentController {
         }
     }
 
-    @PostMapping("/edit/{id}") //Potential SQL Injection vulnerability
+    @PostMapping("/edit/{id}") //Potential SQL Injection vulnerability según lo que nos ha dicho Raúl , quitar ModelAttribute
     public String updateComment(@PathVariable Long id, @ModelAttribute Comment commentDetails) {
         Comment comment = commentService.findById(id).orElse(null);
         if (comment != null) {
