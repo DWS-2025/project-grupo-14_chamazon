@@ -59,10 +59,14 @@ public class UserService {
 
     public void save(UserDTO userDTO) {
         User user = toUser(userDTO);
-        userRepository.save(user);
+        this.saveUser(user);
         //falta añadir la parte del carrito
         shoppingCarService.firstSC(user);
     }
+    void saveUser(User user) {
+        userRepository.save(user);
+    }
+
     public void updateUser(Long id, UserDTO updatedUserDTO) {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {

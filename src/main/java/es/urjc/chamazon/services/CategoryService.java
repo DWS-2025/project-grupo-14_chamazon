@@ -41,6 +41,9 @@ public class CategoryService {
 
     public void createCategory(CategoryDTO categoryDTO) {
         Category category = toCategory(categoryDTO);
+        this.save(category);
+    }
+    void save(Category category) {
         categoryRepository.save(category);
     }
 

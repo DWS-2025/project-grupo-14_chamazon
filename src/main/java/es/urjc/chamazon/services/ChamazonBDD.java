@@ -1,13 +1,11 @@
-package es.urjc.chamazon.models;
+package es.urjc.chamazon.services;
 
-import com.mysql.cj.jdbc.Blob;
+import es.urjc.chamazon.models.Category;
+import es.urjc.chamazon.models.Product;
+import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.repositories.CategoryRepository;
-import es.urjc.chamazon.services.CategoryService;
-import es.urjc.chamazon.services.ProductService;
-import es.urjc.chamazon.services.UserService;
 
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -95,8 +93,8 @@ public class ChamazonBDD{
 
 
 
-        userService.save(new User("Admin", "PepeAdmin", "Pepe", "Montero", "123", "pepe@mail.com", "098", "q"));
-        userService.save(new User("Cliente", "User2", "Maria", "Carrera ", "321", "maria@mail.com", "100", "p"));
+        userService.saveUser(new User("Admin", "PepeAdmin", "Pepe", "Montero", "123", "pepe@mail.com", "098", "q"));
+        userService.saveUser(new User("Cliente", "User2", "Maria", "Carrera ", "321", "maria@mail.com", "100", "p"));
 
 
         System.out.println("Categorías creadas correctamente.");
