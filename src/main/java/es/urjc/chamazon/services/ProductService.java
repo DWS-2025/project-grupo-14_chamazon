@@ -1,6 +1,5 @@
 package es.urjc.chamazon.services;
 
-import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.dto.ProductMapper;
@@ -71,21 +70,45 @@ public class ProductService {
         return productRepository.findByRating(rating);
     }
 
-    public void createProduct(ProductDTO productDTO) {
-        Product product = toProduct(productDTO);
-        this.save(product);
-    }
 
+    //for bbdd
     public void save(Product product) {
         productRepository.save(product);
     }
 
-    //do mapper about product
-    public void save(Product product, MultipartFile imageFile) throws IOException {
-        if (!imageFile.isEmpty()) {
-            product.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
+   // for updating
+    public ProductDTO save(Long id, ProductDTO productDTO, MultipartFile imageFile) throws IOException {
+        Optional<Product> product = productRepository.findById(id);
+
+        if (!product.isPresent()) {
+            return null;
         }
-        this.save(product);
+
+        Product existingProduct = product.get();
+
+        existingProduct.setName(productDTO.name());
+        existingProduct.setDescription(productDTO.description());
+        existingProduct.setPrice(productDTO.price());
+        existingProduct.setRating(productDTO.rating());
+
+        if (!imageFile.isEmpty()) {
+            existingProduct.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
+        }
+
+        productRepository.save(existingProduct);
+        return toDTO(existingProduct);
+    }
+
+ //for adding new products
+    public ProductDTO save(ProductDTO productDTO, MultipartFile imageFile) throws IOException {
+        Product newProduct = toProduct(productDTO);
+
+        if (!imageFile.isEmpty()) {
+            newProduct.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
+        }
+
+        productRepository.save(newProduct);
+        return toDTO(newProduct);
     }
 
     public void deleteById(long id) {
@@ -109,10 +132,7 @@ public class ProductService {
         } else if (minPrice != null && maxPrice != null) {
             if (rating != null) {
                 // If we need to filter by price range AND rating
-                return productRepository.findByPriceBetween(minPrice, maxPrice)
-                        .stream()
-                        .filter(p -> p.getRating() >= rating)
-                        .collect(Collectors.toList());
+                return productRepository.findByPriceBetween(minPrice, maxPrice).stream().filter(p -> p.getRating() >= rating).collect(Collectors.toList());
             } else {
                 // Just price range
                 return productRepository.findByPriceBetween(minPrice, maxPrice);

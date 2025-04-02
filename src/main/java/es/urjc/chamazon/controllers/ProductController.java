@@ -29,9 +29,6 @@ import java.sql.Blob;
 public class ProductController {
 
     @Autowired
-    private ProductMapper productMapper;
-
-    @Autowired
     private ProductService productService;
 
     @Autowired
@@ -87,16 +84,18 @@ public class ProductController {
     }
 
     @PostMapping("/products/add")
-    public String addProduct(Model model, @ModelAttribute Product product,
+    public String addProduct(Model model, @ModelAttribute ProductDTO productDTO,
                              @RequestParam(value = "categoryId", required = false) List<Long> categoryId,
                              @RequestParam("imageFileParameter") MultipartFile imageFileParameter) throws IOException {
         // Save the product with the img file to get the id first before saving to
         // category list and then save the product to the category list.
 
-        productService.save(product, imageFileParameter);
+        //productService.save(product, imageFileParameter);
+
+        ProductDTO savedProduct = productService.save(productDTO, imageFileParameter);
 
         // Get the id of the product to add it to the category list
-        Long productId = product.getId();
+        Long productId = savedProduct.id();
         if (categoryId != null && !categoryId.isEmpty()) {
             for (Long categoryIdentified : categoryId) {
                 //categoryService.addProductToCategory(categoryIdentified, productId);
@@ -127,24 +126,20 @@ public class ProductController {
                                 @RequestParam("imageFileParameter") MultipartFile imageFileParameter)
             throws IOException {
         // Get existing product at the exact moment by editing
+        //Optional<ProductDTO> existProductActually = productService.findById(id);
         Optional<Product> existProductActually = productService.findById(id);
         if (!existProductActually.isPresent()) {
             return "redirect:/products";
         }
-        Product existProduct = existProductActually.get();
-        // then save the new product with corresponding id and elements.
-        existProduct.setName(newProduct.getName());
-        existProduct.setDescription(newProduct.getDescription());
-        existProduct.setPrice(newProduct.getPrice());
 
+        //Create DTO
+        ProductDTO productDTO = new ProductDTO(newProduct.getId(),
+                newProduct.getName(), newProduct.getPrice(),
+                newProduct.getDescription(), newProduct.getRating(), existProductActually.get().getCategoryList(), existProductActually.get().getShoppingCarList(), newProduct.getImageFile() != null);
 
         // make sure the image works properly depending on which option did they choose
-        if (!imageFileParameter.isEmpty()) {
-            productService.save(existProduct, imageFileParameter);
-        } else {
-            // keep the existing image and just save the updated product
-            productService.save(existProduct);
-        }
+
+        productService.save(id, productDTO, imageFileParameter);
 
         // remove the product from ALL its current categories
         List<CategoryDTO> allCategories = categoryService.getCategories();
