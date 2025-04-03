@@ -115,20 +115,22 @@ public class CommentController {
         }
     }
 
-    @PostMapping("/edit/{id}") //Potential SQL Injection vulnerability según lo que nos ha dicho Raúl , quitar ModelAttribute
-    public String updateComment(@PathVariable Long id, @ModelAttribute Comment commentDetails) {
-        Comment comment = commentService.findById(id).orElse(null);
-        if (comment != null) {
-            comment.setComment(commentDetails.getComment());
-            comment.setRating(commentDetails.getRating());
-            comment.setUser(commentDetails.getUser());
+    @PostMapping("/edit/{id}")
+    public String updateComment(@PathVariable Long id, @RequestParam("comment") String commentTxt, @RequestParam int rating) { //comment is the name= received in the editComment.html, is beacuse we need to know the name of the input field requiered in the form
+        Optional<Comment> optionalComment = commentService.findById(id);
+
+        if (optionalComment.isPresent()) {
+            Comment comment = optionalComment.get();
+            comment.setComment(commentTxt);
+            comment.setRating(rating);
+
             commentService.save(comment);
-            if (comment.getProduct() != null) {
-                return "redirect:/commentView/commentList?productId=" + comment.getProduct().getId();
-            }
+            return "redirect:/commentView/commentList?productId=" + comment.getProduct().getId();
         }
+
         return "redirect:/commentView/commentList";
     }
+
 
 
     //Delete Operation: method deleteComment(POST) to delete a comment (delete with a button in the comment view)
