@@ -1,18 +1,19 @@
 
 package es.urjc.chamazon.controllers;
 
+import es.urjc.chamazon.dto.CategoryDTO;
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.services.CategoryService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Controller
@@ -29,9 +30,12 @@ public class CategoryController {
 
     @GetMapping("/categories")
     public String getAllCategories(Model model) {
-        List<Category> categories = categoryService.findAll();
-        model.addAttribute("categories", categories);
-        return "/category/categories";
+        try{
+            model.addAttribute("categories", categoryService.getCategories());
+            return "/category/categories";
+        }catch (NoSuchElementException e){
+            return "error/error";
+        }
 
     }
 
@@ -41,53 +45,50 @@ public class CategoryController {
     }
 
     @PostMapping("/categories/add")
-    public String addCategory(Category newCategory) {
-        categoryService.save(newCategory);
+    public String addCategory(CategoryDTO newCategoryDTO) {
+        categoryService.createCategory(newCategoryDTO);
         return "redirect:/categories";
     }
 
     @PostMapping ("/categories/delete")
-    public String deleteCategory(@RequestParam long categoryId) {
-        Optional<Category> category = categoryService.findById(categoryId);
-        if (category.isPresent()) {
-            categoryService.deleteById(categoryId);
+    public String deleteCategory(@RequestParam Long id) {
+        try {
+            categoryService.deleteCategory(id);
             return "redirect:/categories";
-        }else{
+        }catch (NoSuchElementException e) {
             return "/error/error";
         }
     }
 
     @GetMapping("/categories/edit")
-    public String editCategory(@RequestParam Long categoryId, Model model) {
-        Optional <Category> category = categoryService.findById(categoryId);
-        if (category.isPresent()) {
-            model.addAttribute("category", category.get());
-        }else {
+    public String editCategory(@RequestParam Long id, Model model) {
+        try {
+            CategoryDTO categoryDTO = categoryService.getCategory(id);
+            model.addAttribute("category", categoryDTO);
+            return "/category/editCategory";
+        } catch (NoSuchElementException e) {
             return "/error/error";
         }
-        return "/category/editCategory";
     }
 
     @PostMapping("/categories/edit")
-    public String editCategory(@RequestParam Long categoryId, @RequestParam String categoryName, @RequestParam String categoryDescription, Model model) {
-        Optional <Category> category = categoryService.findById(categoryId);
-        if (category.isPresent()) {
-            categoryService.editCategory(categoryId, categoryName, categoryDescription);
+    public String editCategory(CategoryDTO updatedCategoryDTO, Model model) {
+        try {
+            categoryService.editCategory(updatedCategoryDTO.id(), updatedCategoryDTO);
             return "redirect:/categories";
-        }else {
+        }catch (NoSuchElementException e) {
             return "/error/error";
         }
     }
 
     @GetMapping("/categories/products")
     public String getProductsByCategory(@RequestParam Long categoryId, Model model) {
-        Optional<Category> category = categoryService.findById(categoryId);
-        if (category.isPresent()) {
-            model.addAttribute("category", category.get());
+        try{
+            model.addAttribute("category", categoryService.getCategory(categoryId));
             model.addAttribute("products", categoryService.getProductsByCategoryId(categoryId));
             return "product/products_list";
-        } else {
-            return "error/error";
+        } catch (NoSuchElementException e) {
+            return "/error/error";
         }
     }
 }

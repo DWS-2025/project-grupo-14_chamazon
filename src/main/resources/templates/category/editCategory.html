@@ -12,16 +12,16 @@
             <div class="card shadow-sm p-4">
                 <h2 class="mb-3 text-center text-primary">Editar Categoría</h2>
                 <form action="/categories/edit" method="post">
-                    <input type="hidden" name="categoryId" value="{{category.id}}">
+                    <input type="hidden" name="id" value="{{category.id}}">
 
                     <div class="mb-3">
-                        <label for="categoryName" class="form-label">Nombre de la categoría:</label>
-                        <input type="text" class="form-control" id="categoryName" name="categoryName" value="{{category.name}}" required>
+                        <label for="name" class="form-label">Nombre de la categoría:</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{category.name}}" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="categoryDescription" class="form-label">Descripción de la categoría:</label>
-                        <input type="text" class="form-control" id="categoryDescription" name="categoryDescription" value="{{category.description}}" required>
+                        <label for="description" class="form-label">Descripción de la categoría:</label>
+                        <input type="text" class="form-control" id="description" name="description" value="{{category.description}}" required>
                     </div>
 
                     <button type="submit" class="btn btn-rimary w-100">Modificar</button>

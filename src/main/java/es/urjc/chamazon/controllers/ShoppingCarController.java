@@ -26,7 +26,7 @@ public class ShoppingCarController {
 
     @GetMapping("/shoppingCar/History/{idUser}")
     public String shoppingCarHistory (@PathVariable Long idUser, Model model) {
-        model.addAttribute("userName", userService.findById(idUser).get().getUserName());
+        model.addAttribute("userName", userService.getUser(idUser).userName());
         List<ShoppingCar> listShoppingCar = shoppingCarService.getShoppingCarListByUser(idUser);
 
         model.addAttribute("listShoppingCar", listShoppingCar);

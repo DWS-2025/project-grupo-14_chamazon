@@ -4,7 +4,6 @@ package es.urjc.chamazon.services;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.ShoppingCar;
 import es.urjc.chamazon.models.User;
-import es.urjc.chamazon.repositories.ProductRepository;
 import es.urjc.chamazon.repositories.ShoppingCarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,10 +64,10 @@ public class ShoppingCarService {
         public ShoppingCar getActualShoppingCarByIdUser(Long idUser) {
             if(shoppingCarRepository.existsByUser_IdAndDateSoldNull(idUser)){
                 return shoppingCarRepository.findByUser_IdAndDateSoldNull(idUser);
-            }else{
-                return shoppingCarRepository.save(new ShoppingCar(userService.findById(idUser).get()));
+            }else if (shoppingCarRepository.existsByUser_Id(idUser)){
+                return shoppingCarRepository.save(new ShoppingCar(userService.getUserById(idUser)));
             }
-
+            return null;
         }
 
         //Return the ended ShoppingCar Purchase
