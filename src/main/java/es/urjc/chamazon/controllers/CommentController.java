@@ -1,5 +1,6 @@
 package es.urjc.chamazon.controllers;
 
+import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.models.Comment;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.User;
@@ -40,7 +41,7 @@ public class CommentController {
             model.addAttribute("errorMessage", "Producto no encontrado");
             return "error/error";
         }
-        List<User> users = (List <User>) userService.findAll();
+        List<UserDTO> users = (List <UserDTO>) userService.getAllUsers();
         model.addAttribute("users", users);
         model.addAttribute("comment", new Comment());
         return "comment/addNewComment";
@@ -48,16 +49,10 @@ public class CommentController {
 
     @PostMapping("/add")
     public String addComment(@RequestParam String commentTxt, @RequestParam int rating, @RequestParam Long userId , @RequestParam Long productId) {
-        Optional<Product> optionalProduct = productService.findById(productId);
-        Optional<User> optionalUser = userService.findById(userId);
+        boolean isCreated = commentService.createComment(commentTxt, rating, userId, productId);
 
-        if (optionalProduct.isPresent() && optionalUser.isPresent()) {
-            Product product = optionalProduct.get();
-            User user = optionalUser.get();
+        if (isCreated) {
 
-            Comment comment = new Comment(commentTxt,rating, user, product); //Create the comment object with the data from the form
-
-            commentService.save(comment);
             return "redirect:/commentView/commentList?productId=" + productId;
         } else {
             // Manejar el caso en que el producto no se encuentra
