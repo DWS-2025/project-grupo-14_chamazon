@@ -47,13 +47,16 @@ public class CommentController {
     }
 
     @PostMapping("/add")
-    public String addComment(@RequestParam String commentTxt, @RequestParam int rating, @RequestParam("productId") Long productId) {
+    public String addComment(@RequestParam String commentTxt, @RequestParam int rating, @RequestParam Long userId , @RequestParam Long productId) {
         Optional<Product> optionalProduct = productService.findById(productId);
-        if (optionalProduct.isPresent()) {
+        Optional<User> optionalUser = userService.findById(userId);
+
+        if (optionalProduct.isPresent() && optionalUser.isPresent()) {
             Product product = optionalProduct.get();
-            Comment comment = new Comment(commentTxt,rating, null, null); //ptregutar a victor
-            //Crear objeto comment con los parámetros
-            comment.setProduct(product);
+            User user = optionalUser.get();
+
+            Comment comment = new Comment(commentTxt,rating, user, product); //Create the comment object with the data from the form
+
             commentService.save(comment);
             return "redirect:/commentView/commentList?productId=" + productId;
         } else {

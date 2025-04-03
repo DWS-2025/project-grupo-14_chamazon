@@ -20,18 +20,17 @@
 
                     <div class="mb-3">
                         <label for="userId" class="form-label">Usuario:</label>
-                        <select name="userId" class="form-select" required>
+                        <select id="userId" name="userId" class="form-select" required>
                             <option value="">Seleccione un usuario</option>
                             {{#users}}
-                            <option value="{{id}}">{{UserName}}</option>
+                            <option value="{{id}}">{{userName}}</option> <!-- userName must be the same as the atributes or the getter methods without the get, but better in camelCase -->
                             {{/users}}
                         </select>
-                        <input type="text" class="form-control" id="userId" name="user" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="commentText" class="form-label">Comentario:</label>
-                        <textarea class="form-control" id="commentText" name="comment" rows="3" required></textarea>
+                        <label for="commentTxt" class="form-label">Comentario:</label>
+                        <textarea class="form-control" id="commentTxt" name="commentTxt" rows="3" required></textarea> <!-- name debe ser igual a lo que espera el controlador y el for y id que sean iguales también -->
                     </div>
 
                     <div class="mb-3">

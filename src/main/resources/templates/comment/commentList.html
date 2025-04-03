@@ -14,7 +14,8 @@
             <select id="productSelect" name="product" class="form-select" onchange="loadComments()">
                 <option value="">Seleccione un producto</option>
                 {{#products}}
-                <option value="{{id}}"> {{#selectedProduct}}selected{{/selectedProduct}}>{{name}}</option>                {{/products}}
+                <option value="{{id}}">{{name}}</option>
+                {{/products}}
             </select>
         </div>
         <div>
@@ -24,14 +25,16 @@
 
     <div id="commentsList" class="mt-4">
         {{#comments}}
-        <div class="list-group-item">
-            <p><strong>Usuario:</strong> {{user.name}}</p>
-            <p><strong>Calificación:</strong> {{rating}}</p>
-            <p><strong>Comentario:</strong> {{comment}}</p>
-            <a class="btn btn-warning" href="/commentView/edit/{{id}}">Editar</a>
-            <form action="/commentView/delete/{{id}}" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-danger">Eliminar</button>
-            </form>
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+                <p><strong>Usuario:</strong> {{user.userName}}</p>
+                <p><strong>Calificación:</strong> {{rating}}</p>
+                <p><strong>Comentario:</strong> {{comment}}</p>
+                <a class="btn btn-warning me-2" href="/commentView/edit/{{id}}">Editar</a>
+                <form action="/commentView/delete/{{id}}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
         </div>
         {{/comments}}
     </div>
