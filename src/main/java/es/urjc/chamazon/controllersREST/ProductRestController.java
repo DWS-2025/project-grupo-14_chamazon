@@ -38,11 +38,11 @@ public class ProductRestController {
         }
     }
 
-    @PostMapping("/products/") // same as save when the user has added a new product
+    /*@PostMapping("/products/") // same as save when the user has added a new product
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO, @RequestParam MultipartFile imageFile) {
         productService.save(productDTO, imageFile);
 
-    }
+    }*/
 
 
 }
