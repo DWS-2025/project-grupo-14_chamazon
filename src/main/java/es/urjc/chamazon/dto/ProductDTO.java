@@ -12,8 +12,7 @@ public record ProductDTO(
     String description,
     Float rating,
     List<Category> categoryList,
-    List<ShoppingCar> shoppingCarList,
-    boolean hasImg
+    List<ShoppingCar> shoppingCarList
 ){
 }
     

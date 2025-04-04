@@ -123,7 +123,7 @@ public class ProductController {
     @PostMapping("products/{id}/edit")
     public String updateProduct(@PathVariable long id, Model model, @ModelAttribute("product") Product newProduct,
                                 @RequestParam(value = "categoryId", required = false) List<Long> newCategoryIds,
-                                @RequestParam("imageFileParameter") MultipartFile imageFileParameter)
+                                @RequestParam(value = "imageFileParameter", required = false) MultipartFile imageFileParameter)
             throws IOException {
         // Get existing product at the exact moment by editing
         //Optional<ProductDTO> existProductActually = productService.findById(id);
@@ -132,10 +132,19 @@ public class ProductController {
             return "redirect:/products";
         }
 
+        /*Meterlo en el service el proceso logico
+        Product prs = existProductActually.get();
+
+        prs.setName(newProduct.getName());
+        prs.setPrice(newProduct.getPrice());
+        prs.setDescription(newProduct.getDescription());
+
+        productService.save(prs, newProduct.getImageFile());
+        */
         //Create DTO
         ProductDTO productDTO = new ProductDTO(newProduct.getId(),
                 newProduct.getName(), newProduct.getPrice(),
-                newProduct.getDescription(), newProduct.getRating(), existProductActually.get().getCategoryList(), existProductActually.get().getShoppingCarList(), newProduct.getImageFile() != null);
+                newProduct.getDescription(), newProduct.getRating(), existProductActually.get().getCategoryList(), existProductActually.get().getShoppingCarList());
 
         // make sure the image works properly depending on which option did they choose
 

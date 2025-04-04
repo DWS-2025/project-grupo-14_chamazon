@@ -72,7 +72,7 @@ public class ProductService {
 
 
     //for bbdd
-    public void save(Product product) {
+    void save(Product product) {
         productRepository.save(product);
     }
 
@@ -95,19 +95,23 @@ public class ProductService {
             existingProduct.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
         }
 
-        productRepository.save(existingProduct);
+        this.save(existingProduct);
         return toDTO(existingProduct);
     }
 
  //for adding new products
-    public ProductDTO save(ProductDTO productDTO, MultipartFile imageFile) throws IOException {
+    public ProductDTO save(ProductDTO productDTO, MultipartFile imageFile){
         Product newProduct = toProduct(productDTO);
 
         if (!imageFile.isEmpty()) {
-            newProduct.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
+            try {
+                newProduct.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
+            } catch (IOException e) {
+                this.save(newProduct);
+                throw new RuntimeException(e);
+            }
         }
-
-        productRepository.save(newProduct);
+        this.save(newProduct);
         return toDTO(newProduct);
     }
 

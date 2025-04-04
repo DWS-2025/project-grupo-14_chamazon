@@ -12,7 +12,6 @@ import java.util.Collection;
 @Component
 
 public interface ProductMapper {
-    @Mapping(target = "hasImg", expression = "java(product.getImageFile() != null)")
     ProductDTO toDTO(Product product);
     Product toProduct(ProductDTO productDTO);
     Collection<ProductDTO> toDTOs(Collection<Product> products);
