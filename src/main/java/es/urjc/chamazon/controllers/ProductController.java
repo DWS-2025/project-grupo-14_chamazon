@@ -1,5 +1,7 @@
 package es.urjc.chamazon.controllers;
 
+import es.urjc.chamazon.dto.ProductDTO;
+import es.urjc.chamazon.dto.ProductMapper;
 import es.urjc.chamazon.dto.CategoryDTO;
 import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.models.Category;
@@ -25,6 +27,7 @@ import java.sql.Blob;
 
 @Controller
 public class ProductController {
+
     @Autowired
     private ProductService productService;
 
@@ -42,7 +45,7 @@ public class ProductController {
 
     @GetMapping("/products")
     public String products(Model model, @RequestParam(required = false) Long userId) {
-        model.addAttribute("products", productService.findAllProducts());
+        model.addAttribute("products", productService.getProducts());
         model.addAttribute("users", userService.getAllUsers());
         model.addAttribute("categories", categoryService.getCategories());
         model.addAttribute("selectedUserId", userId);
@@ -51,9 +54,9 @@ public class ProductController {
 
     @GetMapping("/products/{id}")
     public String product(@PathVariable long id, Model model) {
-        Optional<Product> product = productService.findById(id);
-        if (product.isPresent()) {
-            model.addAttribute("product", product.get());
+        ProductDTO productDTO = productService.getProduct(id); // findById with DTO
+        if (productDTO != null) {
+            model.addAttribute("product", productDTO);
             return "product/product_detail";
         } else {
             return "redirect:/products";
@@ -62,7 +65,7 @@ public class ProductController {
 
     @GetMapping("/products/{id}/image")
     public ResponseEntity<Resource> downloadImage(@PathVariable long id) throws SQLException {
-        Optional<Product> product = productService.findById(id);
+        Optional<Product> product = productService.findById(id); // findById with entity
         if (product.isPresent() && product.get().getImageFile() != null) {
             Blob image = product.get().getImageFile();
             Resource file = new InputStreamResource(image.getBinaryStream());
@@ -81,16 +84,18 @@ public class ProductController {
     }
 
     @PostMapping("/products/add")
-    public String addProduct(Model model, @ModelAttribute Product product,
+    public String addProduct(Model model, @ModelAttribute ProductDTO productDTO,
                              @RequestParam(value = "categoryId", required = false) List<Long> categoryId,
                              @RequestParam("imageFileParameter") MultipartFile imageFileParameter) throws IOException {
         // Save the product with the img file to get the id first before saving to
         // category list and then save the product to the category list.
 
-        productService.save(product, imageFileParameter);
+        //productService.save(product, imageFileParameter);
+
+        ProductDTO savedProduct = productService.save(productDTO, imageFileParameter);
 
         // Get the id of the product to add it to the category list
-        Long productId = product.getId();
+        Long productId = savedProduct.id();
         if (categoryId != null && !categoryId.isEmpty()) {
             for (Long categoryIdentified : categoryId) {
                 //categoryService.addProductToCategory(categoryIdentified, productId);
@@ -118,26 +123,32 @@ public class ProductController {
     @PostMapping("products/{id}/edit")
     public String updateProduct(@PathVariable long id, Model model, @ModelAttribute("product") Product newProduct,
                                 @RequestParam(value = "categoryId", required = false) List<Long> newCategoryIds,
-                                @RequestParam("imageFileParameter") MultipartFile imageFileParameter)
+                                @RequestParam(value = "imageFileParameter", required = false) MultipartFile imageFileParameter)
             throws IOException {
         // Get existing product at the exact moment by editing
+        //Optional<ProductDTO> existProductActually = productService.findById(id);
         Optional<Product> existProductActually = productService.findById(id);
         if (!existProductActually.isPresent()) {
             return "redirect:/products";
         }
-        Product existProduct = existProductActually.get();
-        // then save the new product with corresponding id and elements.
-        existProduct.setName(newProduct.getName());
-        existProduct.setDescription(newProduct.getDescription());
-        existProduct.setPrice(newProduct.getPrice());
+
+        /*Meterlo en el service el proceso logico
+        Product prs = existProductActually.get();
+
+        prs.setName(newProduct.getName());
+        prs.setPrice(newProduct.getPrice());
+        prs.setDescription(newProduct.getDescription());
+
+        productService.save(prs, newProduct.getImageFile());
+        */
+        //Create DTO
+        ProductDTO productDTO = new ProductDTO(newProduct.getId(),
+                newProduct.getName(), newProduct.getPrice(),
+                newProduct.getDescription(), newProduct.getRating(), existProductActually.get().getCategoryList(), existProductActually.get().getShoppingCarList());
 
         // make sure the image works properly depending on which option did they choose
-        if (!imageFileParameter.isEmpty()) {
-            productService.save(existProduct, imageFileParameter);
-        } else {
-            // keep the existing image and just save the updated product
-            productService.save(existProduct);
-        }
+
+        productService.save(id, productDTO, imageFileParameter);
 
         // remove the product from ALL its current categories
         List<CategoryDTO> allCategories = categoryService.getCategories();
@@ -194,7 +205,7 @@ public class ProductController {
             filteredProducts = productService.findByFilters(categoryId, minPrice, maxPrice, rating);
         } else {
             // If no filters are applied, show all products
-            productService.findAllProducts();
+            productService.getProducts();
         }
 
         // Add all necessary attributes to the model

@@ -55,6 +55,10 @@ public class ChamazonBDD{
                 4.3F);
 
 
+        Product raton = new Product("Raton", 9.99F,
+                "Raton para el ordenador",
+                4.3F);
+
         //Safe secondary entity
         categoryService.save(electronics);
         categoryService.save(clothing);
