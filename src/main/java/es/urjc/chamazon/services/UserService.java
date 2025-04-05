@@ -71,8 +71,13 @@ public class UserService {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             User user = toUser(updatedUserDTO);
-            user.setId(id);
-            userRepository.save(user);
+            userOptional.get().setId(id);
+            userOptional.get().setUserName(user.getUserName());
+            userOptional.get().setPassword(user.getPassword());
+            userOptional.get().setEmail(user.getEmail());
+            userOptional.get().setPhone(user.getPhone());
+            userOptional.get().setAddress(user.getAddress());
+            userRepository.save(userOptional.get());
         }
     }
 

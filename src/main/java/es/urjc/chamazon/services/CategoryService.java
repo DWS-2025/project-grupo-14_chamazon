@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class CategoryService {
@@ -67,7 +66,6 @@ public class CategoryService {
         Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
 
         if (categoryOptional.isPresent()) {
-
             Category category = categoryOptional.get();
             category.setName(updatedCategoryDTO.name());
             category.setDescription(updatedCategoryDTO.description());
@@ -79,11 +77,10 @@ public class CategoryService {
         return categoryRepository.findProductsByCategoryId(id);
     }
 
-    /*public void addProductToCategory(CategoryDTO categoryDTO, ProductDTO productDTO) {
+    public void addProductToCategory(long categoryId, long productId) {
 
-        Category category = toCategory(categoryDTO);
 
-        Optional <Category> categoryOpt = categoryRepository.findById(category.getId());
+        Optional <Category> categoryOpt = categoryRepository.findById(categoryId);
         Optional <Product> productOpt = productService.findById(productId);
 
         if (categoryOpt.isPresent() && productOpt.isPresent()) {
@@ -92,7 +89,7 @@ public class CategoryService {
             productOpt.get().getCategoryList().add(categoryOpt.get());
             categoryRepository.save(categoryOpt.get());
         }
-    }*/
+    }
 
     public void removeProductFromCategory(Long categoryId, Long productId) {
 
@@ -120,5 +117,6 @@ public class CategoryService {
     private List<Category> toCategories(List<CategoryDTO> categoriesDTO){
         return categoryMapper.toCategories(categoriesDTO);
     }
+
 }
 

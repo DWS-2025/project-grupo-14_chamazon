@@ -1,9 +1,12 @@
 package es.urjc.chamazon.models;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.sql.Blob;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -19,6 +22,8 @@ public class Product {
     private Float rating;
 
     @Lob
+    @Column(name = "imageFile")
+    @JsonIgnore
     private Blob imageFile;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
@@ -42,12 +47,25 @@ public class Product {
         this.imageFile = imageFile;
         this.rating = rating;
     }
+    @JsonProperty("imageBase64")
+    public String getImageBase64() {
+        if (imageFile == null) {
+            return null;
+        }
+        try {
+            byte[] bytes = imageFile.getBytes(1, (int) imageFile.length());
+            return Base64.getEncoder().encodeToString(bytes);
+        } catch (SQLException e) {
+            return null;
+        }
+    }
     public Product(String name, Float price, String description, Float rating) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.rating = rating;
     }
+
 
 
     public List<Category> getCategoryList() {
