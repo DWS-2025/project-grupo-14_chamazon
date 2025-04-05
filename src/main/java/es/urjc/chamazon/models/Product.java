@@ -1,5 +1,6 @@
 package es.urjc.chamazon.models;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
