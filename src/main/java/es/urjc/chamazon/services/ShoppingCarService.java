@@ -1,6 +1,8 @@
 
 package es.urjc.chamazon.services;
 
+import es.urjc.chamazon.dto.ProductDTO;
+import es.urjc.chamazon.dto.ProductMapper;
 import es.urjc.chamazon.dto.ShoppingCarDTO;
 import es.urjc.chamazon.dto.ShoppingCarMapper;
 import es.urjc.chamazon.models.Product;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +24,8 @@ public class ShoppingCarService {
 
     @Autowired
     private ShoppingCarMapper shoppingCarMapper;
+    @Autowired
+    private ProductMapper productMapper;
 
     @Autowired
     private ShoppingCarRepository shoppingCarRepository;
@@ -124,7 +129,8 @@ public class ShoppingCarService {
             ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
             Optional <Product> prOpt = productService.findById(idProduct);
             if (prOpt.isPresent()) {
-                sc.getProductList().add(prOpt.get());
+                Product pr = prOpt.get();
+                sc.getProductList().add(pr);
                 shoppingCarRepository.save(sc);
             }
             return toDTO(sc);
@@ -158,18 +164,18 @@ public class ShoppingCarService {
         }
 
 
-        List<ProductDTO> getProductListFromActualShoppingCar(Long idUser) {
+        public List<ProductDTO> getProductListFromActualShoppingCar(Long idUser) {
             ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-            return getProductListFromSC(sc);
+            return getProductDTOListFromSC(sc);
         }
 
-        List<ProductDTO> getProductListByShoppingCarId(Long idSC) {
+        public List<ProductDTO> getProductListDTOByShoppingCarId(Long idSC) {
             ShoppingCar sc = this.getShoppingCarById(idSC);
-            return getProductListFromSC(sc.getProductList());
+            return getProductDTOListFromSC(sc);
         }
 
         public List<ProductDTO> getProductDTOListFromSC(ShoppingCar sc) {
-            return productMapping.toDYO(sc.getProductList());
+            return (List<ProductDTO>) productMapper.toDTOs(sc.getProductList());
         }
 
 

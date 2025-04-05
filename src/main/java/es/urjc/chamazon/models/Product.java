@@ -21,16 +21,16 @@ public class Product {
     @Lob
     private Blob imageFile;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     private List<Comment> commentList;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Category> categoryList = new ArrayList<Category>();
 
-    @ManyToMany(mappedBy = "productList")
+    @ManyToMany(mappedBy = "productList", fetch = FetchType.EAGER)
     private List<ShoppingCar> shoppingCarList;
 
     public Product() { }

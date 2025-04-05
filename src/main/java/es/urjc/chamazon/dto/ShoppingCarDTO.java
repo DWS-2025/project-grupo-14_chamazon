@@ -11,8 +11,8 @@ public class ShoppingCarDTO {
 
     private Long id;
     private LocalDateTime dateSold;
-    private User user;
-    private List<Product> productList;
+    private UserDTO user;
+    private List<ProductDTO> productList;
 
 
     public Long getId() {
@@ -31,19 +31,20 @@ public class ShoppingCarDTO {
         this.dateSold = dateSold;
     }
 
-    public User getUser() {
+
+    public UserDTO getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserDTO user) {
         this.user = user;
     }
 
-    public List<Product> getProductList() {
+    public List<ProductDTO> getProductList() {
         return productList;
     }
 
-    public void setProductList(List<Product> productList) {
+    public void setProductList(List<ProductDTO> productList) {
         this.productList = productList;
     }
 

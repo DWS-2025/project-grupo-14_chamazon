@@ -1,5 +1,6 @@
 package es.urjc.chamazon.controllers;
 
+import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.models.Comment;
 import es.urjc.chamazon.models.Product;
@@ -62,7 +63,7 @@ public class CommentController {
 
     @GetMapping("/commentList")
     public String getCommentList(@RequestParam(required = false) Long productId, Model model) {
-        List<Product> products = (List <Product>) productService.findAllProducts();
+        List<ProductDTO> products = (List <ProductDTO>) productService.getProducts();
         model.addAttribute("products", products);
 
         if (productId != null) {
