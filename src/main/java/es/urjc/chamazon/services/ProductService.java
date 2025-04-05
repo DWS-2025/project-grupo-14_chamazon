@@ -4,17 +4,24 @@ import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.dto.ProductMapper;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.Collection;
 import java.util.List;
-
+import java.util.NoSuchElementException;
 
 import es.urjc.chamazon.repositories.ProductRepository;
 
@@ -32,6 +39,12 @@ public class ProductService {
     public Collection<ProductDTO> getProducts() { // findAllProducts
         return toDTOs(productRepository.findAll());
     } //findAllProducts
+
+
+    /*public Page<ProductDTO> getProducts(Pageable pageable) { // findAllProducts with pagination
+        return productRepository.findAll();
+    } //findAllProducts with pagination
+    */
 
     private Collection<ProductDTO> toDTOs(Collection<Product> products) {
         return productMapper.toDTOs(products);
@@ -109,6 +122,54 @@ public class ProductService {
         return toDTO(newProduct);
     }
 
+
+    public Product getEntityId(long id) { // for img creation
+        return productRepository.findById(id).orElseThrow();
+    }
+
+    public void createProductImage (long id, URI location, InputStream imageFile, long size){
+        Product product = getEntityId(id);
+
+        product.setImage(location.toString());
+        product.setImageFile(BlobProxy.generateProxy(imageFile, size));
+        save(product);
+    }
+
+    public Resource getProductImage(long id) throws SQLException{
+        Product product = getEntityId(id);
+        if(product.getImage()!= null){
+            return new InputStreamResource(product.getImageFile().getBinaryStream());
+		} else {
+			throw new NoSuchElementException();
+        }
+    }
+
+    public void replaceProductImage(long id, InputStream inputStream, long size) {
+
+		Product product = getEntityId(id);
+
+		if(product.getImage() == null){
+			throw new NoSuchElementException();
+		}
+
+		product.setImageFile(BlobProxy.generateProxy(inputStream, size));
+
+		save(product);
+	}
+
+	public void deletePostImage(long id) {
+
+		Product product = getEntityId(id);
+
+		if(product.getImage() == null){
+			throw new NoSuchElementException();
+		}
+
+		product.setImageFile(null);
+		product.setImage(null);
+
+		save(product);
+	}
 
 
     public void deleteById(long id) {

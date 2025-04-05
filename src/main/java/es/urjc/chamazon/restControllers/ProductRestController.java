@@ -5,12 +5,19 @@ import es.urjc.chamazon.dto.ProductMapper;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+
 import java.io.IOException;
 import java.net.URI;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -26,8 +33,15 @@ public class ProductRestController {
     @Autowired
     ProductMapper productMapper;
 
-    @GetMapping("/")
-    public Collection<ProductDTO> getProducts() { // same as findall
+    /*
+     * @GetMapping("/{id}")
+     * public Page<ProductDTO> getProducts(Pageable pageable) { // same as findall
+     * return productService.getProducts(pageable);
+     * }
+     */
+
+    @GetMapping("") // same as findAllProducts
+    public Collection<ProductDTO> getProducts() { // same as findAllProducts
         return productService.getProducts();
     }
 
@@ -51,18 +65,6 @@ public class ProductRestController {
         return ResponseEntity.created(location).body(productDTO);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable long id) {
-        ProductDTO product = productService.getProduct(id);
-
-        if (product != null) {
-            productService.deleteById(id);
-            return ResponseEntity.ok(product);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<ProductDTO> updateProduct(@PathVariable long id, @RequestBody ProductDTO newProductDTO,
             @RequestParam(required = false) MultipartFile imageFile) {
@@ -82,24 +84,51 @@ public class ProductRestController {
         }
     }
 
-    @PostMapping("/{id}/image")
-    public ResponseEntity<Object> uploadImage(@PathVariable long id, @RequestParam MultipartFile imageFile) {
-        Optional<Product> existingProductOptional = productService.findById(id);
-        if (existingProductOptional.isPresent()) {
-            try {
-                URI location = fromCurrentRequest().build().toUri();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable long id) {
+        ProductDTO product = productService.getProduct(id);
 
-                Product existingProduct = existingProductOptional.get();
-
-                ProductDTO updatedProductDTO = productService.update(existingProduct, null, imageFile);
-
-                return ResponseEntity.created(location).build();
-            } catch (IOException e) {
-                return ResponseEntity.badRequest().build();
-            }
+        if (product != null) {
+            productService.deleteById(id);
+            return ResponseEntity.ok(product);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
+    //imgs
+
+    @PostMapping("/{id}/image")
+    public ResponseEntity<Object> createProductImage(@PathVariable long id, @RequestParam MultipartFile imageFile) throws IOException {    
+        URI location = fromCurrentRequest().build().toUri();
+        productService.createProductImage(id, location, imageFile.getInputStream(), imageFile.getSize());
+        return ResponseEntity.created(location).build();
+    }
+
+
+    @GetMapping("/{id}/image")
+	public ResponseEntity<Object> getProductImage(@PathVariable long id) throws SQLException, IOException {
+
+		Resource productImage = productService.getProductImage(id);
+
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "image/jpeg").body(productImage);
+	}
+
+	@PutMapping("/{id}/image")
+	public ResponseEntity<Object> replaceProductImage(@PathVariable long id, @RequestParam MultipartFile imageFile) throws IOException {
+
+		productService.replaceProductImage(id, imageFile.getInputStream(), imageFile.getSize());
+
+		return ResponseEntity.noContent().build();
+	}
+
+	@DeleteMapping("/{id}/image")
+	public ResponseEntity<Object> deletePostImage(@PathVariable long id) throws IOException {
+
+		productService.deletePostImage(id);
+
+		return ResponseEntity.noContent().build();
+	}
+
+    
 }

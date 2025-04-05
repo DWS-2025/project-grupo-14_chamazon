@@ -22,6 +22,8 @@ public class Product {
     private String description;
     private Float rating;
 
+    private String image;
+
     @Lob
     @Column(name = "imageFile")
     @JsonIgnore
@@ -92,6 +94,10 @@ public class Product {
         return description;
     }
 
+    public String getImage() {
+        return image;
+    }
+
     public Blob getImageFile() {
         return imageFile;
     }
@@ -114,6 +120,10 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public void setImageFile(Blob imageFile){
