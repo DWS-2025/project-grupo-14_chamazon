@@ -1,9 +1,6 @@
 package es.urjc.chamazon.controllers;
 
-import es.urjc.chamazon.dto.ProductDTO;
-import es.urjc.chamazon.dto.ProductMapper;
-import es.urjc.chamazon.dto.CategoryDTO;
-import es.urjc.chamazon.dto.UserDTO;
+import es.urjc.chamazon.dto.*;
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.User;

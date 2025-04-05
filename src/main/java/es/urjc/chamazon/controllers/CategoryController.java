@@ -2,7 +2,6 @@
 package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.dto.CategoryDTO;
-import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.services.CategoryService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
 
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Controller
 public class CategoryController {
@@ -82,13 +79,14 @@ public class CategoryController {
     }
 
     @GetMapping("/categories/products")
-    public String getProductsByCategory(@RequestParam Long categoryId, Model model) {
+    public String getProductsByCategory(@RequestParam Long id, Model model) {
         try{
-            model.addAttribute("category", categoryService.getCategory(categoryId));
-            model.addAttribute("products", categoryService.getProductsByCategoryId(categoryId));
+            model.addAttribute("category", categoryService.getCategory(id));
+            model.addAttribute("products", categoryService.getProductsByCategoryId(id));
             return "product/products_list";
         } catch (NoSuchElementException e) {
             return "/error/error";
         }
     }
+
 }
