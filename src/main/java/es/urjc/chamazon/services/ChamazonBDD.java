@@ -100,7 +100,7 @@ public class ChamazonBDD{
         userService.saveUser(new User("Admin", "PepeAdmin", "Pepe", "Montero", "123", "pepe@mail.com", "098", "q"));
         userService.saveUser(new User("Cliente", "User2", "Maria", "Carrera ", "321", "maria@mail.com", "100", "p"));
 
-        shoppingCarService.addProductToUserShoppingCar(1L,1L);
+        //shoppingCarService.addProductToUserShoppingCar(1L,1L);
 
 
         System.out.println("Categorías creadas correctamente.");
