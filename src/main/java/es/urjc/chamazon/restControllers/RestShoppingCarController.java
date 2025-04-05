@@ -1,4 +1,4 @@
-package es.urjc.chamazon.controllersREST;
+package es.urjc.chamazon.restControllers;
 
 import org.springframework.web.bind.annotation.RestController;
 

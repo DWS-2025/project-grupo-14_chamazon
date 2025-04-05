@@ -87,8 +87,6 @@ public class ProductController {
         // Save the product with the img file to get the id first before saving to
         // category list and then save the product to the category list.
 
-        //productService.save(product, imageFileParameter);
-
         ProductDTO savedProduct = productService.save(productDTO, imageFileParameter);
 
         // Get the id of the product to add it to the category list
@@ -125,27 +123,15 @@ public class ProductController {
         // Get existing product at the exact moment by editing
         //Optional<ProductDTO> existProductActually = productService.findById(id);
         Optional<Product> existProductActually = productService.findById(id);
+
         if (!existProductActually.isPresent()) {
             return "redirect:/products";
         }
 
-        /*Meterlo en el service el proceso logico
-        Product prs = existProductActually.get();
+        Product existingProduct = existProductActually.get();
 
-        prs.setName(newProduct.getName());
-        prs.setPrice(newProduct.getPrice());
-        prs.setDescription(newProduct.getDescription());
-
-        productService.save(prs, newProduct.getImageFile());
-        */
-        //Create DTO
-        ProductDTO productDTO = new ProductDTO(newProduct.getId(),
-                newProduct.getName(), newProduct.getPrice(),
-                newProduct.getDescription(), newProduct.getRating(), existProductActually.get().getCategoryList(), existProductActually.get().getShoppingCarList());
-
-        // make sure the image works properly depending on which option did they choose
-
-        productService.save(id, productDTO, imageFileParameter);
+        // Update the existing product with new values, managing DTO
+        productService.update(existingProduct, newProduct, imageFileParameter);
 
         // remove the product from ALL its current categories
         List<CategoryDTO> allCategories = categoryService.getCategories();

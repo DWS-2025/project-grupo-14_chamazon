@@ -76,20 +76,14 @@ public class ProductService {
         productRepository.save(product);
     }
 
-   // for updating
-    public ProductDTO save(Long id, ProductDTO productDTO, MultipartFile imageFile) throws IOException {
-        Optional<Product> product = productRepository.findById(id);
 
-        if (!product.isPresent()) {
-            return null;
-        }
-
-        Product existingProduct = product.get();
-
-        existingProduct.setName(productDTO.name());
-        existingProduct.setDescription(productDTO.description());
-        existingProduct.setPrice(productDTO.price());
-        existingProduct.setRating(productDTO.rating());
+    // for updating product which has been saved before
+    public ProductDTO update(Product existingProduct, Product newProduct, MultipartFile imageFile) throws IOException {
+        // Update existing  product with new values
+        existingProduct.setName(newProduct.getName());
+        existingProduct.setPrice(newProduct.getPrice());
+        existingProduct.setDescription(newProduct.getDescription());
+        existingProduct.setRating(newProduct.getRating());
 
         if (!imageFile.isEmpty()) {
             existingProduct.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
@@ -114,6 +108,8 @@ public class ProductService {
         this.save(newProduct);
         return toDTO(newProduct);
     }
+
+
 
     public void deleteById(long id) {
         productRepository.deleteById(id);
