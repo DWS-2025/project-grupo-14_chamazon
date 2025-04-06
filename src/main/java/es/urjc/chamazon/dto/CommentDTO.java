@@ -4,32 +4,58 @@ public class CommentDTO {
     private Long id;
     private String comment;
     private int rating;
-    private Long userId;
-    private Long productId;
+    private UserDTO user;
+    private ProductDTO product;
 
     public CommentDTO() {}
 
-    public CommentDTO(Long id, String comment, int rating, Long userId, Long productId) {
+    public CommentDTO(Long id, String comment, int rating, UserDTO user, ProductDTO product) {
         this.id = id;
         this.comment = comment;
         this.rating = rating;
-        this.userId = userId;
-        this.productId = productId;
+        this.user = user;
+        this.product = product;
     }
 
     // Getters y Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getComment() { return comment; }
-    public void setComment(String comment) { this.comment = comment; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public int getRating() { return rating; }
-    public void setRating(int rating) { this.rating = rating; }
+    public String getComment() {
+        return comment;
+    }
 
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
-    public Long getProductId() { return productId; }
-    public void setProductId(Long productId) { this.productId = productId; }
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public UserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserDTO user) {
+        this.user = user;
+    }
+
+    public ProductDTO getProduct() {
+        return product;
+    }
+
+    public void setProduct(ProductDTO product) {
+        this.product = product;
+    }
 }
+

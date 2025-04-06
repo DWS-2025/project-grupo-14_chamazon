@@ -5,7 +5,7 @@ import org.mapstruct.Mapper;
 import es.urjc.chamazon.models.Comment;
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {UserMapper.class, ProductMapper.class})
 public interface CommentMapper {
 
     CommentDTO toDTO(Comment comment);
