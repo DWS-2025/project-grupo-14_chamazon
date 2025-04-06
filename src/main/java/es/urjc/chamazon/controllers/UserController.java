@@ -3,6 +3,7 @@ package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.models.User;
+import es.urjc.chamazon.services.ShoppingCarService;
 import es.urjc.chamazon.services.UserService;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private ShoppingCarService shoppingCarService;
 
     @GetMapping("/users")
     public String users(Model model) {
@@ -49,6 +52,7 @@ public class UserController {
     @PostMapping("/users/add")
     public String addUser(UserDTO newUserDTO, Model model) {
         userService.save(newUserDTO);
+        shoppingCarService.firstSC(newUserDTO);
         return "redirect:/users";
     }
 

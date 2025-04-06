@@ -14,13 +14,15 @@ public class ChamazonBDD{
     private final ProductService productService;
     private final CategoryService categoryService;
     private final UserService userService;
+    private final CategoryRepository categoryRepository;
     private final ShoppingCarService shoppingCarService;
 
-    public ChamazonBDD(CategoryService categoryService, UserService userService, ShoppingCarService shoppingCarService, ProductService productService) {
+    public ChamazonBDD(CategoryService categoryService, UserService userService, CategoryRepository categoryRepository, ProductService productService, ShoppingCarService shoppingCarService) {
         this.categoryService = categoryService;
         this.userService = userService;
-        this.shoppingCarService = shoppingCarService;
+        this.categoryRepository = categoryRepository;
         this.productService = productService;
+        this.shoppingCarService = shoppingCarService;
     }
 
     @PostConstruct
@@ -100,9 +102,11 @@ public class ChamazonBDD{
         userService.saveUser(new User("Admin", "PepeAdmin", "Pepe", "Montero", "123", "pepe@mail.com", "098", "q"));
         userService.saveUser(new User("Cliente", "User2", "Maria", "Carrera ", "321", "maria@mail.com", "100", "p"));
 
-        //shoppingCarService.addProductToUserShoppingCar(1L,1L);
 
 
-        System.out.println("Categorías creadas correctamente.");
+        shoppingCarService.addProductToUserShoppingCar(2L,1L);
+        shoppingCarService.addProductToUserShoppingCar(3L, 1L);
+        shoppingCarService.addProductToUserShoppingCar(4L, 1L);
+
     }
 }

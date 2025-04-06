@@ -4,6 +4,7 @@ package es.urjc.chamazon.models;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,15 +18,14 @@ public class ShoppingCar {
     @ManyToOne
     private User user;
 
-    @ManyToMany
-    private List<Product> productList;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Product> productList = new ArrayList<>();
 
     public ShoppingCar() {
     }
 
-    public ShoppingCar(User User) {
-        ShoppingCar shoppingCar = new ShoppingCar();
-        shoppingCar.setUser(user);
+    public ShoppingCar(User user) {
+        this.user = user;
     }
 
     //GETTERS AND SETTERS//

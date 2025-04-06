@@ -4,6 +4,7 @@ import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,8 +12,8 @@ public class ShoppingCarDTO {
 
     private Long id;
     private LocalDateTime dateSold;
-    private UserDTO user;
-    private List<ProductDTO> productList;
+    private User user;
+    private List<Product> productList = new ArrayList<>();
 
 
     public Long getId() {
@@ -21,6 +22,10 @@ public class ShoppingCarDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getUserId() {
+        return user.getId();
     }
 
     public LocalDateTime getDateSold() {
@@ -32,19 +37,19 @@ public class ShoppingCarDTO {
     }
 
 
-    public UserDTO getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(UserDTO user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
-    public List<ProductDTO> getProductList() {
+    public List<Product> getProductList() {
         return productList;
     }
 
-    public void setProductList(List<ProductDTO> productList) {
+    public void setProductList(List<Product> productList) {
         this.productList = productList;
     }
 
@@ -59,4 +64,7 @@ public class ShoppingCarDTO {
     public int hashCode() {
         return Objects.hash(id, dateSold, user, productList);
     }
+
+
+
 }

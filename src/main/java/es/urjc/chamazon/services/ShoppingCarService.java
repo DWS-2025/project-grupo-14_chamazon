@@ -5,11 +5,13 @@ import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.dto.ProductMapper;
 import es.urjc.chamazon.dto.ShoppingCarDTO;
 import es.urjc.chamazon.dto.ShoppingCarMapper;
+import es.urjc.chamazon.dto.*;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.ShoppingCar;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.repositories.ShoppingCarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,18 +24,23 @@ import java.util.Optional;
 @Service
 public class ShoppingCarService {
 
-    @Autowired
-    private ShoppingCarMapper shoppingCarMapper;
-    @Autowired
-    private ProductMapper productMapper;
+    private final ShoppingCarMapper shoppingCarMapper;
+    private final ProductMapper productMapper;
+    private final ShoppingCarRepository shoppingCarRepository;
+    private final ProductService productService;
+    private final UserService userService;// <- FINAL private final
+    UserMapper userMapper;
 
-    @Autowired
-    private ShoppingCarRepository shoppingCarRepository;
+    @Autowired public ShoppingCarService( ShoppingCarMapper shoppingCarMapper, ProductMapper productMapper, ShoppingCarRepository shoppingCarRepository, ProductService productService, UserMapper userMapper, UserService userService ) {
+        this.shoppingCarMapper = shoppingCarMapper;
+        this.productMapper = productMapper;
+        this.shoppingCarRepository = shoppingCarRepository;
+        this.productService = productService;
+        this.userService = userService;
+        this.userMapper = userMapper;
+    }
 
-    @Autowired
-    private ProductService productService;
 
-    private UserService userService;
 
     //private ShoppingCar shoppingCar;
     private User user;
@@ -41,6 +48,13 @@ public class ShoppingCarService {
 
     //ALIAS FOR CRUD REPOSITORY METHODS//
 
+        public ShoppingCar firstSC(UserDTO user){
+            ShoppingCar sc = new ShoppingCar();
+            sc.setUser(userMapper.toUser(user));
+            sc.setDateSold(null);
+            addShoppingCar(sc);
+            return shoppingCarRepository.save(sc);
+        }
         void addShoppingCar(ShoppingCar sc) {
             shoppingCarRepository.save(sc);
         }
@@ -85,12 +99,21 @@ public class ShoppingCarService {
         public ShoppingCarDTO getActualShoppingCarDTOByIdUser(Long id) {
             return toDTO(getActualShoppingCarByIdUser(id));
         }
-
+        ShoppingCar getActualShoppingCarByIdUser(long idUser) {
+            if (shoppingCarRepository.existsByUser_IdAndDateSoldNull(idUser)) {
+                return shoppingCarRepository.findByUser_IdAndDateSoldNull(idUser);
+            } else {
+                User user = userService.getUserById(idUser);  // asegúrate de que devuelve algo válido
+                ShoppingCar sc = new ShoppingCar();
+                sc.setUser(user);
+                return shoppingCarRepository.save(sc);
+            }
+        }
         //Return the shoppingCar with Date = null. If not exist create it and return
-        ShoppingCar getActualShoppingCarByIdUser(Long idUser) {
+        ShoppingCar ygetActualShoppingCarByIdUser(long idUser) {
             if(shoppingCarRepository.existsByUser_IdAndDateSoldNull(idUser)){
                 return shoppingCarRepository.findByUser_IdAndDateSoldNull(idUser);
-            }else if (shoppingCarRepository.existsByUser_Id(idUser)){
+            } else if (shoppingCarRepository.existsByUser_Id(idUser)){
                 return shoppingCarRepository.save(new ShoppingCar(userService.getUserById(idUser)));
             }
             return null;
@@ -127,10 +150,17 @@ public class ShoppingCarService {
 
         public ShoppingCarDTO addProductToUserShoppingCar(Long idProduct, Long idUser) {
             ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-            Optional <Product> prOpt = productService.findById(idProduct);
-            if (prOpt.isPresent()) {
-                Product pr = prOpt.get();
-                sc.getProductList().add(pr);
+            Product product = productService.findById(idProduct)
+                    .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+            // Asegúrate de que la lista esté inicializada
+            if(sc.getProductList() == null) {
+                sc.setProductList(new ArrayList<>());
+            }
+
+            // Añade el producto si no está ya en la lista
+            if(!sc.getProductList().contains(product)) {
+                sc.getProductList().add(product);
                 shoppingCarRepository.save(sc);
             }
             return toDTO(sc);
@@ -155,27 +185,35 @@ public class ShoppingCarService {
 
         List<ShoppingCar> getShoppingCarListByUserId(Long idUser) {
             //ToCheck
+            System.out.println(idUser);
             List<ShoppingCar> shoppingCarList = new ArrayList<>();
             Optional<List<ShoppingCar>> scOptional = shoppingCarRepository.findByUser_Id(idUser);
             if (scOptional.isPresent()) {
                 shoppingCarList = scOptional.get();
+                System.out.println(shoppingCarList);
             }
             return shoppingCarList;
         }
 
 
-        public List<ProductDTO> getProductListFromActualShoppingCar(Long idUser) {
+        List<ProductDTO> getProductListFromActualShoppingCar(Long idUser) {
             ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-            return getProductDTOListFromSC(sc);
+            return getProductListFromSC(sc);
         }
 
-        public List<ProductDTO> getProductListDTOByShoppingCarId(Long idSC) {
+        public List<ProductDTO> getProductListByShoppingCarId(Long idSC) {
             ShoppingCar sc = this.getShoppingCarById(idSC);
-            return getProductDTOListFromSC(sc);
+            return getProductListFromSC(sc);
         }
 
-        public List<ProductDTO> getProductDTOListFromSC(ShoppingCar sc) {
+        private List<ProductDTO> getProductListFromSC(ShoppingCar sc) {
             return (List<ProductDTO>) productMapper.toDTOs(sc.getProductList());
+        }
+
+
+
+    /*public List<ProductDTO> getProductDTOListFromSC(ShoppingCar sc) {
+            return productMapping.toDYO(sc.getProductList());
         }
 
 

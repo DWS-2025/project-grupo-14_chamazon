@@ -26,8 +26,7 @@ import java.util.concurrent.ConcurrentMap;
 @Service
 public class UserService {
 
-    @Autowired
-    private ShoppingCarService shoppingCarService;
+
 
     @Autowired
     private UserRepository userRepository;
@@ -41,12 +40,7 @@ public class UserService {
     }
 
     public UserDTO getUser(Long Id) {
-        User user = getUserById(Id);
-        if (user != null) {
-            return toDTO(user);
-        }else{
-            return null;
-        }
+        return toDTO(userRepository.findById(Id).orElseThrow());
     }
 
     User getUserById(Long Id) {
@@ -60,11 +54,12 @@ public class UserService {
 
     public void save(UserDTO userDTO) {
         User user = toUser(userDTO);
-        this.saveUser(user);
+        saveUser(user);
+        //falta añadir la parte del carrito
+        //shoppingCarService.firstSC(user);
     }
     void saveUser(User user) {
         userRepository.save(user);
-        shoppingCarService.firstSC(user);
     }
 
     public void updateUser(Long id, UserDTO updatedUserDTO) {
