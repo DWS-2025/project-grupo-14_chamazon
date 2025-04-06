@@ -16,7 +16,10 @@ import java.util.Optional;
 @Service
 public class CommentService {
 
+    @Autowired
     private UserService userService;
+
+    @Autowired
     private ProductService productService;
 
     @Autowired
