@@ -1,26 +1,36 @@
 package es.urjc.chamazon.services;
 
+import es.urjc.chamazon.dto.CommentDTO;
+import es.urjc.chamazon.dto.CommentMapper;
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.User;
+import es.urjc.chamazon.models.Comment;
 import es.urjc.chamazon.repositories.CategoryRepository;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ChamazonBDD{
 
+    @Autowired
+    private CommentMapper commentMapper;
+
+
     private final ProductService productService;
     private final CategoryService categoryService;
     private final UserService userService;
     private final ShoppingCarService shoppingCarService;
+    private final CommentService commentService;
 
-    public ChamazonBDD(CategoryService categoryService, UserService userService, ShoppingCarService shoppingCarService, ProductService productService) {
+    public ChamazonBDD(CategoryService categoryService, UserService userService, ShoppingCarService shoppingCarService, ProductService productService, CommentService commentService) {
         this.categoryService = categoryService;
         this.userService = userService;
         this.shoppingCarService = shoppingCarService;
         this.productService = productService;
+        this.commentService = commentService;
     }
 
     @PostConstruct
@@ -104,5 +114,30 @@ public class ChamazonBDD{
 
 
         System.out.println("Categorías creadas correctamente.");
+
+        User user1 = userService.getUserById(1L);
+        User user2 = userService.getUserById(2L);
+
+        Product product1 = productService.findById(1L).orElse(null);
+        Product product2 = productService.findById(2L).orElse(null);
+        Product product3 = productService.findById(3L).orElse(null);
+
+        if (user1 != null && user2 != null && product1 != null && product2 != null && product3 != null) {
+
+            CommentDTO c1 = commentMapper.toDTO(new Comment("Me encantó este producto, ¡lo uso cada día!", 5, user1, product1)); //Es PepeAdmin
+            CommentDTO c2 = commentMapper.toDTO(new Comment("Podría ser mejor, pero está bien", 3, user2, product2)); //Es User2
+            CommentDTO c3 = commentMapper.toDTO(new Comment("Excelente relación calidad-precio", 4, user1, product3)); //Es PepeAdmin
+
+            commentService.save(c1);
+            commentService.save(c2);
+            commentService.save(c3);
+
+
+            System.out.println("Comentarios añadidos correctamente.");
+        } else {
+            System.out.println("No se pudieron crear comentarios por falta de productos o usuarios.");
+        }
+
+
     }
 }
