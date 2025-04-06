@@ -3,6 +3,8 @@ package es.urjc.chamazon.services;
 
 import es.urjc.chamazon.dto.CategoryDTO;
 import es.urjc.chamazon.dto.CategoryMapper;
+import es.urjc.chamazon.dto.ProductDTO;
+import es.urjc.chamazon.dto.ProductMapper;
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.repositories.CategoryRepository;
@@ -23,6 +25,9 @@ public class CategoryService {
 
     @Autowired
     private CategoryMapper categoryMapper;
+
+    @Autowired
+    private ProductMapper productMapper;
 
 
     public List<CategoryDTO> getCategories() {
@@ -73,8 +78,17 @@ public class CategoryService {
         }
     }
 
-    public Object getProductsByCategoryId(Long id) {
-        return categoryRepository.findProductsByCategoryId(id);
+    public List<ProductDTO> getProductsByCategoryId(Long id) {
+        Optional<List<Product>> products = categoryRepository.findProductsByCategoryId(id);
+        if (products.isPresent()) {
+            productMapper.toDTOs(products.get());
+        }
+        for (Product product : products.get()) {
+            productMapper.toDTO(product);
+            System.out.println(product.getName());
+        }
+        return (List<ProductDTO>) productMapper.toDTOs(products.get());
+
     }
 
     public void addProductToCategory(long categoryId, long productId) {

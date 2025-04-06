@@ -2,6 +2,7 @@ package es.urjc.chamazon.restControllers;
 
 
 import es.urjc.chamazon.dto.CategoryDTO;
+import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class CategoryRestController {
     @Autowired
     CategoryService categoryService;
 
-    @GetMapping("")
+    @GetMapping("/")
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         List<CategoryDTO> categoriesDTOs = categoryService.getCategories();
         try {
@@ -41,7 +42,7 @@ public class CategoryRestController {
         }
     }
 
-    @PostMapping("")
+    @PostMapping("/")
     public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
         categoryService.createCategory(categoryDTO);
         URI location = fromCurrentRequest().path("/{id}")
@@ -66,9 +67,9 @@ public class CategoryRestController {
     }
 
     @GetMapping("/{id}/products")
-    public ResponseEntity<List<CategoryDTO>> getProductsFromCategory(@PathVariable long id) {
-        categoryService.getProductsByCategoryId(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<List<ProductDTO>> getProductsFromCategory(@PathVariable long id) {
+        List<ProductDTO> categoriesDTOs = categoryService.getProductsByCategoryId(id);
+        return ResponseEntity.ok(categoriesDTOs);
     }
 
 }
