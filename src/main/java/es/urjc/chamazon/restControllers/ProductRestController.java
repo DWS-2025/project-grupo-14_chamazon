@@ -3,7 +3,10 @@ package es.urjc.chamazon.restControllers;
 import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.dto.ProductMapper;
 import es.urjc.chamazon.models.Product;
+import es.urjc.chamazon.services.CategoryService;
 import es.urjc.chamazon.services.ProductService;
+
+import java.util.NoSuchElementException;
 
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+
 
 import java.io.IOException;
 import java.net.URI;
@@ -34,6 +38,8 @@ public class ProductRestController {
 
     @Autowired
     ProductMapper productMapper;
+    @Autowired
+    private CategoryService categoryService;
 
     /*
      * @GetMapping("/{id}")
@@ -43,13 +49,23 @@ public class ProductRestController {
      */
 
     @GetMapping("/") // same as findAllProducts
-    public Collection<ProductDTO> getProducts() { // same as findAllProducts
-        return productService.getProducts();
+    public ResponseEntity<Collection<ProductDTO>> getProducts() { // same as findAllProducts
+        Collection <ProductDTO> productsDTOs = productService.getProducts();
+        try {
+            return ResponseEntity.ok(productsDTOs);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/{id}")
-    public ProductDTO getProduct(@PathVariable long id) { // same as findById
-        return productService.getProduct(id);
+    public ResponseEntity <ProductDTO> getProduct(@PathVariable long id) { // same as findById
+        ProductDTO productDTO = productService.getProduct(id);
+        try{
+            return ResponseEntity.ok(productDTO);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/") // same as save when the user has added a new product
@@ -62,13 +78,19 @@ public class ProductRestController {
     }
 
     @PutMapping("/{id}")
-    public ProductDTO replaceProduct(@PathVariable long id, @RequestBody ProductDTO newProductDTO) throws SQLException {
-       return productService.replaceProduct(id, newProductDTO);
+    public ResponseEntity<ProductDTO> replaceProduct(@PathVariable long id, @RequestBody ProductDTO newProductDTO) throws SQLException {
+       ProductDTO productDTO = productService.replaceProduct(id, newProductDTO);
+       return ResponseEntity.ok(productService.getProduct(id));
     }
 
     @DeleteMapping("/{id}")
-    public ProductDTO deleteProduct(@PathVariable long id) {
-        return productService.deleteProduct(id);
+    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable long id) {
+        try {
+            ProductDTO productDTO = productService.deleteProduct(id);
+            return ResponseEntity.ok(productService.getProduct(id));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     //imgs
