@@ -40,6 +40,9 @@ public class ProductService {
         return toDTOs(productRepository.findAll());
     } //findAllProducts
 
+    public Product getEntityId(long id) { // for img creation
+        return productRepository.findById(id).orElseThrow();
+    }
 
     /*public Page<ProductDTO> getProducts(Pageable pageable) { // findAllProducts with pagination
         return productRepository.findAll();
@@ -90,7 +93,7 @@ public class ProductService {
     }
 
 
-    // for updating product which has been saved before
+    // for updating product which has been saved before in CONTROLLER
     public ProductDTO update(Product existingProduct, Product newProduct, MultipartFile imageFile) throws IOException {
         // Update existing  product with new values
         existingProduct.setName(newProduct.getName());
@@ -105,6 +108,24 @@ public class ProductService {
         this.save(existingProduct);
         return toDTO(existingProduct);
     }
+
+    // for updating in REST CONTROLLER
+    public ProductDTO replaceProduct(long id, ProductDTO updatedProductDTO) throws SQLException {
+        Product oldProduct = getEntityId(id);
+        Product updatedProduct = toProduct(updatedProductDTO);
+        updatedProduct.setId(id);
+
+        if (oldProduct.getImage() != null) {
+            // Set the image in the updated product
+            updatedProduct.setImageFile(BlobProxy.generateProxy(oldProduct.getImageFile().getBinaryStream(),
+            oldProduct.getImageFile().length()));
+            updatedProduct.setImage(oldProduct.getImage());
+        }
+
+        this.save(updatedProduct);
+        return toDTO(updatedProduct);
+    }
+
 
  //for adding new products
     public ProductDTO save(ProductDTO productDTO, MultipartFile imageFile){
@@ -122,10 +143,6 @@ public class ProductService {
         return toDTO(newProduct);
     }
 
-
-    public Product getEntityId(long id) { // for img creation
-        return productRepository.findById(id).orElseThrow();
-    }
 
     public void createProductImage (long id, URI location, InputStream imageFile, long size){
         Product product = getEntityId(id);

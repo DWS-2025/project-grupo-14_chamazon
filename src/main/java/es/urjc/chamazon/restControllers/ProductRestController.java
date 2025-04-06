@@ -66,7 +66,7 @@ public class ProductRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable long id, @RequestBody ProductDTO newProductDTO,
+    public ResponseEntity<ProductDTO> replaceProduct(@PathVariable long id, @RequestBody ProductDTO newProductDTO,
             @RequestParam(required = false) MultipartFile imageFile) {
         Optional<Product> existingProductOptional = productService.findById(id);
         if (existingProductOptional.isPresent()) {
@@ -98,7 +98,7 @@ public class ProductRestController {
 
     //imgs
 
-    @PostMapping("/{id}/image")
+    @PostMapping("/{id}/image")     
     public ResponseEntity<Object> createProductImage(@PathVariable long id, @RequestParam MultipartFile imageFile) throws IOException {    
         URI location = fromCurrentRequest().build().toUri();
         productService.createProductImage(id, location, imageFile.getInputStream(), imageFile.getSize());
