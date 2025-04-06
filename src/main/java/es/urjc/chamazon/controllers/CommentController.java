@@ -77,28 +77,6 @@ public class CommentController {
 
 
 
-    /*
-    @GetMapping("/comments")
-    public String getAllComments(Model model) {
-        List<Comment> comments = commentService.findAll();
-        model.addAttribute("comments", comments);
-        return "comment/comments";
-    }
-    */
-
-    /*
-    @GetMapping("/{id}")
-    public String getCommentById(@PathVariable Long id, Model model) {
-        Optional<Comment> comment = commentService.findById(id);
-        if (comment.isPresent()) {
-            model.addAttribute("comment", comment.get());
-            return "comment/comment";
-        } else {
-            return "error/error";
-        }
-    }
-    */
-
     //Update Operations: method getEditCommentPage(GET) and updateComment(POST) to update a comment
     @GetMapping("/edit/{id}")
     public String getEditCommentPage(@PathVariable Optional<Long> id, Model model) {
