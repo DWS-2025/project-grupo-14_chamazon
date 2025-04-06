@@ -1,0 +1,63 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CommentList</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body>
+{{>navBar}}
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between">
+        <div>
+            <select id="productSelect" name="product" class="form-select" onchange="loadComments()">
+                <option value="">Seleccione un producto</option>
+                {{#products}}
+                <option value="{{id}}">{{name}}</option>
+                {{/products}}
+            </select>
+        </div>
+        <div>
+            <a id="addCommentButton" class="btn btn-primary" href="#" style="display: none;">Añadir Comentario</a>
+        </div>
+    </div>
+
+    <div id="commentsList" class="mt-4">
+        {{#comments}}
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+                <p><strong>Usuario:</strong> {{user.userName}}</p>
+                <p><strong>Calificación:</strong> {{rating}}</p>
+                <p><strong>Comentario:</strong> {{comment}}</p>
+                <a class="btn btn-warning me-2" href="/commentView/edit/{{id}}">Editar</a>
+                <form action="/commentView/delete/{{id}}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+        {{/comments}}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const productId = new URLSearchParams(window.location.search).get('productId');
+        const addCommentButton = document.getElementById('addCommentButton');
+        if (productId) {
+            addCommentButton.href = `/commentView/add?productId=${productId}`;
+            addCommentButton.style.display = 'block';
+        }
+    });
+
+    function loadComments() {
+        const productId = document.getElementById('productSelect').value;
+        if (productId) {
+            window.location.href = `/commentView/commentList?productId=${productId}`;
+        }
+    }
+</script>
+
+{{>footer}}
+</body>
+</html>

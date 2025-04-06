@@ -48,6 +48,7 @@ public class UserService {
             return null;
         }
     }
+
     User getUserById(Long Id) {
         Optional<User> userOpt = userRepository.findById(Id);
         return userOpt.orElse(null);
@@ -60,11 +61,10 @@ public class UserService {
     public void save(UserDTO userDTO) {
         User user = toUser(userDTO);
         this.saveUser(user);
-        //falta añadir la parte del carrito
-        shoppingCarService.firstSC(user);
     }
     void saveUser(User user) {
         userRepository.save(user);
+        shoppingCarService.firstSC(user);
     }
 
     public void updateUser(Long id, UserDTO updatedUserDTO) {

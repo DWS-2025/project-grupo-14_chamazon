@@ -1,12 +1,19 @@
 package es.urjc.chamazon.controllers;
 
+import es.urjc.chamazon.dto.ProductDTO;
+import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.models.Comment;
+import es.urjc.chamazon.models.Product;
+import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.CommentService;
+import es.urjc.chamazon.services.ProductService;
+import es.urjc.chamazon.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.List;
 
@@ -19,29 +26,68 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private UserService userService;
+
 
     //Create Operations: method addCommentForm(GET) and addComment(POST) to add a new comment
     @GetMapping("/add")
-    public String addCommentForm(Model model) {
+    public String addCommentForm(@RequestParam("productId") Long productId, Model model) {
+        Optional<Product> product = productService.findById(productId);
+        if (product.isPresent()) {
+            model.addAttribute("product", product.get());
+        } else {
+            model.addAttribute("errorMessage", "Producto no encontrado");
+            return "error/error";
+        }
+        List<UserDTO> users = (List <UserDTO>) userService.getAllUsers();
+        model.addAttribute("users", users);
         model.addAttribute("comment", new Comment());
         return "comment/addNewComment";
     }
 
     @PostMapping("/add")
-    public String addComment(@ModelAttribute Comment comment) {
-        commentService.save(comment);
-        return "redirect:/commentView/comments";
+    public String addComment(@RequestParam String commentTxt, @RequestParam int rating, @RequestParam Long userId , @RequestParam Long productId) {
+        boolean isCreated = commentService.createComment(commentTxt, rating, userId, productId);
+
+        if (isCreated) {
+
+            return "redirect:/commentView/commentList?productId=" + productId;
+        } else {
+            // Manejar el caso en que el producto no se encuentra
+            return "redirect:/commentView/commentList";
+        }
+    }
+
+    @GetMapping("/commentList")
+    public String getCommentList(@RequestParam(required = false) Long productId, Model model) {
+        List<ProductDTO> products = (List <ProductDTO>) productService.getProducts();
+        model.addAttribute("products", products);
+
+        if (productId != null) {
+            List<Comment> comments = commentService.findByProductId(productId);
+            model.addAttribute("comments", comments);
+        } else {
+            model.addAttribute("comments", new ArrayList <>());
+        }
+
+        return "comment/commentList";
     }
 
 
-    //Read Operations: method getAllComments(GET) to get all comments and getCommentById(GET) to get
+
+    /*
     @GetMapping("/comments")
     public String getAllComments(Model model) {
         List<Comment> comments = commentService.findAll();
         model.addAttribute("comments", comments);
         return "comment/comments";
     }
+    */
 
+    /*
     @GetMapping("/{id}")
     public String getCommentById(@PathVariable Long id, Model model) {
         Optional<Comment> comment = commentService.findById(id);
@@ -52,7 +98,7 @@ public class CommentController {
             return "error/error";
         }
     }
-
+    */
 
     //Update Operations: method getEditCommentPage(GET) and updateComment(POST) to update a comment
     @GetMapping("/edit/{id}")
@@ -66,24 +112,33 @@ public class CommentController {
     }
 
     @PostMapping("/edit/{id}")
-    public String updateComment(@PathVariable Long id, @ModelAttribute Comment commentDetails) {
-        Comment comment = commentService.findById(id).orElse(null);
-        if (comment != null) {
-            comment.setComment(commentDetails.getComment());
-            comment.setRating(commentDetails.getRating());
-            comment.setUser(commentDetails.getUser());
-            //comment.setProduct(commentDetails.getProduct());
+    public String updateComment(@PathVariable Long id, @RequestParam("comment") String commentTxt, @RequestParam int rating) { //comment is the name= received in the editComment.html, is beacuse we need to know the name of the input field requiered in the form
+        Optional<Comment> optionalComment = commentService.findById(id);
+
+        if (optionalComment.isPresent()) {
+            Comment comment = optionalComment.get();
+            comment.setComment(commentTxt);
+            comment.setRating(rating);
+
             commentService.save(comment);
+            return "redirect:/commentView/commentList?productId=" + comment.getProduct().getId();
         }
-        return "redirect:/commentView/comments";
+
+        return "redirect:/commentView/commentList";
     }
+
 
 
     //Delete Operation: method deleteComment(POST) to delete a comment (delete with a button in the comment view)
     @PostMapping("/delete/{id}")
     public String deleteComment(@PathVariable Long id) {
-        commentService.deleteById(id);
-        return "redirect:/commentView/comments";
+        Comment comment = commentService.findById(id).orElse(null);
+        if (comment != null) {
+            Long productId = comment.getProduct().getId();
+            commentService.deleteById(id);
+            return "redirect:/commentView/commentList?productId=" + productId;
+        }
+        return "redirect:/commentView/commentList";
     }
 
 }
