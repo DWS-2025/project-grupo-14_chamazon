@@ -43,6 +43,15 @@ public class ProductService {
     public Product getEntityId(long id) { // for img creation
         return productRepository.findById(id).orElseThrow();
     }
+    
+    public ProductDTO getProduct(long id) {   //findById with DTO
+        Optional<Product> product = productRepository.findById(id);
+        if (product.isPresent()) {
+            return toDTO(product.get());
+        } else {
+            return null;
+        }
+    }
 
     /*public Page<ProductDTO> getProducts(Pageable pageable) { // findAllProducts with pagination
         return productRepository.findAll();
@@ -57,14 +66,7 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    public ProductDTO getProduct(long id) {   //findById with DTO
-        Optional<Product> product = productRepository.findById(id);
-        if (product.isPresent()) {
-            return toDTO(product.get());
-        } else {
-            return null;
-        }
-    }
+    
 
     private ProductDTO toDTO(Product product) {
         return productMapper.toDTO(product);
@@ -90,6 +92,13 @@ public class ProductService {
     //for bbdd
     void save(Product product) {
         productRepository.save(product);
+    }
+
+
+    public ProductDTO createProduct (ProductDTO productDTO) {
+        Product newProduct = toProduct(productDTO);
+        this.save(newProduct);
+        return toDTO(newProduct);
     }
 
 
@@ -127,6 +136,12 @@ public class ProductService {
     }
 
 
+    public ProductDTO deleteProduct(long id) {
+        Product product = getEntityId(id);
+        this.deleteById(id);
+        return toDTO(product);
+    }
+
  //for adding new products
     public ProductDTO save(ProductDTO productDTO, MultipartFile imageFile){
         Product newProduct = toProduct(productDTO);
@@ -144,6 +159,7 @@ public class ProductService {
     }
 
 
+    
     public void createProductImage (long id, URI location, InputStream imageFile, long size){
         Product product = getEntityId(id);
 

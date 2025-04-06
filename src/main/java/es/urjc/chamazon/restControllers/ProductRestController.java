@@ -4,6 +4,8 @@ import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.dto.ProductMapper;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.services.ProductService;
+
+import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,25 +42,19 @@ public class ProductRestController {
      * }
      */
 
-    @GetMapping("") // same as findAllProducts
+    @GetMapping("/") // same as findAllProducts
     public Collection<ProductDTO> getProducts() { // same as findAllProducts
         return productService.getProducts();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProduct(@PathVariable long id) { // same as findById
-        ProductDTO product = productService.getProduct(id);
-        if (product != null) {
-            return ResponseEntity.ok(product);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ProductDTO getProduct(@PathVariable long id) { // same as findById
+        return productService.getProduct(id);
     }
 
     @PostMapping("/") // same as save when the user has added a new product
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO,
-            @RequestParam MultipartFile imageFile) {
-        productService.save(productDTO, imageFile);
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
+        productService.createProduct(productDTO);
 
         URI location = fromCurrentRequest().path("/{id}").buildAndExpand(productDTO.id()).toUri();
 
@@ -66,34 +62,13 @@ public class ProductRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> replaceProduct(@PathVariable long id, @RequestBody ProductDTO newProductDTO,
-            @RequestParam(required = false) MultipartFile imageFile) {
-        Optional<Product> existingProductOptional = productService.findById(id);
-        if (existingProductOptional.isPresent()) {
-            Product existingProduct = existingProductOptional.get();
-            // convert DTO to entity making sure it uses the service update method
-            Product newProduct = productMapper.toProduct(newProductDTO);
-            try {
-                ProductDTO updatedProductDTO = productService.update(existingProduct, newProduct, null);
-                return ResponseEntity.ok(updatedProductDTO);
-            } catch (IOException e) {
-                return ResponseEntity.badRequest().build();
-            }
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ProductDTO replaceProduct(@PathVariable long id, @RequestBody ProductDTO newProductDTO) throws SQLException {
+       return productService.replaceProduct(id, newProductDTO);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable long id) {
-        ProductDTO product = productService.getProduct(id);
-
-        if (product != null) {
-            productService.deleteById(id);
-            return ResponseEntity.ok(product);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ProductDTO deleteProduct(@PathVariable long id) {
+        return productService.deleteProduct(id);
     }
 
     //imgs
