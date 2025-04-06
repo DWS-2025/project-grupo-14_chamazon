@@ -1,9 +1,13 @@
 package es.urjc.chamazon.models;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.sql.Blob;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -19,18 +23,20 @@ public class Product {
     private Float rating;
 
     @Lob
+    @Column(name = "imageFile")
+    @JsonIgnore
     private Blob imageFile;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     private List<Comment> commentList;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Category> categoryList = new ArrayList<Category>();
 
-    @ManyToMany(mappedBy = "productList")
+    @ManyToMany(mappedBy = "productList", fetch = FetchType.EAGER)
     private List<ShoppingCar> shoppingCarList;
 
     public Product() { }
@@ -42,12 +48,25 @@ public class Product {
         this.imageFile = imageFile;
         this.rating = rating;
     }
+    @JsonProperty("imageBase64")
+    public String getImageBase64() {
+        if (imageFile == null) {
+            return null;
+        }
+        try {
+            byte[] bytes = imageFile.getBytes(1, (int) imageFile.length());
+            return Base64.getEncoder().encodeToString(bytes);
+        } catch (SQLException e) {
+            return null;
+        }
+    }
     public Product(String name, Float price, String description, Float rating) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.rating = rating;
     }
+
 
 
     public List<Category> getCategoryList() {

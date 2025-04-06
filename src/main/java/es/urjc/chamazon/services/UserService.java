@@ -61,19 +61,23 @@ public class UserService {
     public void save(UserDTO userDTO) {
         User user = toUser(userDTO);
         this.saveUser(user);
-        //falta añadir la parte del carrito
-        shoppingCarService.firstSC(user);
     }
     void saveUser(User user) {
         userRepository.save(user);
+        shoppingCarService.firstSC(user);
     }
 
     public void updateUser(Long id, UserDTO updatedUserDTO) {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             User user = toUser(updatedUserDTO);
-            user.setId(id);
-            userRepository.save(user);
+            userOptional.get().setId(id);
+            userOptional.get().setUserName(user.getUserName());
+            userOptional.get().setPassword(user.getPassword());
+            userOptional.get().setEmail(user.getEmail());
+            userOptional.get().setPhone(user.getPhone());
+            userOptional.get().setAddress(user.getAddress());
+            userRepository.save(userOptional.get());
         }
     }
 

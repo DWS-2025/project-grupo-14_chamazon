@@ -14,12 +14,12 @@ public class ChamazonBDD{
     private final ProductService productService;
     private final CategoryService categoryService;
     private final UserService userService;
-    private final CategoryRepository categoryRepository;
+    private final ShoppingCarService shoppingCarService;
 
-    public ChamazonBDD(CategoryService categoryService, UserService userService, CategoryRepository categoryRepository, ProductService productService) {
+    public ChamazonBDD(CategoryService categoryService, UserService userService, ShoppingCarService shoppingCarService, ProductService productService) {
         this.categoryService = categoryService;
         this.userService = userService;
-        this.categoryRepository = categoryRepository;
+        this.shoppingCarService = shoppingCarService;
         this.productService = productService;
     }
 
@@ -54,6 +54,10 @@ public class ChamazonBDD{
                 "Durable backpack for travelers",
                 4.3F);
 
+
+        Product raton = new Product("Raton", 9.99F,
+                "Raton para el ordenador",
+                4.3F);
 
         //Safe secondary entity
         categoryService.save(electronics);
@@ -95,6 +99,8 @@ public class ChamazonBDD{
 
         userService.saveUser(new User("Admin", "PepeAdmin", "Pepe", "Montero", "123", "pepe@mail.com", "098", "q"));
         userService.saveUser(new User("Cliente", "User2", "Maria", "Carrera ", "321", "maria@mail.com", "100", "p"));
+
+        //shoppingCarService.addProductToUserShoppingCar(1L,1L);
 
 
         System.out.println("Categorías creadas correctamente.");

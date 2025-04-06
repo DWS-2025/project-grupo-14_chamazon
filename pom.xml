@@ -56,7 +56,7 @@
             <artifactId>webjars-locator-core</artifactId>
         </dependency>
 
-         <dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
@@ -67,6 +67,7 @@
             <artifactId>h2</artifactId>
         </dependency>
         -->
+
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
@@ -78,6 +79,7 @@
             <version>1.6.3</version>
             <scope>provided</scope>  <!-- Importante: Debe ser "provided" -->
         </dependency>
+
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -88,10 +90,12 @@
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -105,11 +109,12 @@
                             <artifactId>mapstruct-processor</artifactId>
                             <version>1.6.3</version>
                         </path>
-                        <!-- other annotation processors -->
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 
 </project>
+

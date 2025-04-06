@@ -1,32 +1,65 @@
 package es.urjc.chamazon.services;
 
-import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
+import es.urjc.chamazon.dto.ProductDTO;
+import es.urjc.chamazon.dto.ProductMapper;
 
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.Collection;
 import java.util.List;
 
+
 import es.urjc.chamazon.repositories.ProductRepository;
+
 
 @Service
 public class ProductService {
 
     @Autowired
-    ProductRepository productRepository;
+    private ProductRepository productRepository;
 
-    public Collection<Product> findAllProducts() {
-        return productRepository.findAll();
+    @Autowired
+    private ProductMapper productMapper;
+
+
+    public Collection<ProductDTO> getProducts() { // findAllProducts
+        return toDTOs(productRepository.findAll());
+    } //findAllProducts
+
+    private Collection<ProductDTO> toDTOs(Collection<Product> products) {
+        return productMapper.toDTOs(products);
     }
 
-    public Optional<Product> findById(long id) {
+    public Optional<Product> findById(long id) {   //Return as entity not DTO like before (made for blob img)
         return productRepository.findById(id);
+    }
+
+    public ProductDTO getProduct(long id) {   //findById with DTO
+        Optional<Product> product = productRepository.findById(id);
+        if (product.isPresent()) {
+            return toDTO(product.get());
+        } else {
+            return null;
+        }
+    }
+
+    private ProductDTO toDTO(Product product) {
+        return productMapper.toDTO(product);
+    }
+
+    private Collection<Product> toProducts(Collection<ProductDTO> productDTOs) {
+        return productMapper.toProduct(productDTOs);
+    }
+
+    private Product toProduct(ProductDTO productDTO) {
+        return productMapper.toProduct(productDTO);
     }
 
     public Optional<Product> findByName(String name) {
@@ -37,15 +70,49 @@ public class ProductService {
         return productRepository.findByRating(rating);
     }
 
-    public void save(Product product) {
+
+    //for bbdd
+    void save(Product product) {
         productRepository.save(product);
     }
 
-    public void save(Product product, MultipartFile imageFile) throws IOException {
-        if (!imageFile.isEmpty()) {
-            product.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
+   // for updating
+    public ProductDTO save(Long id, ProductDTO productDTO, MultipartFile imageFile) throws IOException {
+        Optional<Product> product = productRepository.findById(id);
+
+        if (!product.isPresent()) {
+            return null;
         }
-        this.save(product);
+
+        Product existingProduct = product.get();
+
+        existingProduct.setName(productDTO.name());
+        existingProduct.setDescription(productDTO.description());
+        existingProduct.setPrice(productDTO.price());
+        existingProduct.setRating(productDTO.rating());
+
+        if (!imageFile.isEmpty()) {
+            existingProduct.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
+        }
+
+        this.save(existingProduct);
+        return toDTO(existingProduct);
+    }
+
+ //for adding new products
+    public ProductDTO save(ProductDTO productDTO, MultipartFile imageFile){
+        Product newProduct = toProduct(productDTO);
+
+        if (!imageFile.isEmpty()) {
+            try {
+                newProduct.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
+            } catch (IOException e) {
+                this.save(newProduct);
+                throw new RuntimeException(e);
+            }
+        }
+        this.save(newProduct);
+        return toDTO(newProduct);
     }
 
     public void deleteById(long id) {
@@ -69,10 +136,7 @@ public class ProductService {
         } else if (minPrice != null && maxPrice != null) {
             if (rating != null) {
                 // If we need to filter by price range AND rating
-                return productRepository.findByPriceBetween(minPrice, maxPrice)
-                        .stream()
-                        .filter(p -> p.getRating() >= rating)
-                        .collect(Collectors.toList());
+                return productRepository.findByPriceBetween(minPrice, maxPrice).stream().filter(p -> p.getRating() >= rating).collect(Collectors.toList());
             } else {
                 // Just price range
                 return productRepository.findByPriceBetween(minPrice, maxPrice);
