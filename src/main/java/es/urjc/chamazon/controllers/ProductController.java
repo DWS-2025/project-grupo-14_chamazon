@@ -63,7 +63,7 @@ public class ProductController {
 
     @GetMapping("/products/{id}/image")
     public ResponseEntity<Resource> downloadImage(@PathVariable long id) throws SQLException {
-        Optional<Product> product = productService.findById(id);
+        Optional<Product> product = productService.findById(id); // findById with entity
         if (product.isPresent() && product.get().getImageFile() != null) {
             Blob image = product.get().getImageFile();
             Resource file = new InputStreamResource(image.getBinaryStream());
@@ -88,14 +88,16 @@ public class ProductController {
         // Save the product with the img file to get the id first before saving to
         // category list and then save the product to the category list.
 
-
         ProductDTO savedProduct = productService.save(productDTO, imageFileParameter);
+
+        // Get the id of the product to add it to the category list
         Long productId = savedProduct.id();
         if (categoryId != null && !categoryId.isEmpty()) {
             for (Long categoryIdentified : categoryId) {
                 categoryService.addProductToCategory(categoryIdentified, productId);
             }
         }
+
         return "redirect:/products";
     }
 
@@ -153,16 +155,16 @@ public class ProductController {
             return "redirect:/categories";
         }
         productService.deleteById(id);
-        return "redirect:/categories";
+        return "redirect:/products";
     }
 
     @PostMapping("/products/{id}/addToCard/{idUser}")
     public String addToCart(@PathVariable long id, @PathVariable long idUser) {
         Optional<Product> product = productService.findById(id);
-        /*UserDTO user = userService.getUser(idUser);
-        if (product.isPresent() && user.isPresent()) {
+        UserDTO user = userService.getUser(idUser);
+        if (product.isPresent() && user != null) {
             shoppingCarService.addProductToUserShoppingCar(id, idUser);
-        }*/
+        }
         return "redirect:/products";
     }
 

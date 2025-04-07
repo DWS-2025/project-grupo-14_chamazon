@@ -1,7 +1,9 @@
 package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.dto.ProductDTO;
+import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.dto.ShoppingCarDTO;
+import es.urjc.chamazon.dto.ShoppingCarExtendedDTO;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.services.ShoppingCarService;
 import es.urjc.chamazon.services.UserService;
@@ -28,7 +30,7 @@ public class ShoppingCarController {
     @GetMapping("/history/{idUser}")
     public String shoppingCarHistory (@PathVariable Long idUser, Model model) {
         model.addAttribute("userName", userService.getUser(idUser).userName());
-        List<ShoppingCarDTO> listShoppingCarDTO = shoppingCarService.getShoppingCarDTOListByUserId(idUser);
+        List<ShoppingCarExtendedDTO> listShoppingCarDTO = shoppingCarService.getShoppingCarDTOListByUserId(idUser);
 
         model.addAttribute("listShoppingCarDTO", listShoppingCarDTO);
         //model.addAttribute("productLengthMap", shoppingCarService.getProductsLengthMap(listShoppingCarDTO));
@@ -40,7 +42,7 @@ public class ShoppingCarController {
     @GetMapping("/{id}")
     public String shoppingCar (@PathVariable Long id, Model model) {
         model.addAttribute("title", "Shopping Car");
-        ShoppingCarDTO sc = shoppingCarService.getShoppingCarDTOById(id);
+        ShoppingCarExtendedDTO sc = shoppingCarService.getShoppingCarDTOById(id);
         if (sc != null) {
             model.addAttribute("ShoppingCarDTO", sc);
         }
@@ -48,36 +50,35 @@ public class ShoppingCarController {
 
         model.addAttribute("idSC", id);
         model.addAttribute("ifNotEnd", sc.getDateSold());
-        // model.addAttribute("ifNotProducts", sc.getProducts().isEmpty());
+        model.addAttribute("ifNotProducts", sc.getProductList().isEmpty());
         model.addAttribute("idUser", sc.getUser().id());
         model.addAttribute("productList", productList);
 
         return "shoppingCar/shoppingCar";
     }
 
-/*    @PutMapping("/endPurchase/{idUser}")
+    @GetMapping("/endPurchase/{idUser}")
     public String endPurchase (@PathVariable Long idUser,Model model) {
         shoppingCarService.endPurchaseByIdUser(idUser);
-        return "redirect:/shoppingCar/History/" + idUser;
+        return "redirect:/shoppingCar/history/" + idUser;
     }
 
-    @PutMapping("/removeProduct/{idProduct}")
+    @GetMapping("/removeProduct/{idProduct}/{idUser}")
     public String removeProduct (@PathVariable Long idProduct, @PathVariable Long idUser, Model model) {
 
         shoppingCarService.removeProductsFromShoppingCar(idProduct, idUser, FALSE);
         Long idSC = shoppingCarService.getActualShoppingCarDTOByIdUser(idUser).getId();
 
         return "/shoppingCar/" + idSC;
-    }*/
+    }
 
 
 /*    @PutMapping("/shoppingCar")
     public String updateShoppingCar (@RequestBody ShoppingCarDTO shoppingCarDTO, @RequestParam int idUser, Model model) {
 
+
         return "redirect:/shoppingCar";
     }*/
-
-
 
     /*    @PostMapping("/shoppingCar/")
     public String createShoppingCar (@RequestParam int idUser, @RequestParam ConcurrentMap<Integer, Product> products, Model model) {

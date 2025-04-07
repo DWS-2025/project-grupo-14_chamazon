@@ -2,6 +2,7 @@ package es.urjc.chamazon.services;
 
 import es.urjc.chamazon.dto.CommentDTO;
 import es.urjc.chamazon.dto.CommentMapper;
+import es.urjc.chamazon.dto.CommentDTO;
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.User;
@@ -22,15 +23,18 @@ public class ChamazonBDD{
     private final ProductService productService;
     private final CategoryService categoryService;
     private final UserService userService;
+    private final CategoryRepository categoryRepository;
     private final ShoppingCarService shoppingCarService;
     private final CommentService commentService;
 
-    public ChamazonBDD(CategoryService categoryService, UserService userService, ShoppingCarService shoppingCarService, ProductService productService, CommentService commentService) {
+    public ChamazonBDD(CategoryService categoryService, UserService userService, CategoryRepository categoryRepository,
+                       ProductService productService, ShoppingCarService shoppingCarService, CommentService commentService) {
         this.categoryService = categoryService;
         this.userService = userService;
-        this.shoppingCarService = shoppingCarService;
+        this.categoryRepository = categoryRepository;
         this.productService = productService;
         this.commentService = commentService;
+        this.shoppingCarService = shoppingCarService;
     }
 
     @PostConstruct
@@ -111,6 +115,10 @@ public class ChamazonBDD{
 
         //shoppingCarService.addProductToUserShoppingCar(1L,1L);
 
+
+        shoppingCarService.addProductToUserShoppingCar(2L,1L);
+        shoppingCarService.addProductToUserShoppingCar(3L, 1L);
+        shoppingCarService.addProductToUserShoppingCar(4L, 1L);
 
         System.out.println("Categorías creadas correctamente.");
 

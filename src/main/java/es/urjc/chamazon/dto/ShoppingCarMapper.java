@@ -13,4 +13,8 @@ public interface ShoppingCarMapper {
     List<ShoppingCarDTO> toDTOs(List<ShoppingCar> shoppingCars);
 
     ShoppingCar toDomain(ShoppingCarDTO shoppingCarDTO);
+
+    ShoppingCarExtendedDTO toExtendedDTO(ShoppingCar shoppingCar);
+    List<ShoppingCarExtendedDTO> toExtendedDTOs(List<ShoppingCar> shoppingCars);
+    ShoppingCar estendedToDomain(ShoppingCarExtendedDTO shoppingCarExtendedDTO);
 }
