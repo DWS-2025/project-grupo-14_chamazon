@@ -30,14 +30,15 @@
                 <td>{{userName}}</td>
 
                 {{#productLengthMap}}
-                <td>{{productSize}}</td>
+                <td>{{productLengthMap}}</td>
                 {{/productLengthMap}}
+
                 {{^productLengthMap}}
                 <td>EMPTY</td>
                 {{/productLengthMap}}
 
                 {{#dateSold}}
-                    <td>{{dateSoldString}}</td>
+                    <td>{{dateSold}}</td>
                 {{/dateSold}}
                 {{^dateSold}}
                 <td>ACTUAL</td>

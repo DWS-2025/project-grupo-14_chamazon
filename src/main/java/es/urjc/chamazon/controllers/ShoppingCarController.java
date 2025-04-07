@@ -30,9 +30,8 @@ public class ShoppingCarController {
     public String shoppingCarHistory (@PathVariable Long idUser, Model model) {
         model.addAttribute("userName", userService.getUser(idUser).userName());
         List<ShoppingCarDTO> listShoppingCarDTO = shoppingCarService.getShoppingCarDTOListByUserId(idUser);
-
         model.addAttribute("listShoppingCarDTO", listShoppingCarDTO);
-        //model.addAttribute("productLengthMap", shoppingCarService.getProductsLengthMap(listShoppingCarDTO));
+        model.addAttribute("productLengthMap", shoppingCarService.getProductsLengthMap(listShoppingCarDTO).values());
 
         return "shoppingCar/shoppingCarHistory";
 
@@ -49,7 +48,7 @@ public class ShoppingCarController {
 
         model.addAttribute("idSC", id);
         model.addAttribute("ifNotEnd", sc.getDateSold());
-        // model.addAttribute("ifNotProducts", sc.getProducts().isEmpty());
+        model.addAttribute("ifNotProducts", sc.getProductList().isEmpty());
         model.addAttribute("idUser", sc.getUserId());
         model.addAttribute("productList", productList);
 
@@ -60,7 +59,7 @@ public class ShoppingCarController {
     @GetMapping("/endPurchase/")
     public String endPurchase (@PathVariable Long idUser,Model model) {
         shoppingCarService.endPurchaseByIdUser(idUser);
-        return "redirect:/shoppingCar/History/" + idUser;
+        return "redirect:/users/" + idUser + "/shoppingCar/history/";
     }
 
     @GetMapping("/removeProduct/{idProduct}")
@@ -69,13 +68,12 @@ public class ShoppingCarController {
         shoppingCarService.removeProductsFromShoppingCar(idProduct, idUser, FALSE);
         Long idSC = shoppingCarService.getActualShoppingCarDTOByIdUser(idUser).getId();
 
-        return "shoppingCar/shoppingCar/" + idSC;
+        return "redirect:/users/" + idUser + "/shoppingCar/" + idSC;
     }
 
 
     @PutMapping("/shoppingCar/")
     public String updateShoppingCar (@RequestBody ShoppingCarDTO shoppingCarDTO, @RequestParam int idUser, Model model) {
-
 
 
         return "redirect:/shoppingCar";

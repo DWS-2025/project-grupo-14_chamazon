@@ -15,10 +15,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -209,6 +206,14 @@ public class ShoppingCarService {
         private List<ProductDTO> getProductListFromSC(ShoppingCar sc) {
             return (List<ProductDTO>) productMapper.toDTOs(sc.getProductList());
         }
+
+    public Map<Long, Integer> getProductsLengthMap(List<ShoppingCarDTO> listShoppingCarDTO) {
+        Map<Long, Integer> productLengthMap = new HashMap<>();
+        for (ShoppingCarDTO shoppingCarDTO : listShoppingCarDTO) {
+            productLengthMap.put(shoppingCarDTO.getId(), shoppingCarDTO.getProductList().size());
+        }
+        return productLengthMap;
+    }
 
 
 
