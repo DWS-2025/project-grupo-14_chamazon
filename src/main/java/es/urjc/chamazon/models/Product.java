@@ -36,7 +36,7 @@ public class Product {
     private User user;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private List<Category> categoryList = new ArrayList<Category>();
+    private List<Category> categoryList = new ArrayList<>();
 
     @ManyToMany(mappedBy = "productList", fetch = FetchType.EAGER)
     private List<ShoppingCar> shoppingCarList;

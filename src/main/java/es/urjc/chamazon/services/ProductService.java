@@ -1,5 +1,8 @@
 package es.urjc.chamazon.services;
 
+import es.urjc.chamazon.dto.CategoryDTO;
+import es.urjc.chamazon.dto.ProductDTOExtended;
+import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.dto.ProductMapper;
@@ -36,18 +39,18 @@ public class ProductService {
     private ProductMapper productMapper;
 
 
-    public Collection<ProductDTO> getProducts() { // findAllProducts
-        return toDTOs(productRepository.findAll());
+    public Collection<ProductDTOExtended> getProducts() { // findAllProducts
+        return toDTOsExtended(productRepository.findAll());
     } //findAllProducts
 
     public Product getEntityId(long id) { // for img creation
         return productRepository.findById(id).orElseThrow();
     }
     
-    public ProductDTO getProduct(long id) {   //findById with DTO
+    public ProductDTOExtended getProduct(long id) {   //findById with DTO
         Optional<Product> product = productRepository.findById(id);
         if (product.isPresent()) {
-            return toDTO(product.get());
+            return toDtoExtended(product.get());
         } else {
             return null;
         }
@@ -61,6 +64,14 @@ public class ProductService {
     private Collection<ProductDTO> toDTOs(Collection<Product> products) {
         return productMapper.toDTOs(products);
     }
+    private Collection<ProductDTOExtended> toDTOsExtended(Collection<Product> products){
+        return productMapper.toDTOsExtended(products);
+    }
+    private ProductDTOExtended toDtoExtended(Product product) {
+        return productMapper.toDTOExtended(product);
+    }
+
+
 
     public Optional<Product> findById(long id) {   //Return as entity not DTO like before (made for blob img)
         return productRepository.findById(id);
@@ -79,6 +90,9 @@ public class ProductService {
     private Product toProduct(ProductDTO productDTO) {
         return productMapper.toProduct(productDTO);
     }
+    private Product toProductFromExtended(ProductDTOExtended productDTO) {
+        return productMapper.toProductFromExtended(productDTO);
+    }
 
     public Optional<Product> findByName(String name) {
         return productRepository.findByName(name);
@@ -95,10 +109,10 @@ public class ProductService {
     }
 
 
-    public ProductDTO createProduct (ProductDTO productDTO) {
-        Product newProduct = toProduct(productDTO);
+    public ProductDTOExtended createProduct (ProductDTOExtended productDTO) {
+        Product newProduct = toProductFromExtended(productDTO);
         this.save(newProduct);
-        return toDTO(newProduct);
+        return toDtoExtended(newProduct);
     }
 
 
@@ -206,7 +220,16 @@ public class ProductService {
 
 
     public void deleteById(long id) {
-        productRepository.deleteById(id);
+        Optional<Product> productOptional = productRepository.findById(id);
+        if (productOptional.isPresent()) {
+            Product product = productOptional.get();
+            for (Category category : product.getCategoryList()) {
+                category.getProductList().remove(product);
+            }
+            product.getCategoryList().clear();
+            productRepository.save(product);
+            productRepository.delete(product);
+        }
     }
 
     public void deleteAll() {
@@ -239,4 +262,5 @@ public class ProductService {
             return productRepository.findAll();
         }
     }
+
 }

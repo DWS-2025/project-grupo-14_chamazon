@@ -51,7 +51,7 @@ public class ProductController {
 
     @GetMapping("/products/{id}")
     public String product(@PathVariable long id, Model model) {
-        ProductDTO productDTO = productService.getProduct(id); // findById with DTO
+        ProductDTOExtended productDTO = productService.getProduct(id); // findById with DTO
         if (productDTO != null) {
             model.addAttribute("product", productDTO);
             return "product/product_detail";
@@ -93,7 +93,7 @@ public class ProductController {
         Long productId = savedProduct.id();
         if (categoryId != null && !categoryId.isEmpty()) {
             for (Long categoryIdentified : categoryId) {
-                //categoryService.addProductToCategory(categoryIdentified, productId);
+                categoryService.addProductToCategory(categoryIdentified, productId);
             }
         }
 
@@ -107,7 +107,7 @@ public class ProductController {
             Product product = optionalProduct.get();
             model.addAttribute("product", product);
 
-            List<CategoryDTO> categories = categoryService.getCategories();
+            List<CategoryDTOExtended> categories = categoryService.getCategories();
             model.addAttribute("categories", categories);
             return "product/editProduct";
         } else {
@@ -131,8 +131,8 @@ public class ProductController {
         ProductDTO updateProductDTO = productService.update(existProductActually.get(), newProduct, imageFileParameter);
 
         // remove the product from ALL its current categories
-        List<CategoryDTO> allCategories = categoryService.getCategories();
-        for (CategoryDTO CategoryDTO : allCategories) {
+        List<CategoryDTOExtended> allCategories = categoryService.getCategories();
+        for (CategoryDTOExtended CategoryDTO : allCategories) {
             /*if (CategoryDTO.getProductList().contains(existProduct)) {
                 categoryService.removeProductFromCategory(category.getId(), existProduct.getId());
             }*/
@@ -154,7 +154,7 @@ public class ProductController {
             return "redirect:/categories";
         }
         productService.deleteById(id);
-        return "redirect:/products";
+        return "redirect:/categories";
     }
 
     @PostMapping("/products/{id}/addToCard/{idUser}")

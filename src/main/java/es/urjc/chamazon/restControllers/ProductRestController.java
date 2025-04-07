@@ -1,6 +1,7 @@
 package es.urjc.chamazon.restControllers;
 
 import es.urjc.chamazon.dto.ProductDTO;
+import es.urjc.chamazon.dto.ProductDTOExtended;
 import es.urjc.chamazon.dto.ProductMapper;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.services.CategoryService;
@@ -49,8 +50,8 @@ public class ProductRestController {
      */
 
     @GetMapping("/") // same as findAllProducts
-    public ResponseEntity<Collection<ProductDTO>> getProducts() { // same as findAllProducts
-        Collection <ProductDTO> productsDTOs = productService.getProducts();
+    public ResponseEntity<Collection<ProductDTOExtended>> getProducts() { // same as findAllProducts
+        Collection <ProductDTOExtended> productsDTOs = productService.getProducts();
         try {
             return ResponseEntity.ok(productsDTOs);
         } catch (NoSuchElementException e) {
@@ -59,8 +60,8 @@ public class ProductRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity <ProductDTO> getProduct(@PathVariable long id) { // same as findById
-        ProductDTO productDTO = productService.getProduct(id);
+    public ResponseEntity <ProductDTOExtended> getProduct(@PathVariable long id) { // same as findById
+        ProductDTOExtended productDTO = productService.getProduct(id);
         try{
             return ResponseEntity.ok(productDTO);
         } catch (NoSuchElementException e) {
@@ -69,7 +70,7 @@ public class ProductRestController {
     }
 
     @PostMapping("/") // same as save when the user has added a new product
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
+    public ResponseEntity<ProductDTOExtended> createProduct(@RequestBody ProductDTOExtended productDTO) {
         productService.createProduct(productDTO);
 
         URI location = fromCurrentRequest().path("/{id}").buildAndExpand(productDTO.id()).toUri();
@@ -80,20 +81,19 @@ public class ProductRestController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductDTO> replaceProduct(@PathVariable long id, @RequestBody ProductDTO newProductDTO) throws SQLException {
        ProductDTO productDTO = productService.replaceProduct(id, newProductDTO);
-       return ResponseEntity.ok(productService.getProduct(id));
+       return ResponseEntity.ok(productDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ProductDTO> deleteProduct(@PathVariable long id) {
         try {
-            ProductDTO productDTO = productService.deleteProduct(id);
-            return ResponseEntity.ok(productService.getProduct(id));
+            productService.deleteById(id);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    //imgs
 
     @PostMapping("/{id}/image")     
     public ResponseEntity<Object> createProductImage(@PathVariable long id, @RequestParam MultipartFile imageFile) throws IOException {    

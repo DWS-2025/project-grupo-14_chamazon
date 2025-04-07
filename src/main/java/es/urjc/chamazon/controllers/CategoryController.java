@@ -2,6 +2,7 @@
 package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.dto.CategoryDTO;
+import es.urjc.chamazon.dto.CategoryDTOExtended;
 import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.services.CategoryService;
@@ -63,7 +64,7 @@ public class CategoryController {
     @GetMapping("/categories/edit")
     public String editCategory(@RequestParam Long id, Model model) {
         try {
-            CategoryDTO categoryDTO = categoryService.getCategory(id);
+            CategoryDTOExtended categoryDTO = categoryService.getCategory(id);
             model.addAttribute("category", categoryDTO);
             return "/category/editCategory";
         } catch (NoSuchElementException e) {
@@ -86,9 +87,6 @@ public class CategoryController {
         try{
             List<ProductDTO> products =  categoryService.getProductsByCategoryId(id);
             model.addAttribute("category", categoryService.getCategory(id));
-            for (ProductDTO product : products) {
-                System.out.println(product.name());
-            }
             model.addAttribute("products", categoryService.getProductsByCategoryId(id));
             return "product/products_list";
         } catch (NoSuchElementException e) {

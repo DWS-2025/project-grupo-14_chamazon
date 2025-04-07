@@ -1,16 +1,13 @@
 package es.urjc.chamazon.dto;
 
-import es.urjc.chamazon.models.Category;
-import es.urjc.chamazon.models.ShoppingCar;
-
 import java.util.List;
 
-public record ProductDTO(
+public record ProductDTOExtended(
         Long id,
         String name,
         Float price,
         String description,
-        Float rating
+        Float rating,
+        List<CategoryDTO> categoryDTOList
 ){
 }
-
