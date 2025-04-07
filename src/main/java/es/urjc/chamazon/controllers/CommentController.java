@@ -1,7 +1,6 @@
 package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.dto.CommentDTO;
-import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.dto.ProductDTOExtended;
 import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.models.Comment;

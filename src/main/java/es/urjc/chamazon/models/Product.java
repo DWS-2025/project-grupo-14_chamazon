@@ -36,7 +36,7 @@ public class Product {
     private User user;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private List<Category> categoryList = new ArrayList<>();
+    private List<Category> categoryList;
 
     @ManyToMany(mappedBy = "productList", fetch = FetchType.EAGER)
     private List<ShoppingCar> shoppingCarList;
@@ -49,6 +49,7 @@ public class Product {
         this.description = description;
         this.imageFile = imageFile;
         this.rating = rating;
+        this.categoryList = new ArrayList<>();
     }
     @JsonProperty("imageBase64")
     public String getImageBase64() {
@@ -67,6 +68,7 @@ public class Product {
         this.price = price;
         this.description = description;
         this.rating = rating;
+        this.categoryList = new ArrayList<>();
     }
 
 
