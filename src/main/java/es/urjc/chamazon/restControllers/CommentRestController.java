@@ -16,7 +16,7 @@ public class CommentRestController {
     private CommentService commentService;
 
     // GET ALL COMMENTS
-    @GetMapping("/")
+    @GetMapping
     public List<CommentDTO> getAllComments() {
         return commentService.findAll();
     }
@@ -33,7 +33,7 @@ public class CommentRestController {
     }
 
     // CREATE NEW COMMENT
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO commentDTO) {
         CommentDTO savedComment = commentService.save(commentDTO);
         return ResponseEntity.ok(savedComment);
