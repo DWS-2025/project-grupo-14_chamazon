@@ -5,6 +5,7 @@ import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Comment;
 import es.urjc.chamazon.models.Product;
 
+import es.urjc.chamazon.models.ShoppingCar;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -39,6 +40,7 @@ public class ProductService {
     private CategoryService categoryService;
     @Autowired
     private CategoryMapper categoryMapper;
+
 
 
     public Collection<ProductDTOExtended> getProducts() { // findAllProducts
@@ -138,6 +140,7 @@ public class ProductService {
         this.save(existingProduct);
         return toDTO(existingProduct);
     }
+
     public ProductDTOExtended replaceProduct(long id, ProductDTOExtended newProductDTO) {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow();
@@ -148,7 +151,6 @@ public class ProductService {
         existingProduct.setDescription(newProductDTO.description());
         existingProduct.setRating(newProductDTO.rating());
 
-        // Manejar relaciones (ejemplo con categorías)
         if (newProductDTO.categoryDTOList() != null) {
             List<CategoryDTO> categories = newProductDTO.categoryDTOList();
             existingProduct.setCategoryList(categoryMapper.toCategories(categories));
@@ -157,8 +159,6 @@ public class ProductService {
         Product savedProduct = productRepository.save(existingProduct);
         return productMapper.toDTOExtended(savedProduct);
     }
-
-
 
 
     public ProductDTO deleteProduct(long id) {
@@ -211,8 +211,6 @@ public class ProductService {
     public void replaceProductImage(long id, InputStream inputStream, long size) {
 
 		Product product = productRepository.findById(id).orElseThrow();
-        System.out.println(product.getId());
-        System.out.println(product.getImage());
 
 		product.setImageFile(BlobProxy.generateProxy(inputStream, size));
 
@@ -238,11 +236,22 @@ public class ProductService {
         Optional<Product> productOptional = productRepository.findById(id);
         if (productOptional.isPresent()) {
             Product product = productOptional.get();
+
             for (Category category : product.getCategoryList()) {
                 category.getProductList().remove(product);
             }
+
+            for (ShoppingCar shoppingCar : product.getShoppingCarList()) {
+                shoppingCar.getProductList().remove(product);
+            }
+
+
+            //commentService.deleteById(product.getId());
+
             product.getCategoryList().clear();
-            productRepository.save(product);
+            product.getShoppingCarList().clear();
+
+
             productRepository.delete(product);
         }
     }

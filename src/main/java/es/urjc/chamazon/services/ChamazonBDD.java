@@ -48,7 +48,7 @@ public class ChamazonBDD{
         Category travel = new Category("Travel", "Travel gear");
 
 
-        /*Product laptop = new Product("Laptop Premium", 999.99F,
+        Product laptop = new Product("Laptop Premium", 999.99F,
                 "High performance laptop with 16GB RAM",
                 4.5F);
 
@@ -57,7 +57,7 @@ public class ChamazonBDD{
                 4.7F);
 
         Product tshirt = new Product("Cotton T-Shirt", 19.99F, "Cotton T-Shirt",
-                4.2F);*/
+                4.2F);
 
         Product novel = new Product("Best Seller Novel", 14.99F,
                 "The most popular novel this year",
@@ -79,9 +79,9 @@ public class ChamazonBDD{
         categoryService.save(travel);
 
         //Assing secondary entity to main entity
-        /*laptop.getCategoryList().add(electronics);
+        laptop.getCategoryList().add(electronics);
         smartphone.getCategoryList().add(electronics);
-        tshirt.getCategoryList().add(clothing);*/
+        tshirt.getCategoryList().add(clothing);
         novel.getCategoryList().add(books);
         backpack.getCategoryList().add(travel);
 
@@ -96,9 +96,9 @@ public class ChamazonBDD{
 
         try {
 
-            /*productService.save(laptop);
+            productService.save(laptop);
             productService.save(smartphone);
-            productService.save(tshirt);*/
+            productService.save(tshirt);
             productService.save(novel);
             productService.save(backpack);
 
@@ -150,7 +150,6 @@ public class ChamazonBDD{
             commentService.save(commentMapper.toDTO(new Comment("Perfecto para estudiar y jugar", 5, user1, product1)));
             commentService.save(commentMapper.toDTO(new Comment("Igual de malo que el Atletico de Madrid, aparenta mucho pero es una mierda", 1, user1, product1)));
             commentService.save(commentMapper.toDTO(new Comment("Como el Real Madrid, nunca muere, aguanta hasta el final", 5, user2, product1)));
-
 
 
 

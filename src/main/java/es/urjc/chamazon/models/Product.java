@@ -29,7 +29,7 @@ public class Product {
     @JsonIgnore
     private Blob imageFile;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Comment> commentList;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -52,18 +52,7 @@ public class Product {
         this.categoryList = new ArrayList<>();
     }
 
-    /*@JsonProperty("imageBase64")
-    public String getImageBase64() {
-        if (imageFile == null) {
-            return null;
-        }
-        try {
-            byte[] bytes = imageFile.getBytes(1, (int) imageFile.length());
-            return Base64.getEncoder().encodeToString(bytes);
-        } catch (SQLException e) {
-            return null;
-        }
-    }*/
+
     public Product(String name, Float price, String description, Float rating) {
         this.name = name;
         this.price = price;
@@ -151,7 +140,12 @@ public class Product {
         this.shoppingCarList = shoppingCarList;
     }
 
-    
+    public void setCommentList(List<Comment> commentList) {
+        this.commentList = commentList;
+    }
+    public List<Comment> getCommentList() {
+        return commentList;
+    }
 
     @Override
     public String toString() {
