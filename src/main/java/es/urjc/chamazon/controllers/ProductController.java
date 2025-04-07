@@ -128,10 +128,7 @@ public class ProductController {
             return "redirect:/products";
         }
 
-        Product existingProduct = existProductActually.get();
-
-        // Update the existing product with new values, managing DTO
-        productService.update(existingProduct, newProduct, imageFileParameter);
+        ProductDTO updateProductDTO = productService.update(existProductActually.get(), newProduct, imageFileParameter);
 
         // remove the product from ALL its current categories
         List<CategoryDTO> allCategories = categoryService.getCategories();
