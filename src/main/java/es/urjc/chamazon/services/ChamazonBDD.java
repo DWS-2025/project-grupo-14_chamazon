@@ -56,8 +56,7 @@ public class ChamazonBDD{
                 "Latest model with AMOLED display",
                 4.7F);
 
-        Product tshirt = new Product("Cotton T-Shirt", 19.99F,
-                "Comfortable 100% cotton t-shirt",
+        Product tshirt = new Product("Cotton T-Shirt", 19.99F, "Cotton T-Shirt",
                 4.2F);
 
         Product novel = new Product("Best Seller Novel", 14.99F,
@@ -151,7 +150,6 @@ public class ChamazonBDD{
             commentService.save(commentMapper.toDTO(new Comment("Perfecto para estudiar y jugar", 5, user1, product1)));
             commentService.save(commentMapper.toDTO(new Comment("Igual de malo que el Atletico de Madrid, aparenta mucho pero es una mierda", 1, user1, product1)));
             commentService.save(commentMapper.toDTO(new Comment("Como el Real Madrid, nunca muere, aguanta hasta el final", 5, user2, product1)));
-
 
 
 

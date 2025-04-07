@@ -6,6 +6,7 @@ import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,6 +19,7 @@ public class CategoryService {
     private CategoryRepository categoryRepository;
 
     @Autowired
+    @Lazy
     private ProductService productService;
 
     @Autowired
@@ -44,8 +46,8 @@ public class CategoryService {
         Category category = toCategory(categoryDTO);
         this.save(category);
     }
-    void save(Category category) {
-        categoryRepository.save(category);
+    Category save(Category category) {
+        return categoryRepository.save(category);
     }
 
     public void deleteCategory(Long categoryId) {
@@ -82,14 +84,12 @@ public class CategoryService {
         }
         for (Product product : products.get()) {
             productMapper.toDTO(product);
-            System.out.println(product.getName());
         }
         return (List<ProductDTO>) productMapper.toDTOs(products.get());
 
     }
 
     public void addProductToCategory(long categoryId, long productId) {
-
 
         Optional <Category> categoryOpt = categoryRepository.findById(categoryId);
         Optional <Product> productOpt = productService.findById(productId);
@@ -103,16 +103,20 @@ public class CategoryService {
     }
 
     public void removeProductFromCategory(Long categoryId, Long productId) {
-
-        Optional <Category> categoryOpt = categoryRepository.findById(categoryId);
+        Optional<Category> categoryOpt = categoryRepository.findById(categoryId);
         Optional<Product> productOpt = productService.findById(productId);
 
         if (categoryOpt.isPresent() && productOpt.isPresent()) {
             Category category = categoryOpt.get();
             Product product = productOpt.get();
+
+            // Eliminar de ambos lados
             category.getProductList().remove(product);
             product.getCategoryList().remove(category);
+
+            // Guardar ambos lados
             categoryRepository.save(category);
+            productService.save(product);
         }
     }
 

@@ -29,7 +29,7 @@ public class Product {
     @JsonIgnore
     private Blob imageFile;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Comment> commentList;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -38,7 +38,7 @@ public class Product {
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Category> categoryList;
 
-    @ManyToMany(mappedBy = "productList", fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "productList")
     private List<ShoppingCar> shoppingCarList;
 
     public Product() { }
@@ -51,18 +51,8 @@ public class Product {
         this.rating = rating;
         this.categoryList = new ArrayList<>();
     }
-    @JsonProperty("imageBase64")
-    public String getImageBase64() {
-        if (imageFile == null) {
-            return null;
-        }
-        try {
-            byte[] bytes = imageFile.getBytes(1, (int) imageFile.length());
-            return Base64.getEncoder().encodeToString(bytes);
-        } catch (SQLException e) {
-            return null;
-        }
-    }
+
+
     public Product(String name, Float price, String description, Float rating) {
         this.name = name;
         this.price = price;
@@ -71,10 +61,8 @@ public class Product {
         this.categoryList = new ArrayList<>();
     }
 
-
-
     public List<Category> getCategoryList() {
-        return categoryList;
+        return new ArrayList<>();
     }
     public void setCategoryList(List<Category> categoryList) {
         this.categoryList = categoryList;
@@ -150,6 +138,13 @@ public class Product {
 
     public void setShoppingCarList(List<ShoppingCar> shoppingCarList) {
         this.shoppingCarList = shoppingCarList;
+    }
+
+    public void setCommentList(List<Comment> commentList) {
+        this.commentList = commentList;
+    }
+    public List<Comment> getCommentList() {
+        return commentList;
     }
 
     @Override

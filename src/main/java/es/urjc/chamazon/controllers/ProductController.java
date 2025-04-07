@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.List;
 
@@ -81,13 +82,11 @@ public class ProductController {
     }
 
     @PostMapping("/products/add")
-    public String addProduct(Model model, @ModelAttribute ProductDTO productDTO,
+    public String addProduct(Model model, @ModelAttribute ProductDTOExtended productDTO,
                              @RequestParam(value = "categoryId", required = false) List<Long> categoryId,
                              @RequestParam("imageFileParameter") MultipartFile imageFileParameter) throws IOException {
         // Save the product with the img file to get the id first before saving to
         // category list and then save the product to the category list.
-
-        //productService.save(product, imageFileParameter);
 
         ProductDTO savedProduct = productService.save(productDTO, imageFileParameter);
 
@@ -125,6 +124,7 @@ public class ProductController {
         // Get existing product at the exact moment by editing
         //Optional<ProductDTO> existProductActually = productService.findById(id);
         Optional<Product> existProductActually = productService.findById(id);
+
         if (!existProductActually.isPresent()) {
             return "redirect:/products";
         }

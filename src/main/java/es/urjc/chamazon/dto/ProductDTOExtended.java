@@ -8,6 +8,8 @@ public record ProductDTOExtended(
         Float price,
         String description,
         Float rating,
+        String image,
         List<CategoryDTO> categoryDTOList
 ){
+
 }
