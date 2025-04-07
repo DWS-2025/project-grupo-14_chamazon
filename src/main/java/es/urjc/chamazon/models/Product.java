@@ -36,7 +36,6 @@ public class Product {
     private User user;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JsonIgnore
     private List<Category> categoryList = new ArrayList<Category>();
 
     @ManyToMany(mappedBy = "productList", fetch = FetchType.EAGER)
