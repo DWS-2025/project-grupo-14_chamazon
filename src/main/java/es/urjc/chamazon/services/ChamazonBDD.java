@@ -123,13 +123,27 @@ public class ChamazonBDD{
 
         if (user1 != null && user2 != null && product1 != null && product2 != null && product3 != null) {
 
-            CommentDTO c1 = commentMapper.toDTO(new Comment("Me encantó este producto, ¡lo uso cada día!", 5, user1, product1)); //Es PepeAdmin
-            CommentDTO c2 = commentMapper.toDTO(new Comment("Podría ser mejor, pero está bien", 3, user2, product2)); //Es User2
-            CommentDTO c3 = commentMapper.toDTO(new Comment("Excelente relación calidad-precio", 4, user1, product3)); //Es PepeAdmin
+            CommentDTO c1 = commentMapper.toDTO(new Comment("Me encanta este producto, ¡lo uso cada dia!", 5, user1, product1)); //Es PepeAdmin
+            CommentDTO c2 = commentMapper.toDTO(new Comment("Podria ser mejor, pero mola", 3, user2, product2)); //Es User2
+            CommentDTO c3 = commentMapper.toDTO(new Comment("Excelente relacion calidad-precio", 4, user1, product3)); //Es PepeAdmin
 
             commentService.save(c1);
             commentService.save(c2);
             commentService.save(c3);
+
+            // Extra comments to prove the functionality of pagination of Laptop Premium product (now we have 10 comments more)
+            commentService.save(commentMapper.toDTO(new Comment("Muy recomendable, va como un tiro", 5, user2, product1)));
+            commentService.save(commentMapper.toDTO(new Comment("Un poco caro, pero vale la pena", 4, user1, product1)));
+            commentService.save(commentMapper.toDTO(new Comment("No me conevence del todo, esperaba algo mejor", 2, user2, product1)));
+            commentService.save(commentMapper.toDTO(new Comment("Diseño elegante y buen rendimiento, la booooomba", 5, user1, product1)));
+            commentService.save(commentMapper.toDTO(new Comment("Lo uso para trabajar y va genial", 5, user2, product1)));
+            commentService.save(commentMapper.toDTO(new Comment("Problemas con la bateria a los 2 meses", 3, user1, product1)));
+            commentService.save(commentMapper.toDTO(new Comment("No he tenido ningun problema hasta ahora", 4, user2, product1)));
+            commentService.save(commentMapper.toDTO(new Comment("Perfecto para estudiar y jugar", 5, user1, product1)));
+            commentService.save(commentMapper.toDTO(new Comment("Igual de malo que el Atletico de Madrid, aparenta mucho pero es una mierda", 1, user1, product1)));
+            commentService.save(commentMapper.toDTO(new Comment("Como el Real Madrid, nunca muere, aguanta hasta el final", 5, user2, product1)));
+
+
 
 
             System.out.println("Comentarios añadidos correctamente.");

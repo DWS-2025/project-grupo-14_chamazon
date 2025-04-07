@@ -23,6 +23,7 @@ public class Category {
     public Category(String name, String description) {
         this.name = name;
         this.description = description;
+        this.productList = new ArrayList<>();
     }
 
     //GETTERS AND SETTERS//

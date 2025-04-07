@@ -10,6 +10,7 @@
 
 <div class="container my-5">
     <a href="/" class="btn btn-primary mb-3">VOLVER</a>
+
     <div class="d-flex justify-content-between">
         <div>
             <select id="productSelect" name="product" class="form-select" onchange="loadComments()">
@@ -24,32 +25,96 @@
         </div>
     </div>
 
-    <div id="commentsList" class="mt-4">
-        {{#comments}}
-        <div class="card mb-3 shadow-sm">
-            <div class="card-body">
-                <p><strong>Usuario:</strong> {{user.userName}}</p>
-                <p><strong>Calificación:</strong> {{rating}}</p>
-                <p><strong>Comentario:</strong> {{comment}}</p>
-                <a class="btn btn-warning me-2" href="/commentView/edit/{{id}}">Editar</a>
-                <form action="/commentView/delete/{{id}}" method="post" style="display:inline;">
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                </form>
-            </div>
+    <!-- Comment container (fill by AJAX) -->
+    <div id="commentsList" class="mt-4"></div>
+
+    <!-- Reload Spinner  -->
+    <div id="spinner" class="text-center my-3" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
         </div>
-        {{/comments}}
+    </div>
+
+    <!-- More results button -->
+    <div class="text-center">
+        <button id="loadMoreBtn" class="btn btn-secondary" style="display: none;">Más resultados</button>
     </div>
 </div>
 
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    let currentPage = 0;
+    const pageSize = 10;
+    let lastPageReached = false;
+
+    document.addEventListener('DOMContentLoaded', function () {
         const productId = new URLSearchParams(window.location.search).get('productId');
         const addCommentButton = document.getElementById('addCommentButton');
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        const spinner = document.getElementById('spinner');
+
         if (productId) {
+            // Add button
             addCommentButton.href = `/commentView/add?productId=${productId}`;
             addCommentButton.style.display = 'block';
+
+            // Load comments (page 0)
+            loadCommentsAJAX(productId);
+
+            // Activate load more button
+            loadMoreBtn.addEventListener('click', function () {
+                loadMoreBtn.style.display = 'none';
+                spinner.style.display = 'block';
+                loadCommentsAJAX(productId);
+            });
         }
     });
+
+    function loadCommentsAJAX(productId) {
+        if (lastPageReached) return;
+
+        fetch(`/api/comments/product/${productId}?page=${currentPage}&size=${pageSize}`)
+            .then(response => response.json())
+            .then(data => {
+                const commentsList = document.getElementById('commentsList');
+
+
+                if (currentPage === 0) {
+                    commentsList.innerHTML = '';
+                }
+
+                data.content.forEach(comment => {
+                    const card = document.createElement('div');
+                    card.className = 'card mb-3 shadow-sm';
+                    card.innerHTML = `
+                        <div class="card-body">
+                            <p><strong>Usuario:</strong> ${comment.user.userName}</p>
+                            <p><strong>Calificación:</strong> ${comment.rating}</p>
+                            <p><strong>Comentario:</strong> ${comment.comment}</p>
+                            <a class="btn btn-warning me-2" href="/commentView/edit/${comment.id}">Editar</a>
+                            <form action="/commentView/delete/${comment.id}" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                            </form>
+                        </div>
+                    `;
+                    commentsList.appendChild(card);
+                });
+
+                // Mostrar botón si hay más comentarios
+                if (data.last || data.content.length === 0) {
+                    lastPageReached = true;
+                } else {
+                    currentPage++;
+                    document.getElementById('loadMoreBtn').style.display = 'block';
+                }
+
+                document.getElementById('spinner').style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error cargando comentarios:', error);
+                document.getElementById('spinner').style.display = 'none';
+            });
+    }
 
     function loadComments() {
         const productId = document.getElementById('productSelect').value;
