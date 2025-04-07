@@ -1,10 +1,12 @@
 package es.urjc.chamazon.controllers;
 
+import es.urjc.chamazon.dto.CommentDTO;
 import es.urjc.chamazon.dto.ProductDTO;
+import es.urjc.chamazon.dto.ProductDTOExtended;
 import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.models.Comment;
 import es.urjc.chamazon.models.Product;
-import es.urjc.chamazon.models.User;
+//import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.CommentService;
 import es.urjc.chamazon.services.ProductService;
 import es.urjc.chamazon.services.UserService;
@@ -42,7 +44,7 @@ public class CommentController {
             model.addAttribute("errorMessage", "Producto no encontrado");
             return "error/error";
         }
-        List<UserDTO> users = (List <UserDTO>) userService.getAllUsers();
+        List<UserDTO> users = userService.getAllUsers();
         model.addAttribute("users", users);
         model.addAttribute("comment", new Comment());
         return "comment/addNewComment";
@@ -63,14 +65,14 @@ public class CommentController {
 
     @GetMapping("/commentList")
     public String getCommentList(@RequestParam(required = false) Long productId, Model model) {
-        List<ProductDTO> products = (List <ProductDTO>) productService.getProducts();
+        List<ProductDTOExtended> products = (List <ProductDTOExtended>) productService.getProducts();
         model.addAttribute("products", products);
 
         if (productId != null) {
-            List<Comment> comments = commentService.findByProductId(productId);
+            List <CommentDTO> comments = commentService.findByProductId(productId);
             model.addAttribute("comments", comments);
         } else {
-            model.addAttribute("comments", new ArrayList <>());
+            model.addAttribute("comments", new ArrayList <CommentDTO>());
         }
 
         return "comment/commentList";
@@ -78,33 +80,13 @@ public class CommentController {
 
 
 
-    /*
-    @GetMapping("/comments")
-    public String getAllComments(Model model) {
-        List<Comment> comments = commentService.findAll();
-        model.addAttribute("comments", comments);
-        return "comment/comments";
-    }
-    */
-
-    /*
-    @GetMapping("/{id}")
-    public String getCommentById(@PathVariable Long id, Model model) {
-        Optional<Comment> comment = commentService.findById(id);
-        if (comment.isPresent()) {
-            model.addAttribute("comment", comment.get());
-            return "comment/comment";
-        } else {
-            return "error/error";
-        }
-    }
-    */
-
     //Update Operations: method getEditCommentPage(GET) and updateComment(POST) to update a comment
     @GetMapping("/edit/{id}")
-    public String getEditCommentPage(@PathVariable Optional<Long> id, Model model) {
-        if (id.isPresent()) {
-            model.addAttribute("comment", commentService.findById(id.get()).orElse(null));
+    public String getEditCommentPage(@PathVariable Long id, Model model) {
+        CommentDTO commentDTO = commentService.findById(id);
+
+        if (commentDTO != null) {
+            model.addAttribute("comment", commentDTO);
             return "comment/editComment";
         } else {
             return "redirect:/commentView/add";
@@ -112,16 +94,19 @@ public class CommentController {
     }
 
     @PostMapping("/edit/{id}")
-    public String updateComment(@PathVariable Long id, @RequestParam("comment") String commentTxt, @RequestParam int rating) { //comment is the name= received in the editComment.html, is beacuse we need to know the name of the input field requiered in the form
-        Optional<Comment> optionalComment = commentService.findById(id);
+    public String updateComment(@PathVariable Long id,
+                                @RequestParam("comment") String commentTxt,
+                                @RequestParam int rating) {
 
-        if (optionalComment.isPresent()) {
-            Comment comment = optionalComment.get();
-            comment.setComment(commentTxt);
-            comment.setRating(rating);
+        CommentDTO commentDTO = commentService.findById(id);
 
-            commentService.save(comment);
-            return "redirect:/commentView/commentList?productId=" + comment.getProduct().getId();
+        if (commentDTO != null) {
+            commentDTO.setComment(commentTxt);
+            commentDTO.setRating(rating);
+
+            commentService.save(commentDTO);
+
+            return "redirect:/commentView/commentList?productId=" + commentDTO.getProduct().id();
         }
 
         return "redirect:/commentView/commentList";
@@ -132,9 +117,10 @@ public class CommentController {
     //Delete Operation: method deleteComment(POST) to delete a comment (delete with a button in the comment view)
     @PostMapping("/delete/{id}")
     public String deleteComment(@PathVariable Long id) {
-        Comment comment = commentService.findById(id).orElse(null);
-        if (comment != null) {
-            Long productId = comment.getProduct().getId();
+        CommentDTO commentDTO = commentService.findById(id);
+
+        if (commentDTO != null) {
+            Long productId = commentDTO.getProduct().id();
             commentService.deleteById(id);
             return "redirect:/commentView/commentList?productId=" + productId;
         }

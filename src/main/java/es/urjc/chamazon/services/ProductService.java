@@ -1,20 +1,30 @@
 package es.urjc.chamazon.services;
 
+import es.urjc.chamazon.dto.CategoryDTO;
+import es.urjc.chamazon.dto.ProductDTOExtended;
+import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.dto.ProductMapper;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.Collection;
 import java.util.List;
-
+import java.util.NoSuchElementException;
 
 import es.urjc.chamazon.repositories.ProductRepository;
 
@@ -29,26 +39,45 @@ public class ProductService {
     private ProductMapper productMapper;
 
 
-    public Collection<ProductDTO> getProducts() { // findAllProducts
-        return toDTOs(productRepository.findAll());
+    public Collection<ProductDTOExtended> getProducts() { // findAllProducts
+        return toDTOsExtended(productRepository.findAll());
     } //findAllProducts
+
+    public Product getEntityId(long id) { // for img creation
+        return productRepository.findById(id).orElseThrow();
+    }
+    
+    public ProductDTOExtended getProduct(long id) {   //findById with DTO
+        Optional<Product> product = productRepository.findById(id);
+        if (product.isPresent()) {
+            return toDtoExtended(product.get());
+        } else {
+            return null;
+        }
+    }
+
+    /*public Page<ProductDTO> getProducts(Pageable pageable) { // findAllProducts with pagination
+        return productRepository.findAll();
+    } //findAllProducts with pagination
+    */
 
     private Collection<ProductDTO> toDTOs(Collection<Product> products) {
         return productMapper.toDTOs(products);
     }
+    private Collection<ProductDTOExtended> toDTOsExtended(Collection<Product> products){
+        return productMapper.toDTOsExtended(products);
+    }
+    private ProductDTOExtended toDtoExtended(Product product) {
+        return productMapper.toDTOExtended(product);
+    }
+
+
 
     public Optional<Product> findById(long id) {   //Return as entity not DTO like before (made for blob img)
         return productRepository.findById(id);
     }
 
-    public ProductDTO getProduct(long id) {   //findById with DTO
-        Optional<Product> product = productRepository.findById(id);
-        if (product.isPresent()) {
-            return toDTO(product.get());
-        } else {
-            return null;
-        }
-    }
+    
 
     private ProductDTO toDTO(Product product) {
         return productMapper.toDTO(product);
@@ -60,6 +89,9 @@ public class ProductService {
 
     private Product toProduct(ProductDTO productDTO) {
         return productMapper.toProduct(productDTO);
+    }
+    private Product toProductFromExtended(ProductDTOExtended productDTO) {
+        return productMapper.toProductFromExtended(productDTO);
     }
 
     public Optional<Product> findByName(String name) {
@@ -76,20 +108,21 @@ public class ProductService {
         productRepository.save(product);
     }
 
-   // for updating
-    public ProductDTO save(Long id, ProductDTO productDTO, MultipartFile imageFile) throws IOException {
-        Optional<Product> product = productRepository.findById(id);
 
-        if (!product.isPresent()) {
-            return null;
-        }
+    public ProductDTOExtended createProduct (ProductDTOExtended productDTO) {
+        Product newProduct = toProductFromExtended(productDTO);
+        this.save(newProduct);
+        return toDtoExtended(newProduct);
+    }
 
-        Product existingProduct = product.get();
 
-        existingProduct.setName(productDTO.name());
-        existingProduct.setDescription(productDTO.description());
-        existingProduct.setPrice(productDTO.price());
-        existingProduct.setRating(productDTO.rating());
+    // for updating product which has been saved before in CONTROLLER
+    public ProductDTO update(Product existingProduct, Product newProduct, MultipartFile imageFile) throws IOException {
+        // Update existing  product with new values
+        existingProduct.setName(newProduct.getName());
+        existingProduct.setPrice(newProduct.getPrice());
+        existingProduct.setDescription(newProduct.getDescription());
+        existingProduct.setRating(newProduct.getRating());
 
         if (!imageFile.isEmpty()) {
             existingProduct.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
@@ -97,6 +130,30 @@ public class ProductService {
 
         this.save(existingProduct);
         return toDTO(existingProduct);
+    }
+
+    // for updating in REST CONTROLLER
+    public ProductDTO replaceProduct(long id, ProductDTO updatedProductDTO) throws SQLException {
+        Product oldProduct = getEntityId(id);
+        Product updatedProduct = toProduct(updatedProductDTO);
+        updatedProduct.setId(id);
+
+        if (oldProduct.getImage() != null) {
+            // Set the image in the updated product
+            updatedProduct.setImageFile(BlobProxy.generateProxy(oldProduct.getImageFile().getBinaryStream(),
+            oldProduct.getImageFile().length()));
+            updatedProduct.setImage(oldProduct.getImage());
+        }
+
+        this.save(updatedProduct);
+        return toDTO(updatedProduct);
+    }
+
+
+    public ProductDTO deleteProduct(long id) {
+        Product product = getEntityId(id);
+        this.deleteById(id);
+        return toDTO(product);
     }
 
  //for adding new products
@@ -115,8 +172,64 @@ public class ProductService {
         return toDTO(newProduct);
     }
 
+
+    
+    public void createProductImage (long id, URI location, InputStream imageFile, long size){
+        Product product = getEntityId(id);
+
+        product.setImage(location.toString());
+        product.setImageFile(BlobProxy.generateProxy(imageFile, size));
+        save(product);
+    }
+
+    public Resource getProductImage(long id) throws SQLException{
+        Product product = getEntityId(id);
+        if(product.getImage()!= null){
+            return new InputStreamResource(product.getImageFile().getBinaryStream());
+		} else {
+			throw new NoSuchElementException();
+        }
+    }
+
+    public void replaceProductImage(long id, InputStream inputStream, long size) {
+
+		Product product = getEntityId(id);
+
+		if(product.getImage() == null){
+			throw new NoSuchElementException();
+		}
+
+		product.setImageFile(BlobProxy.generateProxy(inputStream, size));
+
+		save(product);
+	}
+
+	public void deletePostImage(long id) {
+
+		Product product = getEntityId(id);
+
+		if(product.getImage() == null){
+			throw new NoSuchElementException();
+		}
+
+		product.setImageFile(null);
+		product.setImage(null);
+
+		save(product);
+	}
+
+
     public void deleteById(long id) {
-        productRepository.deleteById(id);
+        Optional<Product> productOptional = productRepository.findById(id);
+        if (productOptional.isPresent()) {
+            Product product = productOptional.get();
+            for (Category category : product.getCategoryList()) {
+                category.getProductList().remove(product);
+            }
+            product.getCategoryList().clear();
+            productRepository.save(product);
+            productRepository.delete(product);
+        }
     }
 
     public void deleteAll() {
@@ -149,4 +262,5 @@ public class ProductService {
             return productRepository.findAll();
         }
     }
+
 }

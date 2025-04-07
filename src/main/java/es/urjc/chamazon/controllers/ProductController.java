@@ -51,7 +51,7 @@ public class ProductController {
 
     @GetMapping("/products/{id}")
     public String product(@PathVariable long id, Model model) {
-        ProductDTO productDTO = productService.getProduct(id); // findById with DTO
+        ProductDTOExtended productDTO = productService.getProduct(id); // findById with DTO
         if (productDTO != null) {
             model.addAttribute("product", productDTO);
             return "product/product_detail";
@@ -95,7 +95,7 @@ public class ProductController {
         Long productId = savedProduct.id();
         if (categoryId != null && !categoryId.isEmpty()) {
             for (Long categoryIdentified : categoryId) {
-                //categoryService.addProductToCategory(categoryIdentified, productId);
+                categoryService.addProductToCategory(categoryIdentified, productId);
             }
         }
 
@@ -109,7 +109,7 @@ public class ProductController {
             Product product = optionalProduct.get();
             model.addAttribute("product", product);
 
-            List<CategoryDTO> categories = categoryService.getCategories();
+            List<CategoryDTOExtended> categories = categoryService.getCategories();
             model.addAttribute("categories", categories);
             return "product/editProduct";
         } else {
@@ -129,29 +129,11 @@ public class ProductController {
             return "redirect:/products";
         }
 
-        /*Meterlo en el service el proceso logico
-        Product prs = existProductActually.get();
-
-        prs.setName(newProduct.getName());
-        prs.setPrice(newProduct.getPrice());
-        prs.setDescription(newProduct.getDescription());
-
-        productService.save(prs, newProduct.getImageFile());
-        */
-        //Create DTO
-/*
-        ProductDTO productDTO = new ProductDTO(newProduct.getId(),
-                newProduct.getName(), newProduct.getPrice(),
-                newProduct.getDescription(), newProduct.getRating(), existProductActually.get().getCategoryList(), existProductActually.get().getShoppingCarList());
-*/
-
-        // make sure the image works properly depending on which option did they choose
-
-        //productService.save(id, productDTO, imageFileParameter);
+        ProductDTO updateProductDTO = productService.update(existProductActually.get(), newProduct, imageFileParameter);
 
         // remove the product from ALL its current categories
-        List<CategoryDTO> allCategories = categoryService.getCategories();
-        for (CategoryDTO CategoryDTO : allCategories) {
+        List<CategoryDTOExtended> allCategories = categoryService.getCategories();
+        for (CategoryDTOExtended CategoryDTO : allCategories) {
             /*if (CategoryDTO.getProductList().contains(existProduct)) {
                 categoryService.removeProductFromCategory(category.getId(), existProduct.getId());
             }*/
@@ -178,7 +160,11 @@ public class ProductController {
 
     @PostMapping("/products/{id}/addToCard/{idUser}")
     public String addToCart(@PathVariable long id, @PathVariable long idUser) {
-        shoppingCarService.addProductToUserShoppingCar(id, idUser);
+        Optional<Product> product = productService.findById(id);
+        /*UserDTO user = userService.getUser(idUser);
+        if (product.isPresent() && user.isPresent()) {
+            shoppingCarService.addProductToUserShoppingCar(id, idUser);
+        }*/
         return "redirect:/products";
     }
 

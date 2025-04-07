@@ -4,10 +4,9 @@ import es.urjc.chamazon.models.Product;
 
 import java.util.List;
 
-public record CategoryDTO(
+public record CategoryDTOExtended(
         Long id,
         String name,
-        String description
-        ){
-
+        String description,
+        List<ProductDTO> productDTOList){
 }

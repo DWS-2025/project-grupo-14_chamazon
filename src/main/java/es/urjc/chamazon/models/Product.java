@@ -22,19 +22,23 @@ public class Product {
     private String description;
     private Float rating;
 
+    private String image;
+
     @Lob
+    @Column(name = "imageFile")
+    @JsonIgnore
     private Blob imageFile;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     private List<Comment> commentList;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
-    @ManyToMany
-    private List<Category> categoryList = new ArrayList<Category>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Category> categoryList = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "productList")
+    @ManyToMany(mappedBy = "productList", fetch = FetchType.EAGER)
     private List<ShoppingCar> shoppingCarList;
 
     public Product() { }
@@ -66,6 +70,7 @@ public class Product {
     }
 
 
+
     public List<Category> getCategoryList() {
         return categoryList;
     }
@@ -87,6 +92,10 @@ public class Product {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getImage() {
+        return image;
     }
 
     public Blob getImageFile() {
@@ -113,6 +122,10 @@ public class Product {
         this.description = description;
     }
 
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     public void setImageFile(Blob imageFile){
         this.imageFile = imageFile;
     }
@@ -130,15 +143,16 @@ public class Product {
     }
 
     public List<ShoppingCar> getShoppingCarList() {
-        return new ArrayList<>();
+        return shoppingCarList;
     }
 
-    /*public void setShoppingCarList(List<ShoppingCar> shoppingCarList) {
+    public void setShoppingCarList(List<ShoppingCar> shoppingCarList) {
         this.shoppingCarList = shoppingCarList;
     }
 
     @Override
     public String toString() {
         return "Product [id=" + id + ", name=" + name + ", price=" + price + ", rating=" + rating + "]";
-    }*/
+    }
+
 }
