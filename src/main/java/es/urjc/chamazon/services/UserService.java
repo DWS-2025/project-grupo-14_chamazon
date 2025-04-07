@@ -1,31 +1,18 @@
 
 package es.urjc.chamazon.services;
 
-import es.urjc.chamazon.dto.CategoryDTO;
 import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.dto.UserMapper;
-import es.urjc.chamazon.models.Category;
-import es.urjc.chamazon.models.Product;
-import es.urjc.chamazon.models.ShoppingCar;
 import es.urjc.chamazon.models.User;
-import es.urjc.chamazon.repositories.ShoppingCarRepository;
 import es.urjc.chamazon.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.swing.text.html.Option;
-import java.util.Collection;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 @Service
 public class UserService {
-
 
 
     @Autowired
@@ -55,8 +42,7 @@ public class UserService {
     public void save(UserDTO userDTO) {
         User user = toUser(userDTO);
         saveUser(user);
-        //falta añadir la parte del carrito
-        //shoppingCarService.firstSC(user);
+
     }
     void saveUser(User user) {
         userRepository.save(user);

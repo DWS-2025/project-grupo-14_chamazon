@@ -15,7 +15,7 @@ public class Category {
     private String description;
 
     @ManyToMany(mappedBy = "categoryList")
-    private List<Product> productList = new ArrayList<Product>();
+    private List<Product> productList;
 
     public Category() {
 
@@ -23,6 +23,7 @@ public class Category {
     public Category(String name, String description) {
         this.name = name;
         this.description = description;
+        this.productList = new ArrayList<>();
     }
 
     //GETTERS AND SETTERS//
