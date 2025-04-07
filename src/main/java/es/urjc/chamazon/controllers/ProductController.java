@@ -139,13 +139,15 @@ public class ProductController {
         productService.save(prs, newProduct.getImageFile());
         */
         //Create DTO
+/*
         ProductDTO productDTO = new ProductDTO(newProduct.getId(),
                 newProduct.getName(), newProduct.getPrice(),
                 newProduct.getDescription(), newProduct.getRating(), existProductActually.get().getCategoryList(), existProductActually.get().getShoppingCarList());
+*/
 
         // make sure the image works properly depending on which option did they choose
 
-        productService.save(id, productDTO, imageFileParameter);
+        //productService.save(id, productDTO, imageFileParameter);
 
         // remove the product from ALL its current categories
         List<CategoryDTO> allCategories = categoryService.getCategories();

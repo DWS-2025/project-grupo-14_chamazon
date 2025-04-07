@@ -31,7 +31,7 @@
                 <td>
                     <a class="btn btn-outline-primary btn-sm"  title="verCarrito" href="/products">Ver</a>
                     {{^ifNotEnd}}
-                    <a class="btn btn-outline-danger btn-sm"  title="eliminarProducto" href="/users/{{idUser}}/shoppingCar/removeProduct/{{id}}">Eliminar de la cesta</a>
+                    <a class="btn btn-outline-danger btn-sm"  title="eliminarProducto" href="/shoppingCar/removeProduct/{{id}}/{{idUser}}">Eliminar de la cesta</a>
                     {{/ifNotEnd}}
                 </td>
             </tr>
@@ -54,7 +54,7 @@
     {{^ifNotProducts}}
 
     <div class="d-flex justify-content-end mt-3">
-        <a class="btn btn-warning" role="button" href="/users/{{idUser}}/shoppingCar/endPurchase/">Finalizar Compra</a>
+        <a class="btn btn-warning" role="button" href="/shoppingCar/endPurchase/{{idUser}}">Finalizar Compra</a>
     </div>
 
     {{/ifNotProducts}}

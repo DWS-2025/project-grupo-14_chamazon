@@ -34,8 +34,8 @@ public class Product {
     @ManyToMany
     private List<Category> categoryList = new ArrayList<Category>();
 
-    /*@ManyToMany(mappedBy = "productList")
-    private List<ShoppingCar> shoppingCarList;*/
+    @ManyToMany(mappedBy = "productList")
+    private List<ShoppingCar> shoppingCarList;
 
     public Product() { }
 

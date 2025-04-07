@@ -2,22 +2,17 @@
 package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.dto.UserDTO;
-import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.ShoppingCarService;
 import es.urjc.chamazon.services.UserService;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Controller
 public class UserController {
@@ -52,7 +47,7 @@ public class UserController {
     @PostMapping("/users/add")
     public String addUser(UserDTO newUserDTO, Model model) {
         userService.save(newUserDTO);
-        shoppingCarService.firstSC(newUserDTO);
+        shoppingCarService.createSC(newUserDTO);
         return "redirect:/users";
     }
 

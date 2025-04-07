@@ -11,7 +11,6 @@ import es.urjc.chamazon.models.ShoppingCar;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.repositories.ShoppingCarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -45,13 +44,19 @@ public class ShoppingCarService {
 
     //ALIAS FOR CRUD REPOSITORY METHODS//
 
-        public ShoppingCar firstSC(UserDTO user){
+        public ShoppingCar createSC(UserDTO user){
+            return this.assignSCToUser(userMapper.toUser(user));
+        }
+
+        ShoppingCar assignSCToUser(User user){
             ShoppingCar sc = new ShoppingCar();
-            sc.setUser(userMapper.toUser(user));
+            sc.setUser(user);
             sc.setDateSold(null);
             addShoppingCar(sc);
             return shoppingCarRepository.save(sc);
         }
+
+
         void addShoppingCar(ShoppingCar sc) {
             shoppingCarRepository.save(sc);
         }
@@ -78,7 +83,9 @@ public class ShoppingCarService {
         ShoppingCarDTO toDTO(ShoppingCar sc){
             return shoppingCarMapper.toDTO(sc);
         }
-
+        ShoppingCarExtendedDTO toExtendedDTO(ShoppingCar sc){
+            return shoppingCarMapper.toExtendedDTO(sc);
+        }
         ShoppingCar toDomain(ShoppingCarDTO shoppingCarDTO){
             return shoppingCarMapper.toDomain(shoppingCarDTO);
         }
@@ -87,33 +94,29 @@ public class ShoppingCarService {
             return shoppingCarMapper.toDTOs(scList);
         }
 
-    //SHOPPING CAR METHODS//
-
-        public ShoppingCarDTO getShoppingCarDTOById(Long id) {
-            return toDTO(getShoppingCarById(id));
+        List<ShoppingCarExtendedDTO> toExtendedDTOList(List<ShoppingCar> scList){
+            return shoppingCarMapper.toExtendedDTOs(scList);
         }
 
+    //SHOPPING CAR METHODS//
+
+        public ShoppingCarExtendedDTO getShoppingCarDTOById(Long id) {
+            return toExtendedDTO(getShoppingCarById(id));
+        }
         public ShoppingCarDTO getActualShoppingCarDTOByIdUser(Long id) {
             return toDTO(getActualShoppingCarByIdUser(id));
         }
+
+        //Return the shoppingCar with Date = null. If not exist create it and return
         ShoppingCar getActualShoppingCarByIdUser(long idUser) {
             if (shoppingCarRepository.existsByUser_IdAndDateSoldNull(idUser)) {
                 return shoppingCarRepository.findByUser_IdAndDateSoldNull(idUser);
             } else {
-                User user = userService.getUserById(idUser);  // asegúrate de que devuelve algo válido
+                User user = userService.getUserById(idUser);
                 ShoppingCar sc = new ShoppingCar();
                 sc.setUser(user);
                 return shoppingCarRepository.save(sc);
             }
-        }
-        //Return the shoppingCar with Date = null. If not exist create it and return
-        ShoppingCar ygetActualShoppingCarByIdUser(long idUser) {
-            if(shoppingCarRepository.existsByUser_IdAndDateSoldNull(idUser)){
-                return shoppingCarRepository.findByUser_IdAndDateSoldNull(idUser);
-            } else if (shoppingCarRepository.existsByUser_Id(idUser)){
-                return shoppingCarRepository.save(new ShoppingCar(userService.getUserById(idUser)));
-            }
-            return null;
         }
 
         //Return the ended ShoppingCar Purchase
@@ -133,6 +136,7 @@ public class ShoppingCarService {
             if (!sc.getProductList().isEmpty()) {
                 sc.setDateSold(LocalDateTime.now());
                 shoppingCarRepository.save(sc);
+                this.assignSCToUser(sc.getUser());
             }
             return toDTO(sc);
         }
@@ -176,8 +180,8 @@ public class ShoppingCarService {
 
     //SHOPPING CAR LIST METHODS//
 
-        public List<ShoppingCarDTO> getShoppingCarDTOListByUserId(Long idUser){
-            return toDTOList(getShoppingCarListByUserId(idUser));
+        public List<ShoppingCarExtendedDTO> getShoppingCarDTOListByUserId(Long idUser){
+            return toExtendedDTOList(getShoppingCarListByUserId(idUser));
         }
 
         List<ShoppingCar> getShoppingCarListByUserId(Long idUser) {
@@ -193,27 +197,27 @@ public class ShoppingCarService {
         }
 
 
-        List<ProductDTO> getProductListFromActualShoppingCar(Long idUser) {
+        public List<ProductDTO> getProductListFromActualShoppingCar(Long idUser) {
             ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
-            return getProductListFromSC(sc);
+            return getProductDTOListFromSC(sc);
         }
 
-        public List<ProductDTO> getProductListByShoppingCarId(Long idSC) {
+        public List<ProductDTO> getProductListDTOByShoppingCarId(Long idSC) {
             ShoppingCar sc = this.getShoppingCarById(idSC);
-            return getProductListFromSC(sc);
+            return getProductDTOListFromSC(sc);
         }
 
-        private List<ProductDTO> getProductListFromSC(ShoppingCar sc) {
+        public List<ProductDTO> getProductDTOListFromSC(ShoppingCar sc) {
             return (List<ProductDTO>) productMapper.toDTOs(sc.getProductList());
         }
 
-    public Map<Long, Integer> getProductsLengthMap(List<ShoppingCarDTO> listShoppingCarDTO) {
+/*    public Map<Long, Integer> getProductsLengthMap(List<ShoppingCarExtendedDTO> listShoppingCarDTO) {
         Map<Long, Integer> productLengthMap = new HashMap<>();
-        for (ShoppingCarDTO shoppingCarDTO : listShoppingCarDTO) {
+        for (ShoppingCarExtendedDTO shoppingCarDTO : listShoppingCarDTO) {
             productLengthMap.put(shoppingCarDTO.getId(), shoppingCarDTO.getProductList().size());
         }
         return productLengthMap;
-    }
+    }*/
 
 
 

@@ -10,9 +10,7 @@ public record ProductDTO(
     String name,
     Float price,
     String description,
-    Float rating,
-    List<Category> categoryList,
-    List<ShoppingCar> shoppingCarList
+    Float rating
 ){
 }
     
