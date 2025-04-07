@@ -36,9 +36,9 @@ public class Product {
     private User user;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private List<Category> categoryList = new ArrayList<>();
+    private List<Category> categoryList;
 
-    @ManyToMany(mappedBy = "productList", fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "productList")
     private List<ShoppingCar> shoppingCarList;
 
     public Product() { }
@@ -49,8 +49,10 @@ public class Product {
         this.description = description;
         this.imageFile = imageFile;
         this.rating = rating;
+        this.categoryList = new ArrayList<>();
     }
-    @JsonProperty("imageBase64")
+
+    /*@JsonProperty("imageBase64")
     public String getImageBase64() {
         if (imageFile == null) {
             return null;
@@ -61,18 +63,17 @@ public class Product {
         } catch (SQLException e) {
             return null;
         }
-    }
+    }*/
     public Product(String name, Float price, String description, Float rating) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.rating = rating;
+        this.categoryList = new ArrayList<>();
     }
 
-
-
     public List<Category> getCategoryList() {
-        return categoryList;
+        return new ArrayList<>();
     }
     public void setCategoryList(List<Category> categoryList) {
         this.categoryList = categoryList;
@@ -149,6 +150,8 @@ public class Product {
     public void setShoppingCarList(List<ShoppingCar> shoppingCarList) {
         this.shoppingCarList = shoppingCarList;
     }
+
+    
 
     @Override
     public String toString() {

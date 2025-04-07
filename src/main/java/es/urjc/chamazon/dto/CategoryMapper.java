@@ -12,7 +12,9 @@ import java.util.List;
 public interface CategoryMapper {
     @Mapping(source = "productList", target = "productDTOList")
     CategoryDTOExtended toDTO(Category category);
+    Category toCategoryFromExtendedDTO(CategoryDTOExtended extendedCategoryDTO);
     Category toCategory(CategoryDTO categoryDTO);
     List<CategoryDTOExtended> toDTOs(List<Category> categories);
     List<Category> toCategories(List<CategoryDTO> categoriesDTO);
+
 }

@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class ProductController {
 
     @GetMapping("/products/{id}/image")
     public ResponseEntity<Resource> downloadImage(@PathVariable long id) throws SQLException {
-        Optional<Product> product = productService.findById(id); // findById with entity
+        Optional<Product> product = productService.findById(id);
         if (product.isPresent() && product.get().getImageFile() != null) {
             Blob image = product.get().getImageFile();
             Resource file = new InputStreamResource(image.getBinaryStream());
@@ -81,22 +82,20 @@ public class ProductController {
     }
 
     @PostMapping("/products/add")
-    public String addProduct(Model model, @ModelAttribute ProductDTO productDTO,
+    public String addProduct(Model model, @ModelAttribute ProductDTOExtended productDTO,
                              @RequestParam(value = "categoryId", required = false) List<Long> categoryId,
                              @RequestParam("imageFileParameter") MultipartFile imageFileParameter) throws IOException {
         // Save the product with the img file to get the id first before saving to
         // category list and then save the product to the category list.
 
-        ProductDTO savedProduct = productService.save(productDTO, imageFileParameter);
 
-        // Get the id of the product to add it to the category list
+        ProductDTO savedProduct = productService.save(productDTO, imageFileParameter);
         Long productId = savedProduct.id();
         if (categoryId != null && !categoryId.isEmpty()) {
             for (Long categoryIdentified : categoryId) {
                 categoryService.addProductToCategory(categoryIdentified, productId);
             }
         }
-
         return "redirect:/products";
     }
 

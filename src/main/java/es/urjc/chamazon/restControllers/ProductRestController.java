@@ -70,7 +70,8 @@ public class ProductRestController {
     }
 
     @PostMapping("/") // same as save when the user has added a new product
-    public ResponseEntity<ProductDTOExtended> createProduct(@RequestBody ProductDTOExtended productDTO) {
+    public ResponseEntity<ProductDTOExtended> createProduct(@RequestBody ProductDTOExtended productDTO)
+    {
         productService.createProduct(productDTO);
 
         URI location = fromCurrentRequest().path("/{id}").buildAndExpand(productDTO.id()).toUri();
@@ -79,8 +80,8 @@ public class ProductRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> replaceProduct(@PathVariable long id, @RequestBody ProductDTO newProductDTO) throws SQLException {
-       ProductDTO productDTO = productService.replaceProduct(id, newProductDTO);
+    public ResponseEntity<ProductDTOExtended> replaceProduct(@PathVariable long id, @RequestBody ProductDTOExtended newProductDTO) throws SQLException {
+        ProductDTOExtended productDTO = productService.replaceProduct(id, newProductDTO);
        return ResponseEntity.ok(productDTO);
     }
 
@@ -95,37 +96,31 @@ public class ProductRestController {
     }
 
 
-    @PostMapping("/{id}/image")     
-    public ResponseEntity<Object> createProductImage(@PathVariable long id, @RequestParam MultipartFile imageFile) throws IOException {    
+    @PostMapping("/{id}/image")
+    public ResponseEntity<Object> createProductImage(@PathVariable long id, @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
         URI location = fromCurrentRequest().build().toUri();
         productService.createProductImage(id, location, imageFile.getInputStream(), imageFile.getSize());
         return ResponseEntity.created(location).build();
     }
 
-
     @GetMapping("/{id}/image")
-	public ResponseEntity<Object> getProductImage(@PathVariable long id) throws SQLException, IOException {
+    public ResponseEntity<Object> getProductImage(@PathVariable long id) throws SQLException, IOException {
+        Resource productImage = productService.getProductImage(id);
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "image/jpeg").body(productImage);
+    }
 
-		Resource productImage = productService.getProductImage(id);
+    @PutMapping("/{id}/image")
+    public ResponseEntity<Object> replaceProductImage(@PathVariable long id, @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
 
-		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "image/jpeg").body(productImage);
-	}
+        productService.replaceProductImage(id, imageFile.getInputStream(), imageFile.getSize());
+        return ResponseEntity.noContent().build();
+    }
 
-	@PutMapping("/{id}/image")
-	public ResponseEntity<Object> replaceProductImage(@PathVariable long id, @RequestParam MultipartFile imageFile) throws IOException {
-
-		productService.replaceProductImage(id, imageFile.getInputStream(), imageFile.getSize());
-
-		return ResponseEntity.noContent().build();
-	}
-
-	@DeleteMapping("/{id}/image")
-	public ResponseEntity<Object> deletePostImage(@PathVariable long id) throws IOException {
-
-		productService.deletePostImage(id);
-
-		return ResponseEntity.noContent().build();
-	}
+    @DeleteMapping("/{id}/image")
+    public ResponseEntity<Object> deletePostImage(@PathVariable long id) throws IOException {
+        productService.deletePostImage(id);
+        return ResponseEntity.noContent().build();
+    }
 
     
 }

@@ -44,7 +44,7 @@ public class ChamazonBDD{
         Category travel = new Category("Travel", "Travel gear");
 
 
-        Product laptop = new Product("Laptop Premium", 999.99F,
+        /*Product laptop = new Product("Laptop Premium", 999.99F,
                 "High performance laptop with 16GB RAM",
                 4.5F);
 
@@ -52,9 +52,8 @@ public class ChamazonBDD{
                 "Latest model with AMOLED display",
                 4.7F);
 
-        Product tshirt = new Product("Cotton T-Shirt", 19.99F,
-                "Comfortable 100% cotton t-shirt",
-                4.2F);
+        Product tshirt = new Product("Cotton T-Shirt", 19.99F, "Cotton T-Shirt",
+                4.2F);*/
 
         Product novel = new Product("Best Seller Novel", 14.99F,
                 "The most popular novel this year",
@@ -76,9 +75,9 @@ public class ChamazonBDD{
         categoryService.save(travel);
 
         //Assing secondary entity to main entity
-        laptop.getCategoryList().add(electronics);
+        /*laptop.getCategoryList().add(electronics);
         smartphone.getCategoryList().add(electronics);
-        tshirt.getCategoryList().add(clothing);
+        tshirt.getCategoryList().add(clothing);*/
         novel.getCategoryList().add(books);
         backpack.getCategoryList().add(travel);
 
@@ -93,9 +92,9 @@ public class ChamazonBDD{
 
         try {
 
-            productService.save(laptop);
+            /*productService.save(laptop);
             productService.save(smartphone);
-            productService.save(tshirt);
+            productService.save(tshirt);*/
             productService.save(novel);
             productService.save(backpack);
 

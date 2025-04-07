@@ -117,15 +117,15 @@
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 shadow-sm">
                         <!-- Products' image -->
-                        {{#hasImage}}
-                        <img src="/products/{{id}}/image" class="card-img-top img-thumbnail" alt="{{name}}"
+                        {{#image}}
+                        <img src="{{image}}" class="card-img-top img-thumbnail" alt="{{name}}"
                              style="height: 200px; object-fit: contain; padding: 10px;">
-                        {{/hasImage}}
-                        {{^hasImage}}
+                        {{/image}}
+                        {{^image}}
                         <div class="bg-light text-center py-5">
                             <i class="fas fa-image fa-3x text-muted"></i>
                         </div>
-                        {{/hasImage}}
+                        {{/image}}
 
                         <div class="card-body">
                             <h5 class="card-title">{{name}}</h5>

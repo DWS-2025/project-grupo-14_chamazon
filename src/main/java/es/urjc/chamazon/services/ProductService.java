@@ -1,11 +1,9 @@
 package es.urjc.chamazon.services;
 
-import es.urjc.chamazon.dto.CategoryDTO;
-import es.urjc.chamazon.dto.ProductDTOExtended;
+import es.urjc.chamazon.dto.*;
 import es.urjc.chamazon.models.Category;
+import es.urjc.chamazon.models.Comment;
 import es.urjc.chamazon.models.Product;
-import es.urjc.chamazon.dto.ProductDTO;
-import es.urjc.chamazon.dto.ProductMapper;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,13 +18,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.sql.SQLException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.Collection;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 import es.urjc.chamazon.repositories.ProductRepository;
+
+import javax.security.sasl.SaslServer;
 
 
 @Service
@@ -38,6 +35,11 @@ public class ProductService {
     @Autowired
     private ProductMapper productMapper;
 
+    @Autowired
+    private CategoryService categoryService;
+    @Autowired
+    private CategoryMapper categoryMapper;
+
 
     public Collection<ProductDTOExtended> getProducts() { // findAllProducts
         return toDTOsExtended(productRepository.findAll());
@@ -46,7 +48,7 @@ public class ProductService {
     public Product getEntityId(long id) { // for img creation
         return productRepository.findById(id).orElseThrow();
     }
-    
+
     public ProductDTOExtended getProduct(long id) {   //findById with DTO
         Optional<Product> product = productRepository.findById(id);
         if (product.isPresent()) {
@@ -77,7 +79,7 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    
+
 
     private ProductDTO toDTO(Product product) {
         return productMapper.toDTO(product);
@@ -109,9 +111,14 @@ public class ProductService {
     }
 
 
-    public ProductDTOExtended createProduct (ProductDTOExtended productDTO) {
+    public ProductDTOExtended createProduct (ProductDTOExtended productDTO ) {
         Product newProduct = toProductFromExtended(productDTO);
         this.save(newProduct);
+        if (productDTO.categoryDTOList() != null) {
+            for (CategoryDTO categoryDTO : productDTO.categoryDTOList()) {
+                categoryService.addProductToCategory(categoryDTO.id(), newProduct.getId());
+            }
+        }
         return toDtoExtended(newProduct);
     }
 
@@ -131,23 +138,27 @@ public class ProductService {
         this.save(existingProduct);
         return toDTO(existingProduct);
     }
+    public ProductDTOExtended replaceProduct(long id, ProductDTOExtended newProductDTO) {
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow();
 
-    // for updating in REST CONTROLLER
-    public ProductDTO replaceProduct(long id, ProductDTO updatedProductDTO) throws SQLException {
-        Product oldProduct = getEntityId(id);
-        Product updatedProduct = toProduct(updatedProductDTO);
-        updatedProduct.setId(id);
 
-        if (oldProduct.getImage() != null) {
-            // Set the image in the updated product
-            updatedProduct.setImageFile(BlobProxy.generateProxy(oldProduct.getImageFile().getBinaryStream(),
-            oldProduct.getImageFile().length()));
-            updatedProduct.setImage(oldProduct.getImage());
+        existingProduct.setName(newProductDTO.name());
+        existingProduct.setPrice(newProductDTO.price());
+        existingProduct.setDescription(newProductDTO.description());
+        existingProduct.setRating(newProductDTO.rating());
+
+        // Manejar relaciones (ejemplo con categorías)
+        if (newProductDTO.categoryDTOList() != null) {
+            List<CategoryDTO> categories = newProductDTO.categoryDTOList();
+            existingProduct.setCategoryList(categoryMapper.toCategories(categories));
         }
 
-        this.save(updatedProduct);
-        return toDTO(updatedProduct);
+        Product savedProduct = productRepository.save(existingProduct);
+        return productMapper.toDTOExtended(savedProduct);
     }
+
+
 
 
     public ProductDTO deleteProduct(long id) {
@@ -157,8 +168,8 @@ public class ProductService {
     }
 
  //for adding new products
-    public ProductDTO save(ProductDTO productDTO, MultipartFile imageFile){
-        Product newProduct = toProduct(productDTO);
+    public ProductDTO save(ProductDTOExtended productDTO, MultipartFile imageFile){
+        Product newProduct = toProductFromExtended(productDTO);
 
         if (!imageFile.isEmpty()) {
             try {
@@ -169,17 +180,23 @@ public class ProductService {
             }
         }
         this.save(newProduct);
+        if (productDTO.categoryDTOList() != null) {
+            for (CategoryDTO categoryDTO : productDTO.categoryDTOList()) {
+                categoryService.addProductToCategory(categoryDTO.id(), newProduct.getId());
+            }
+        }
         return toDTO(newProduct);
     }
 
 
-    
+
     public void createProductImage (long id, URI location, InputStream imageFile, long size){
-        Product product = getEntityId(id);
+        Product product = productRepository.findById(id).orElseThrow();
 
         product.setImage(location.toString());
+
         product.setImageFile(BlobProxy.generateProxy(imageFile, size));
-        save(product);
+        productRepository.save(product);
     }
 
     public Resource getProductImage(long id) throws SQLException{
@@ -193,15 +210,13 @@ public class ProductService {
 
     public void replaceProductImage(long id, InputStream inputStream, long size) {
 
-		Product product = getEntityId(id);
-
-		if(product.getImage() == null){
-			throw new NoSuchElementException();
-		}
+		Product product = productRepository.findById(id).orElseThrow();
+        System.out.println(product.getId());
+        System.out.println(product.getImage());
 
 		product.setImageFile(BlobProxy.generateProxy(inputStream, size));
 
-		save(product);
+		productRepository.save(product);
 	}
 
 	public void deletePostImage(long id) {
