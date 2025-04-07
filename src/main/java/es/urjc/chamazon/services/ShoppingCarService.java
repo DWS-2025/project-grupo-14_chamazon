@@ -20,26 +20,28 @@ import java.util.*;
 @Service
 public class ShoppingCarService {
 
-    private final ShoppingCarMapper shoppingCarMapper;
-    private final ProductMapper productMapper;
-    private final ShoppingCarRepository shoppingCarRepository;
-    private final ProductService productService;
-    private final UserService userService;// <- FINAL private final
+    @Autowired
+    private ShoppingCarMapper shoppingCarMapper;
+    @Autowired
+    private ProductMapper productMapper;
+    @Autowired
+    private ShoppingCarRepository shoppingCarRepository;
+    @Autowired
+    private ProductService productService;
+
+    private UserService userService;
+    @Autowired
     UserMapper userMapper;
 
-    @Autowired public ShoppingCarService( ShoppingCarMapper shoppingCarMapper, ProductMapper productMapper, ShoppingCarRepository shoppingCarRepository, ProductService productService, UserMapper userMapper, UserService userService ) {
+
+/*    public ShoppingCarService( ShoppingCarMapper shoppingCarMapper, ProductMapper productMapper, ShoppingCarRepository shoppingCarRepository, ProductService productService, UserMapper userMapper, UserService userService ) {
         this.shoppingCarMapper = shoppingCarMapper;
         this.productMapper = productMapper;
         this.shoppingCarRepository = shoppingCarRepository;
         this.productService = productService;
         this.userService = userService;
         this.userMapper = userMapper;
-    }
-
-
-
-    //private ShoppingCar shoppingCar;
-    private User user;
+    }*/
 
 
     //ALIAS FOR CRUD REPOSITORY METHODS//
@@ -53,11 +55,14 @@ public class ShoppingCarService {
             sc.setUser(user);
             sc.setDateSold(null);
             addShoppingCar(sc);
-            return shoppingCarRepository.save(sc);
+            return sc;
         }
 
 
         void addShoppingCar(ShoppingCar sc) {
+            if(sc.getProductList() == null) {
+                sc.setProductList(new ArrayList<>());
+            }
             shoppingCarRepository.save(sc);
         }
 

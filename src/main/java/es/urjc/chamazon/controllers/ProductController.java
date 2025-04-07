@@ -161,10 +161,10 @@ public class ProductController {
     @PostMapping("/products/{id}/addToCard/{idUser}")
     public String addToCart(@PathVariable long id, @PathVariable long idUser) {
         Optional<Product> product = productService.findById(id);
-        /*UserDTO user = userService.getUser(idUser);
-        if (product.isPresent() && user.isPresent()) {
+        UserDTO user = userService.getUser(idUser);
+        if (product.isPresent() && user != null) {
             shoppingCarService.addProductToUserShoppingCar(id, idUser);
-        }*/
+        }
         return "redirect:/products";
     }
 

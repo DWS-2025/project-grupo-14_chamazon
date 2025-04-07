@@ -21,6 +21,9 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private ShoppingCarService shoppingCarService;
+
 
     public List<UserDTO> getAllUsers() {
         return toDTOs(userRepository.findAll());
@@ -46,6 +49,7 @@ public class UserService {
     }
     void saveUser(User user) {
         userRepository.save(user);
+        shoppingCarService.assignSCToUser(user);
     }
 
     public void updateUser(Long id, UserDTO updatedUserDTO) {

@@ -73,12 +73,12 @@ public class ShoppingCarController {
     }
 
 
-    @PutMapping("/shoppingCar")
+/*    @PutMapping("/shoppingCar")
     public String updateShoppingCar (@RequestBody ShoppingCarDTO shoppingCarDTO, @RequestParam int idUser, Model model) {
 
 
         return "redirect:/shoppingCar";
-    }
+    }*/
 
     /*    @PostMapping("/shoppingCar/")
     public String createShoppingCar (@RequestParam int idUser, @RequestParam ConcurrentMap<Integer, Product> products, Model model) {

@@ -18,14 +18,16 @@ public class ShoppingCar {
     @ManyToOne
     private User user;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Product> productList = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Product> productList;
 
     public ShoppingCar() {
+
     }
 
     public ShoppingCar(User user) {
         this.user = user;
+        this.productList = new ArrayList<>();
     }
 
     //GETTERS AND SETTERS//
