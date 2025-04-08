@@ -78,7 +78,6 @@
             .then(data => {
                 const commentsList = document.getElementById('commentsList');
 
-
                 if (currentPage === 0) {
                     commentsList.innerHTML = '';
                 }
@@ -92,9 +91,7 @@
                             <p><strong>Calificación:</strong> ${comment.rating}</p>
                             <p><strong>Comentario:</strong> ${comment.comment}</p>
                             <a class="btn btn-warning me-2" href="/commentView/edit/${comment.id}">Editar</a>
-                            <form action="/commentView/delete/${comment.id}" method="post" style="display:inline;">
-                                <button type="submit" class="btn btn-danger">Eliminar</button>
-                            </form>
+                            <button class="btn btn-danger" onclick="deleteComment(${comment.id}, this)">Eliminar</button>
                         </div>
                     `;
                     commentsList.appendChild(card);
@@ -114,6 +111,28 @@
                 console.error('Error cargando comentarios:', error);
                 document.getElementById('spinner').style.display = 'none';
             });
+    }
+
+    function deleteComment(commentId, button) {
+        if (!confirm('¿Estás seguro de que deseas eliminar este comentario?')) return;
+
+        fetch(`/commentView/delete/${commentId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                // Eliminar visualmente la tarjeta del comentario
+                const card = button.closest('.card');
+                if (card) card.remove();
+            } else {
+                alert('Error al eliminar el comentario');
+            }
+        }).catch(err => {
+            console.error('Error al eliminar el comentario:', err);
+            alert('Error al conectar con el servidor');
+        });
     }
 
     function loadComments() {
