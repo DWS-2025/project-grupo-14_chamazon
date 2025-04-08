@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static java.lang.Boolean.FALSE;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
 @RestController
@@ -61,6 +62,12 @@ public class RestShoppingCarController {
         }catch (NoSuchElementException e){
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @DeleteMapping("/remove/{idProduct}/{idUser}")
+    public ResponseEntity<ShoppingCarDTO> deleteProductFromShoppingCar(@PathVariable long idProduct, @PathVariable long idUser){
+        ShoppingCarDTO sc = shoppingCarService.removeProductsFromShoppingCar(idProduct, idUser, false);
+        return ResponseEntity.ok(sc);
     }
 
 
