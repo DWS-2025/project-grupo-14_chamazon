@@ -82,6 +82,14 @@ Beatriz worked extensively on the Comment entity, focusing on its full integrati
 4. [Creación de CommentDTO y su respectivo Mapper](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/6b7bc64870973c3128ff8562280f37e5ba7d797d)
 5. [Corrección en las rutas de Controller](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/0cad28eba12eca4cad795cc444af55e7c2512562)
 
+#### 📁 Most Contributed Files
+
+- `src/main/java/es/urjc/chamazon/models/Comment.java`
+- `src/main/java/es/urjc/chamazon/services/CommentService.java`
+- `src/main/java/es/urjc/chamazon/restControllers/CommentRestController.java`
+- `src/main/java/es/urjc/chamazon/controllers/CommentController.java`
+- `src/main/resources/templates/comment/commentList.html`
+
 ---
 
 ### 👤 Belén Collado Torres — [BecotoGit](https://github.com/BecotoGit)
@@ -95,6 +103,14 @@ Belén focused on the User and Category entities, developing their REST controll
 3. [Rest completo de las entidades Category y User](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/e1943b659b03d395261d53a11240db1c3d8a864c)
 4. [Cambio de las entidades Category y User a tipo de dato DTO](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/57002d6817fc6fce6c5aea4d6b91ddb006d690c9)
 5. [Operación editar solucionada en User y Category](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/5025a14d9a6338fc1fc58d928b14e61907e842c9)
+
+#### 📁 Most Contributed Files
+
+- `src/main/java/es/urjc/chamazon/restControllers/CategoryRestController.java`
+- `src/main/java/es/urjc/chamazon/restControllers/UserRestController.java`
+- `src/main/java/es/urjc/chamazon/services/CategoryService.java`
+- `src/main/java/es/urjc/chamazon/services/UserService.java`
+- `src/main/java/es/urjc/chamazon/dto/CategoryMapper.java`
 
 ---
 
@@ -111,6 +127,14 @@ Mario focused on enhancing the Product entity and its integration within the RES
 4. [Integración API REST y modificaciones de Entidad Product, Controllers, Service, DTO entre otros](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/ff6b87b4c6c78b0e58d93ffbbaa3b17984cdb9d2)
 5. [Commits sucesivos modificando rest, controller service](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/bcb287bf6597fa03521344c8d784cef289465e97)
 
+#### 📁 Most Contributed Files
+
+- `src/main/java/es/urjc/chamazon/controllers/ProductController.java`
+- `src/main/java/es/urjc/chamazon/restControllers/ProductRestController.java`
+- `src/main/java/es/urjc/chamazon/exception/NoSuchElementExceptionREST.java`
+- `src/main/java/es/urjc/chamazon/services/ProductService.java`
+- `src/main/java/es/urjc/chamazon/dto/ProductDTO.java`
+
 ---
 
 ### 👤 Víctor Espinosa — [CapitanPescanova](https://github.com/CapitanPescanova)
@@ -125,6 +149,13 @@ Víctor was responsible for the ShoppingCar entity, implementing its model, serv
 4. [Modificacion para uso de ShoppingCar](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/d5789e2521cabfa8c3bf7001db31932269833ff3)
 5. [Funcionalidad ShoppingCar con DTO por fin funcionando](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/242945a1f600e4c62e8660ca232782dab444cdf9)
 
+#### 📁 Most Contributed Files
+
+- `src/main/java/es/urjc/chamazon/services/UserService.java`
+- `src/main/java/es/urjc/chamazon/services/ShoppingCarService.java`
+- `src/main/java/es/urjc/chamazon/restControllers/RestShoppingCarController.java`
+- `src/main/java/es/urjc/chamazon/dto/ShoppingCarDTO.java`
+- `src/main/java/es/urjc/chamazon/controllers/ShoppingCarController.java`
 
 ---
 
