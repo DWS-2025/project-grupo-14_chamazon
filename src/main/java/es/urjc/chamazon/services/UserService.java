@@ -39,6 +39,7 @@ public class UserService {
     }
 
     public void deleteUser(Long Id) {
+        shoppingCarService.deleteShoppingCar();
         userRepository.deleteById(Id);
     }
 

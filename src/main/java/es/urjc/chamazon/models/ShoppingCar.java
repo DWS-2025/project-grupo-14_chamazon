@@ -1,6 +1,9 @@
 package es.urjc.chamazon.models;
 
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -41,10 +44,11 @@ public class ShoppingCar {
         this.id = id;
     }
 
+    @JsonGetter("dateSold")
     public LocalDateTime getDateSold() {
         return dateSold;
     }
-
+    @JsonSetter("dateSold")
     public void setDateSold(LocalDateTime dateSold) {
         this.dateSold = dateSold;
     }

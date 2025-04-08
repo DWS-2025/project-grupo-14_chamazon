@@ -181,6 +181,7 @@ public class ShoppingCarService {
             }
             return toDTO(sc);
         }
+        
 
 
     //SHOPPING CAR LIST METHODS//
@@ -215,6 +216,8 @@ public class ShoppingCarService {
         public List<ProductDTO> getProductDTOListFromSC(ShoppingCar sc) {
             return (List<ProductDTO>) productMapper.toDTOs(sc.getProductList());
         }
+
+
 
 /*    public Map<Long, Integer> getProductsLengthMap(List<ShoppingCarExtendedDTO> listShoppingCarDTO) {
         Map<Long, Integer> productLengthMap = new HashMap<>();
