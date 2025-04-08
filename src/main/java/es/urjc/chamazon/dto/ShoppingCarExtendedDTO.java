@@ -45,6 +45,9 @@ public class ShoppingCarExtendedDTO {
 
     //GETS FOR MUSTACHE
     public String getDateSoldString() {
+        if (dateSold == null) {
+            return null;
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy-HH:mm");
         return dateSold.format(formatter);
     }
