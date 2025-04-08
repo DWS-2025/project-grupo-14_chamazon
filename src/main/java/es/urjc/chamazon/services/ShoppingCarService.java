@@ -76,7 +76,26 @@ public class ShoppingCarService {
         }
 
         void deleteShoppingCar(ShoppingCar sc) {
+            sc.getProductList().clear();
+            shoppingCarRepository.save(sc);
             shoppingCarRepository.delete(sc);
+        }
+
+        public void deleteShoppingCarById(Long id) {
+            ShoppingCar sc = getShoppingCarById(id);
+            User user = sc.getUser();
+            deleteShoppingCar(sc);
+            assignSCToUser(user);
+        }
+        public void deleteUserAndShoppingCars(Long userid) {
+            User user = userService.getUserById(userid);
+            if(user != null && user.getShoppingCarList() != null && !user.getShoppingCarList().isEmpty()) {
+
+                for (ShoppingCar sc : user.getShoppingCarList()) {
+                    deleteShoppingCar(sc);
+                }
+
+            }
         }
 
 

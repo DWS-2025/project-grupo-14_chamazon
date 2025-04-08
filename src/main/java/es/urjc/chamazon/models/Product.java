@@ -62,8 +62,9 @@ public class Product {
     }
 
     public List<Category> getCategoryList() {
-        return new ArrayList<>();
+        return categoryList;
     }
+
     public void setCategoryList(List<Category> categoryList) {
         this.categoryList = categoryList;
     }

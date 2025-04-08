@@ -50,18 +50,18 @@ public class ChamazonBDD{
 
         Product laptop = new Product("Laptop Premium", 999.99F,
                 "High performance laptop with 16GB RAM",
-                4.5F);
+                1F);
 
         Product smartphone = new Product("Smartphone X", 699.99F,
                 "Latest model with AMOLED display",
-                4.7F);
+                2F);
 
         Product tshirt = new Product("Cotton T-Shirt", 19.99F, "Cotton T-Shirt",
-                4.2F);
+                3F);
 
         Product novel = new Product("Best Seller Novel", 14.99F,
                 "The most popular novel this year",
-                4.8F);
+                4F);
 
         Product backpack = new Product("Travel Backpack", 49.99F,
                 "Durable backpack for travelers",
@@ -70,7 +70,7 @@ public class ChamazonBDD{
 
         Product raton = new Product("Raton", 9.99F,
                 "Raton para el ordenador",
-                4.3F);
+                5F);
 
         //Safe secondary entity
         categoryService.save(electronics);

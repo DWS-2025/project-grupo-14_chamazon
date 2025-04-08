@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 
 
-@Mapper(componentModel = "spring", uses = {CategoryMapper.class})
+@Mapper(componentModel = "spring")
 @Component
 public interface ProductMapper {
     @Mapping(source = "categoryList", target = "categoryDTOList")
