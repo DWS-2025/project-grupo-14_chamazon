@@ -18,14 +18,17 @@
 
 ---
 
-## 📦 Core Entities
+## 🧩 Core Entities
 
-- **User**: Can create products (as admin), add items to a shopping cart (as customer), and leave comments on products.
-- **Product**: Created by users, can belong to multiple categories, receive comments, and be included in shopping carts.
-- **Comment**: Written by users about products; each user can comment once per product.
-- **ShoppingCar**: Belongs to a single user and stores selected products for future purchase.
-- **Category**: Tags to classify products, used in many-to-many relationships.
-- **ShoppingCarProductList**: Intermediate table for many-to-many relations between shopping carts and products.
+| **Entity**                | **Description**                                                                 |
+|--------------------------|---------------------------------------------------------------------------------|
+| `User`                   | Represents users (admins or customers). Can create products, comment, and shop. |
+| `Product`                | Items available for purchase. Linked to a user and one or more categories.      |
+| `Comment`                | User-written feedback on products. One per product per user.                    |
+| `Category`               | Tags used to classify products. Products belong to one category.                |
+| `ShoppingCar`            | Stores selected products for each user before purchase.                         |
+| `ShoppingCarProductList`| Many-to-many relationship between ShoppingCar and Product.                      |
+
 
 ---
 
