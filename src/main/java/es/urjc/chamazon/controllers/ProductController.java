@@ -177,7 +177,6 @@ public class ProductController {
                                  @RequestParam(required = false) Long userId) {
 
         List<Product> filteredProducts = productService.findByFilters(categoryId, minPrice, maxPrice, rating);
-
                 
         // Add all necessary attributes to the model
         model.addAttribute("products", filteredProducts);
