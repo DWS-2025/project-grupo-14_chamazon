@@ -41,11 +41,15 @@ public class ProductService {
     @Autowired
     private CategoryMapper categoryMapper;
 
+    /*
+        public Page<ProductDTOExtended> getProducts(Pageable pageable) { // findAllProducts with pagination
+            return productRepository.findAll(pageable).map(productMapper::toDTOExtended);
+        } //findAllProducts with pagination
+     */
 
-
-    public Collection<ProductDTOExtended> getProducts() { // findAllProducts
-        return toDTOsExtended(productRepository.findAll());
-    } //findAllProducts
+        public Collection<ProductDTOExtended> getProducts() { // findAllProducts
+            return toDTOsExtended(productRepository.findAll());
+        } //findAllProducts
 
     public Product getEntityId(long id) { // for img creation
         return productRepository.findById(id).orElseThrow();
