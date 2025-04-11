@@ -261,30 +261,64 @@ public class ProductService {
     }
 
     public List<Product> findByFilters(Long categoryId, Float minPrice, Float maxPrice, Float rating) {
-        // Apply filters
-        if (categoryId != null) {
-            if (minPrice != null && maxPrice != null) {
-                return productRepository.findByCategoryIdAndPriceBetween(categoryId, minPrice, maxPrice);
-            } else if (rating != null) {
-                return productRepository.findByCategoryIdAndRatingGreaterThanEqual(categoryId, rating);
-            } else {
-                return productRepository.findByCategoryId(categoryId);
-            }
-        } else if (minPrice != null && maxPrice != null) {
-            if (rating != null) {
-                // If we need to filter by price range AND rating
-                return productRepository.findByPriceBetween(minPrice, maxPrice).stream().filter(p -> p.getRating() >= rating).collect(Collectors.toList());
-            } else {
-                // Just price range
-                return productRepository.findByPriceBetween(minPrice, maxPrice);
-            }
-        } else if (rating != null) {
-            // Just rating
-            return productRepository.findByRatingGreaterThanEqual(rating);
-        } else {
-            // No filters - return all
-            return productRepository.findAll();
+        // Filter by category + price range + rating
+        if (categoryId != null && minPrice != null && maxPrice != null && rating != null) {
+            return productRepository.findByCategoryIdAndPriceBetweenAndRatingGreaterThanEqual(
+                categoryId, minPrice, maxPrice, rating);
         }
+        
+        // Filter by category + price range
+        if (categoryId != null && minPrice != null && maxPrice != null) {
+            return productRepository.findByCategoryIdAndPriceBetween(categoryId, minPrice, maxPrice);
+        }
+        
+        // Filter by category + rating
+        if (categoryId != null && rating != null) {
+            return productRepository.findByCategoryIdAndRatingGreaterThanEqual(categoryId, rating);
+        }
+        
+        // Filter only by category
+        if (categoryId != null) {
+            return productRepository.findByCategoryId(categoryId);
+        }
+        
+        // Filter by price range + rating
+        if (minPrice != null && maxPrice != null && rating != null) {
+            return productRepository.findByPriceBetweenAndRatingGreaterThanEqual(minPrice, maxPrice, rating);
+        }
+        
+        // Filter only by price range
+        if (minPrice != null && maxPrice != null) {
+            return productRepository.findByPriceBetween(minPrice, maxPrice);
+        }
+        
+        // Filter by minimum price + rating
+        if (minPrice != null && rating != null) {
+            return productRepository.findByPriceGreaterThanEqualAndRatingGreaterThanEqual(minPrice, rating);
+        }
+        
+        // Filter by maximum price + rating
+        if (maxPrice != null && rating != null) {
+            return productRepository.findByPriceLessThanEqualAndRatingGreaterThanEqual(maxPrice, rating);
+        }
+        
+        // Filter only by minimum price
+        if (minPrice != null) {
+            return productRepository.findByPriceGreaterThanEqual(minPrice);
+        }
+        
+        // Filter only by maximum price
+        if (maxPrice != null) {
+            return productRepository.findByPriceLessThanEqual(maxPrice);
+        }
+        
+        // Filter only by rating
+        if (rating != null) {
+            return productRepository.findByRatingGreaterThanEqual(rating);
+        }
+        
+        // No filters applied - return all products
+        return productRepository.findAll();
     }
 
 }
