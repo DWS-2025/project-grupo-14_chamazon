@@ -188,7 +188,7 @@ public class ProductController {
         model.addAttribute("minPrice", minPrice != null ? minPrice.toString() : "");
         model.addAttribute("maxPrice", maxPrice != null ? maxPrice.toString() : "");
         model.addAttribute("rating", rating != null ? rating.toString() : "");
-        model.addAttribute("selectedUserId", userId);
+        model.addAttribute("userId", userId != null ? userId.toString() : "");
 
         return "product/products_list";
     }
