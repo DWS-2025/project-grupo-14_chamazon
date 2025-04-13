@@ -46,6 +46,7 @@ public class CategoryService {
         Category category = toCategory(categoryDTO);
         this.save(category);
     }
+
     Category save(Category category) {
         return categoryRepository.save(category);
     }
@@ -98,6 +99,7 @@ public class CategoryService {
 
             categoryOpt.get().getProductList().add(productOpt.get());
             productOpt.get().getCategoryList().add(categoryOpt.get());
+
             categoryRepository.save(categoryOpt.get());
         }
     }
@@ -110,11 +112,9 @@ public class CategoryService {
             Category category = categoryOpt.get();
             Product product = productOpt.get();
 
-            // Eliminar de ambos lados
             category.getProductList().remove(product);
             product.getCategoryList().remove(category);
 
-            // Guardar ambos lados
             categoryRepository.save(category);
             productService.save(product);
         }

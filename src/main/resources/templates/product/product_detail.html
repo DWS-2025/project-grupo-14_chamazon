@@ -3,24 +3,88 @@
 <body>
 {{>navBar}}
 
-<div class="product-details">
+<div class="container py-5">
     {{#product}}
-    <h2>{{name}}</h2>
-    <div class="product-info">
-        <p>ID: <span>{{id}}</span></p>
-        <p>Descriptcion: <span>{{description}}</span></p>
-        <p>Precip: <span>{{price}}</span></p>
-        <p>Categoria: <span>{{category.name}}</span></p>
-        {{#image}}
-              <img src="/products/{{id}}/image" class="card-img-top img-thumbnail" alt="{{name}}" style="height: 200px; object-fit: contain;">
-        {{/image}}
+    <div class="card shadow-sm">
+        <div class="row g-0">
+            <div class="col-md-5 text-center p-4">
+                {{#image}}
+                <img src="/products/{{id}}/image" class="img-fluid rounded img-thumbnail" alt="{{name}}" style="max-height: 300px; object-fit: contain;">
+                {{/image}}
+                {{^image}}
+                <div class="bg-light d-flex justify-content-center align-items-center" style="height: 300px;">
+                    <i class="fas fa-image fa-4x text-muted"></i>
+                </div>
+                {{/image}}
+            </div>
+
+            <div class="col-md-7">
+                <div class="card-body">
+                    <h2 class="card-title">{{name}}</h2>
+                    <p class="card-text"><strong>ID:</strong> {{id}}</p>
+                    <p class="card-text"><strong>Descripción:</strong> {{description}}</p>
+                    <p class="card-text"><strong>Precio:</strong> <span class="text-success fw-bold">{{price}}</span></p>
+                    <p class="card-text"><strong>Categoría(s):</strong>
+                        {{#categories}}
+                        <span class="badge bg-secondary me-1">{{name}}</span>
+                        {{/categories}}
+                    </p>
+                    <div class="mt-4">
+                        <a href="/products" class="btn btn-outline-primary me-2">
+                            <i class="fas fa-arrow-left"></i> Volver a Productos
+                        </a>
+                        <a href="/products/{{id}}/edit" class="btn btn-secondary me-2">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <form action="/products/{{id}}/delete" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('¿Estás seguro de eliminar este producto?')">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+            <div class="card-body">
+                <h3 class="card-title">Comentarios</h3>
+                {{#comments}}
+                <div class="card mb-3 shadow-sm border-light">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="card-body">
+                                <p>
+                                    <strong>Usuario: </strong>{{user.userName}}
+                                </p>
+                                <p>
+                                    <strong>Calificación: </strong>{{rating}}
+                                </p>
+                                <p>
+                                    <strong>Comentario: </strong>{{comment}}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{/comments}}
+                {{^comments}}
+                <div class="alert alert-secondary">Este producto aún no tiene comentarios.</div>
+                {{/comments}}
+            </div>
+        </div>
+
+    {{/product}}
+
+    {{^product}}
+    <div class="alert alert-warning text-center">
+        <h4><i class="fas fa-exclamation-triangle me-2"></i> Producto no encontrado</h4>
+        <p>El producto que buscas no está disponible o ha sido eliminado.</p>
+        <a href="/products" class="btn btn-outline-primary mt-3">
+            <i class="fas fa-arrow-left"></i> Volver a Productos
+        </a>
     </div>
     {{/product}}
-    {{^product}}
-    <p>Product not found</p>
-    {{/product}}
 </div>
-
-<a href="/products">Volver a Productos</a>
 
 {{>footer}}

@@ -9,7 +9,7 @@ public record ProductDTOExtended(
         String description,
         Float rating,
         String image,
+        List<CommentDTO> commentDTOList,
         List<CategoryDTO> categoryDTOList
 ){
-
 }

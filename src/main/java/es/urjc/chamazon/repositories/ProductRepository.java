@@ -32,4 +32,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p JOIN p.categoryList c WHERE c.id = :categoryId AND p.rating >= :minRating")
     List<Product> findByCategoryIdAndRatingGreaterThanEqual(@Param("categoryId") Long categoryId, @Param("minRating") Float minRating);
 
+
 }

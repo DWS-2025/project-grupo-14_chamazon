@@ -10,6 +10,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {ProductMapper.class})
 @Component
 public interface CategoryMapper {
+    @Mapping(source = "productList", target = "productDTOList")
     CategoryDTOExtended toDTO(Category category);
     Category toCategoryFromExtendedDTO(CategoryDTOExtended extendedCategoryDTO);
     Category toCategory(CategoryDTO categoryDTO);
