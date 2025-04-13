@@ -12,7 +12,6 @@ import java.util.Collection;
 @Component
 public interface ProductMapper {
     @Mapping(source = "categoryList", target = "categoryDTOList")
-    @Mapping(target = "image", expression = "java(product.getImageFile() != null ? \"/products/\" + product.getId() + \"/image\" : null)")
     ProductDTOExtended toDTOExtended(Product product);
     ProductDTO toDTO(Product product);
     Product toProduct(ProductDTO productDTO);

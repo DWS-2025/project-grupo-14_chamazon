@@ -17,11 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.List;
+import java.util.*;
 
 import java.sql.Blob;
+import java.util.stream.Collectors;
 
 @Controller
 public class ProductController {
@@ -52,13 +51,14 @@ public class ProductController {
 
     @GetMapping("/products/{id}")
     public String product(@PathVariable long id, Model model) {
-        ProductDTOExtended productDTO = productService.getProduct(id); // findById with DTO
-        if (productDTO != null) {
-            model.addAttribute("product", productDTO);
-            return "product/product_detail";
-        } else {
-            return "redirect:/products";
-        }
+        ProductDTOExtended productDTO = productService.getProduct(id);
+        List<CategoryDTO> categories = productDTO.categoryDTOList();
+        List<CommentDTO> comments = commentService.findByProductId(id);
+
+        model.addAttribute("product", productDTO);
+        model.addAttribute("categories", categories);
+        model.addAttribute("comments", comments);
+        return "product/product_detail";
     }
 
     @GetMapping("/products/{id}/image")
@@ -77,7 +77,8 @@ public class ProductController {
     @GetMapping("/products/add")
     public String addProduct(Model model) {
         model.addAttribute("product", new Product());
-        model.addAttribute("categories", categoryService.getCategories());
+        List<CategoryDTOExtended> allCategories = categoryService.getCategories();
+        model.addAttribute("categories", allCategories);
         return "product/addProduct";
     }
 
@@ -104,12 +105,24 @@ public class ProductController {
     @GetMapping("/products/{id}/edit")
     public String updateProduct(@PathVariable long id, Model model) {
         Optional<Product> optionalProduct = productService.findById(id);
-        if (optionalProduct.isPresent()) { // using optional and get product's information
+        if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
-            model.addAttribute("product", product);
+            List<CategoryDTOExtended> allCategories = categoryService.getCategories();
 
-            List<CategoryDTOExtended> categories = categoryService.getCategories();
-            model.addAttribute("categories", categories);
+            Set<Long> selectedCategoryIds = product.getCategoryList().stream()
+                    .map(Category::getId)
+                    .collect(Collectors.toSet());
+
+            List<Map<String, Object>> categoryMapList = allCategories.stream().map(cat -> {
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", cat.id());
+                map.put("name", cat.name());
+                map.put("selected", selectedCategoryIds.contains(cat.id()));
+                return map;
+            }).toList();
+
+            model.addAttribute("categories", categoryMapList);
+            model.addAttribute("product", product);
             return "product/editProduct";
         } else {
             return "redirect:/products";
@@ -120,7 +133,7 @@ public class ProductController {
     public String updateProduct(@PathVariable long id, Model model, @ModelAttribute("product") Product newProduct,
                                 @RequestParam(value = "categoryId", required = false) List<Long> newCategoryIds,
                                 @RequestParam(value = "imageFileParameter", required = false) MultipartFile imageFileParameter)
-            throws IOException {
+            throws IOException, SQLException {
         // Get existing product at the exact moment by editing
         //Optional<ProductDTO> existProductActually = productService.findById(id);
         Optional<Product> existProductActually = productService.findById(id);
@@ -129,20 +142,19 @@ public class ProductController {
             return "redirect:/products";
         }
 
-        ProductDTO updateProductDTO = productService.update(existProductActually.get(), newProduct, imageFileParameter);
+        productService.update(existProductActually.get(), newProduct, imageFileParameter);
 
         // remove the product from ALL its current categories
-        List<CategoryDTOExtended> allCategories = categoryService.getCategories();
-        for (CategoryDTOExtended CategoryDTO : allCategories) {
-            /*if (CategoryDTO.getProductList().contains(existProduct)) {
-                categoryService.removeProductFromCategory(category.getId(), existProduct.getId());
-            }*/
+        List<Category> categories = new ArrayList<>(existProductActually.get().getCategoryList());
+        for (Category category : categories) {
+            categoryService.removeProductFromCategory(category.getId(), id);
         }
+
 
         // add the product to its new selected categories
         if (newCategoryIds != null) {
             for (Long categoryId : newCategoryIds) {
-                //categoryService.addProductToCategory(categoryId, existProduct.getId());
+                categoryService.addProductToCategory(categoryId,id);
             }
         }
         return "redirect:/products";
@@ -190,9 +202,9 @@ public class ProductController {
         }
 
         // Add all necessary attributes to the model
-        //List<Category> allCategories = categoryService.getCategories();
+        List<CategoryDTOExtended> allCategories = categoryService.getCategories();
         model.addAttribute("products", filteredProducts);
-        //model.addAttribute("categories", allCategories);
+        model.addAttribute("categories", allCategories);
         model.addAttribute("users", userService.getAllUsers());
 
         // Preserve filter parameters in the model
