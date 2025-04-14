@@ -48,39 +48,15 @@
 
                         <!-- Rating Filter -->
                         <div class="mb-3">
-                            <h6 class="form-label fw-bold">Valoración de cliente</h6>
-                            <div class="rating-filter">
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="rating" id="rating5" value="5">
-                                    <label class="form-check-label" for="rating5">
-                                        5 o superior
-                                    </label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="rating" id="rating4" value="4">
-                                    <label class="form-check-label" for="rating4">
-                                        4 o superior
-                                    </label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="rating" id="rating3" value="3">
-                                    <label class="form-check-label" for="rating3">
-                                        3 o superior
-                                    </label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="rating" id="rating2" value="2">
-                                    <label class="form-check-label" for="rating2">
-                                        2 o superior
-                                    </label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="rating" id="rating1" value="1">
-                                    <label class="form-check-label" for="rating1">
-                                        1 o superior
-                                    </label>
-                                </div>
-                            </div>
+                            <label for="ratingSelect" class="form-label fw-bold">Valoración mínima</label>
+                            <select class="form-select" id="ratingSelect" name="rating">
+                                <option value="">Cualquier valoración</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
                         </div>
 
                         <!-- Check userID if present -->
@@ -155,7 +131,6 @@
                             <h5 class="card-title">{{name}}</h5>
                             <p class="card-text">{{description}}</p>
                             <h6 class="card-subtitle mb-2 text-primary">{{price}}</h6>
-                            <p class="card-subtitle mb-2 text-muted">Valoración: {{rating}}</p>
                             {{#category}}
                             <p class="card-subtitle mb-2 text-muted">{{name}}</p>
                             {{/category}}
@@ -164,6 +139,12 @@
                         <!-- Products' button -->
                         <div class="card-footer bg-white border-top-0">
                             <div class="d-flex justify-content-between flex-wrap">
+
+                                <form action="/products/{{id}}" method="GET">
+                                    <button type="submit" class="btn btn-outline-primary btn-sm mb-1">
+                                        <i class="fas fa-edit"></i> Mostrar
+                                    </button>
+                                </form>
 
                                 <form action="/products/{{id}}/edit" method="GET">
                                     <button type="submit" class="btn btn-outline-secondary btn-sm mb-1">
@@ -209,5 +190,30 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.js"></script>
 <script src="/js/price-range-slider.js"></script>
 
+<script>
+    const select = document.getElementById('categoryIdSelect');
+    const clearFiltersButton = document.querySelector('a[href="/products"]');
+
+    // Restore selection from localStorage on page load
+    window.addEventListener('DOMContentLoaded', () => {
+        // No restore if on products page
+        if (!window.location.href.includes('/products?') && !window.location.href.endsWith('/products')) {
+            const savedValue = localStorage.getItem('selectedCategoryId');
+            if (savedValue) {
+                select.value = savedValue;
+            }
+        }
+    });
+
+    // Save selection to localStorage when changed
+    select.addEventListener('change', () => {
+        localStorage.setItem('selectedCategoryId', select.value);
+    });
+
+    // Clean localStorage when clear filters button is clicked
+    clearFiltersButton.addEventListener('click', (e) => {
+        localStorage.removeItem('selectedCategoryId');
+    });
+</script>
 
 {{>footer}}
