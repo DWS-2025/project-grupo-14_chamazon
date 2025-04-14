@@ -93,7 +93,11 @@ public class ProductController {
 
         // Get the id of the product to add it to the category list
         Long productId = savedProduct.id();
-        if (categoryId != null && !categoryId.isEmpty()) {
+        if (categoryId == null || categoryId.isEmpty()){
+            // If no categories are selected, redirect to the product list
+            return "redirect:/products";
+        }
+        else if (categoryId != null && !categoryId.isEmpty()) {
             for (Long categoryIdentified : categoryId) {
                 categoryService.addProductToCategory(categoryIdentified, productId);
             }
