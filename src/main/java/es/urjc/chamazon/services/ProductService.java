@@ -288,7 +288,9 @@ public class ProductService {
         } else if (minPrice != null && maxPrice != null) {
             if (rating != null) {
                 // If we need to filter by price range AND rating
-                return productRepository.findByPriceBetween(minPrice, maxPrice).stream().filter(p -> p.getRating() >= rating).collect(Collectors.toList());
+                return productRepository.findByPriceBetween(minPrice, maxPrice).stream()
+                        .filter(p -> p.getRating() != null && p.getRating() >= rating)
+                        .collect(Collectors.toList());
             } else {
                 // Just price range
                 return productRepository.findByPriceBetween(minPrice, maxPrice);
