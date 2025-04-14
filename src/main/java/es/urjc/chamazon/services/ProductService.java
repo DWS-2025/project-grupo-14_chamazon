@@ -46,15 +46,11 @@ public class ProductService {
     @Autowired
     private CategoryMapper categoryMapper;
 
-    /*
-        public Page<ProductDTOExtended> getProducts(Pageable pageable) { // findAllProducts with pagination
-            return productRepository.findAll(pageable).map(productMapper::toDTOExtended);
-        } //findAllProducts with pagination
-     */
 
-        public Collection<ProductDTOExtended> getProducts() { // findAllProducts
-            return toDTOsExtended(productRepository.findAll());
-        } //findAllProducts
+
+    public Collection<ProductDTOExtended> getProducts() { // findAllProducts
+        return toDTOsExtended(productRepository.findAll());
+    } //findAllProducts
 
     public Product getEntityId(long id) { // for img creation
         return productRepository.findById(id).orElseThrow();
@@ -184,7 +180,7 @@ public class ProductService {
         return toDTO(product);
     }
 
- //for adding new products
+    //for adding new products
     public ProductDTO save(ProductDTOExtended productDTO, MultipartFile imageFile){
         Product newProduct = toProductFromExtended(productDTO);
 
@@ -222,33 +218,33 @@ public class ProductService {
         Product product = getEntityId(id);
         if(product.getImage()!= null){
             return new InputStreamResource(product.getImageFile().getBinaryStream());
-		} else {
-			throw new NoSuchElementException();
+        } else {
+            throw new NoSuchElementException();
         }
     }
 
     public void replaceProductImage(long id, InputStream inputStream, long size) {
 
-		Product product = productRepository.findById(id).orElseThrow();
+        Product product = productRepository.findById(id).orElseThrow();
 
-		product.setImageFile(BlobProxy.generateProxy(inputStream, size));
+        product.setImageFile(BlobProxy.generateProxy(inputStream, size));
 
-		productRepository.save(product);
-	}
+        productRepository.save(product);
+    }
 
-	public void deletePostImage(long id) {
+    public void deletePostImage(long id) {
 
-		Product product = getEntityId(id);
+        Product product = getEntityId(id);
 
-		if(product.getImage() == null){
-			throw new NoSuchElementException();
-		}
+        if(product.getImage() == null){
+            throw new NoSuchElementException();
+        }
 
-		product.setImageFile(null);
-		product.setImage(null);
+        product.setImageFile(null);
+        product.setImage(null);
 
-		save(product);
-	}
+        save(product);
+    }
 
 
     public void deleteById(long id) {
@@ -280,64 +276,30 @@ public class ProductService {
     }
 
     public List<Product> findByFilters(Long categoryId, Float minPrice, Float maxPrice, Float rating) {
-        // Filter by category + price range + rating
-        if (categoryId != null && minPrice != null && maxPrice != null && rating != null) {
-            return productRepository.findByCategoryIdAndPriceBetweenAndRatingGreaterThanEqual(
-                categoryId, minPrice, maxPrice, rating);
-        }
-        
-        // Filter by category + price range
-        if (categoryId != null && minPrice != null && maxPrice != null) {
-            return productRepository.findByCategoryIdAndPriceBetween(categoryId, minPrice, maxPrice);
-        }
-        
-        // Filter by category + rating
-        if (categoryId != null && rating != null) {
-            return productRepository.findByCategoryIdAndRatingGreaterThanEqual(categoryId, rating);
-        }
-        
-        // Filter only by category
+        // Apply filters
         if (categoryId != null) {
-            return productRepository.findByCategoryId(categoryId);
-        }
-        
-        // Filter by price range + rating
-        if (minPrice != null && maxPrice != null && rating != null) {
-            return productRepository.findByPriceBetweenAndRatingGreaterThanEqual(minPrice, maxPrice, rating);
-        }
-        
-        // Filter only by price range
-        if (minPrice != null && maxPrice != null) {
-            return productRepository.findByPriceBetween(minPrice, maxPrice);
-        }
-        
-        // Filter by minimum price + rating
-        if (minPrice != null && rating != null) {
-            return productRepository.findByPriceGreaterThanEqualAndRatingGreaterThanEqual(minPrice, rating);
-        }
-        
-        // Filter by maximum price + rating
-        if (maxPrice != null && rating != null) {
-            return productRepository.findByPriceLessThanEqualAndRatingGreaterThanEqual(maxPrice, rating);
-        }
-        
-        // Filter only by minimum price
-        if (minPrice != null) {
-            return productRepository.findByPriceGreaterThanEqual(minPrice);
-        }
-        
-        // Filter only by maximum price
-        if (maxPrice != null) {
-            return productRepository.findByPriceLessThanEqual(maxPrice);
-        }
-        
-        // Filter only by rating
-        if (rating != null) {
+            if (minPrice != null && maxPrice != null) {
+                return productRepository.findByCategoryIdAndPriceBetween(categoryId, minPrice, maxPrice);
+            } else if (rating != null) {
+                return productRepository.findByCategoryIdAndRatingGreaterThanEqual(categoryId, rating);
+            } else {
+                return productRepository.findByCategoryId(categoryId);
+            }
+        } else if (minPrice != null && maxPrice != null) {
+            if (rating != null) {
+                // If we need to filter by price range AND rating
+                return productRepository.findByPriceBetween(minPrice, maxPrice).stream().filter(p -> p.getRating() >= rating).collect(Collectors.toList());
+            } else {
+                // Just price range
+                return productRepository.findByPriceBetween(minPrice, maxPrice);
+            }
+        } else if (rating != null) {
+            // Just rating
             return productRepository.findByRatingGreaterThanEqual(rating);
+        } else {
+            // No filters - return all
+            return productRepository.findAll();
         }
-        
-        // No filters applied - return all products
-        return productRepository.findAll();
     }
 
 
