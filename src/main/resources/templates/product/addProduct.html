@@ -40,12 +40,12 @@
 
         <div class="mb-3">
           <label for="categoryId" class="form-label">Categoría:</label>
-          <select class="form-select" name="categoryId" id="categoryId" required>
-            <option value="">Selecciona una categoría</option>
+          <select name="categoryId" id="categoryId" class="form-select" multiple size="5">
             {{#categories}}
-            <option value="{{id}}">{{name}}</option>
+            <option value="{{id}}" {{#selected}}selected{{/selected}}>{{name}}</option>
             {{/categories}}
           </select>
+          <small class="form-text text-muted">Mantén Ctrl (Windows) o Cmd (Mac) para seleccionar varias.</small>
         </div>
 
         <div class="mb-3">

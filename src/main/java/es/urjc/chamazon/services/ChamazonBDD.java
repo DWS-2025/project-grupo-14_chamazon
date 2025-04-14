@@ -23,15 +23,13 @@ public class ChamazonBDD{
     private final ProductService productService;
     private final CategoryService categoryService;
     private final UserService userService;
-    private final CategoryRepository categoryRepository;
     private final ShoppingCarService shoppingCarService;
     private final CommentService commentService;
 
-    public ChamazonBDD(CategoryService categoryService, UserService userService, CategoryRepository categoryRepository,
+    public ChamazonBDD(CategoryService categoryService, UserService userService,
                        ProductService productService, ShoppingCarService shoppingCarService, CommentService commentService) {
         this.categoryService = categoryService;
         this.userService = userService;
-        this.categoryRepository = categoryRepository;
         this.productService = productService;
         this.commentService = commentService;
         this.shoppingCarService = shoppingCarService;

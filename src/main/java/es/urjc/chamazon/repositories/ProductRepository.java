@@ -32,26 +32,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p JOIN p.categoryList c WHERE c.id = :categoryId AND p.rating >= :minRating")
     List<Product> findByCategoryIdAndRatingGreaterThanEqual(@Param("categoryId") Long categoryId, @Param("minRating") Float minRating);
 
-    List<Product> findByPriceBetweenAndRatingGreaterThanEqual(Float minPrice, Float maxPrice, Float rating);
 
-    @Query("SELECT p FROM Product p JOIN p.categoryList c WHERE c.id = :categoryId AND p.price BETWEEN :minPrice AND :maxPrice AND p.rating >= :rating")
-    List<Product> findByCategoryIdAndPriceBetweenAndRatingGreaterThanEqual(
-            @Param("categoryId") Long categoryId, 
-            @Param("minPrice") Float minPrice, 
-            @Param("maxPrice") Float maxPrice, 
-            @Param("rating") Float rating);
-
-@Query("SELECT p FROM Product p WHERE p.price >= :minPrice AND p.rating >= :rating")
-List<Product> findByPriceGreaterThanEqualAndRatingGreaterThanEqual(
-        @Param("minPrice") Float minPrice, 
-        @Param("rating") Float rating);
-
-@Query("SELECT p FROM Product p WHERE p.price <= :maxPrice AND p.rating >= :rating")
-List <Product> findByPriceLessThanEqualAndRatingGreaterThanEqual(
-        @Param("maxPrice") Float maxPrice, 
-        @Param("rating") Float rating);
-
-    List<Product> findByPriceGreaterThanEqual(Float minPrice);
-
-    List<Product> findByPriceLessThanEqual(Float maxPrice);
 }

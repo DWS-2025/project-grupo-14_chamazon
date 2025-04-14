@@ -123,7 +123,6 @@
             }
         }).then(response => {
             if (response.ok) {
-                // Eliminar visualmente la tarjeta del comentario
                 const card = button.closest('.card');
                 if (card) card.remove();
             } else {

@@ -18,6 +18,7 @@ import org.springframework.core.io.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 import es.urjc.chamazon.repositories.ProductRepository;
 
 import javax.security.sasl.SaslServer;
+import javax.sql.rowset.serial.SerialBlob;
 
 
 @Service
@@ -35,6 +37,9 @@ public class ProductService {
 
     @Autowired
     private ProductMapper productMapper;
+
+    @Autowired
+    private CommentMapper commentMapper;
 
     @Autowired
     private CategoryService categoryService;
@@ -56,12 +61,16 @@ public class ProductService {
     }
 
     public ProductDTOExtended getProduct(long id) {   //findById with DTO
-        Optional<Product> product = productRepository.findById(id);
-        if (product.isPresent()) {
-            return toDtoExtended(product.get());
+        Optional<Product> productOpt = productRepository.findById(id);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+            return productMapper.toDTOExtended(product);
         } else {
             return null;
         }
+    }
+    public Collection<ProductDTOExtended> findCategoryFromProduct(long id) {
+        return toDTOsExtended(productRepository.findByCategoryId(id));
     }
 
     /*public Page<ProductDTO> getProducts(Pageable pageable) { // findAllProducts with pagination
@@ -130,15 +139,19 @@ public class ProductService {
 
 
     // for updating product which has been saved before in CONTROLLER
-    public ProductDTO update(Product existingProduct, Product newProduct, MultipartFile imageFile) throws IOException {
+    public ProductDTO update(Product existingProduct, Product newProduct, MultipartFile imageFile) throws IOException, SQLException {
         // Update existing  product with new values
         existingProduct.setName(newProduct.getName());
         existingProduct.setPrice(newProduct.getPrice());
         existingProduct.setDescription(newProduct.getDescription());
         existingProduct.setRating(newProduct.getRating());
 
+
         if (!imageFile.isEmpty()) {
-            existingProduct.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
+            byte[] imageBytes = imageFile.getInputStream().readAllBytes();
+            Blob blob = new SerialBlob(imageBytes);
+            existingProduct.setImageFile(blob);
+            existingProduct.setImage("/products/" + existingProduct.getId() + "/image");
         }
 
         this.save(existingProduct);
@@ -175,11 +188,13 @@ public class ProductService {
     public ProductDTO save(ProductDTOExtended productDTO, MultipartFile imageFile){
         Product newProduct = toProductFromExtended(productDTO);
 
+        this.save(newProduct);
+
         if (!imageFile.isEmpty()) {
             try {
                 newProduct.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
+                newProduct.setImage("/products/" + newProduct.getId() + "/image");
             } catch (IOException e) {
-                this.save(newProduct);
                 throw new RuntimeException(e);
             }
         }
@@ -324,5 +339,7 @@ public class ProductService {
         // No filters applied - return all products
         return productRepository.findAll();
     }
+
+
 
 }
