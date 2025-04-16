@@ -31,7 +31,7 @@
         <td>
           <a class="btn btn-outline-primary btn-sm" href="/shoppingCar/history/{{id}}">Carrito</a>
           <a class="btn btn-outline-secondary btn-sm" href="/users/edit?id={{id}}">Editar</a>
-          <a class="btn btn-outline-danger btn-sm" href="/user/delete?id={{id}}">Eliminar</a>
+          <a class="btn btn-outline-danger btn-sm" onclick="confirmDeleteUser({{{id}}})">Eliminar</a>
         </td>
       </tr>
       {{/users}}
@@ -46,6 +46,15 @@
   </div>
 </div>
 
+<script>
 
+  function confirmDeleteUser(id) {
+    const confirmed = confirm('¿Estás seguro de que deseas eliminar este usuario?');
+    if (confirmed) {
+      window.location.href = `/user/delete?id=${id}`;
+    }
+  }
+
+</script>
 
 {{>footer}}
