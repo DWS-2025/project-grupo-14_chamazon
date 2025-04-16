@@ -14,7 +14,7 @@ public class Comment {
     private String comment;
     private int rating;
 
-    @ManyToOne   // Many comments can be made by the same user and each comment is made by a user
+    @ManyToOne  // Many comments can be made by the same user and each comment is made by a user
     private User user;
 
     @ManyToOne   // Many comments can be made about the same product

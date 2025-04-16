@@ -9,6 +9,11 @@
     </div>
     <h1 class="mb-4 text-center">Añadir Nuevo Usuario</h1>
     <div class="card shadow p-4">
+        {{#error}}
+        <div class="alert alert-danger" role="alert">
+            {{error}}
+        </div>
+        {{/error}}
         <form action="/users/add" method="post">
             <div class="mb-3">
                 <label for="userName" class="form-label">Nombre:</label>
@@ -16,11 +21,11 @@
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email:</label>
-                <input type="email" id="email" name="email" class="form-control">
+                <input type="email" id="email" name="email" class="form-control" required>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Contraseña:</label>
-                <input type="password" id="password" name="password" class="form-control">
+                <input type="password" id="password" name="password" class="form-control" required>
             </div>
             <div class="mb-3">
                 <label for="address" class="form-label">Dirección:</label>

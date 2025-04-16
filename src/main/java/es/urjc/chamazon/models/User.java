@@ -3,6 +3,7 @@ package es.urjc.chamazon.models;
 import jakarta.persistence.*;
 import org.springframework.web.context.annotation.SessionScope;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,6 +31,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Product> productList;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
 
     public User() {
 
@@ -41,7 +45,7 @@ public class User {
         this.firstName = firstName;
         this.surname = surname;
         this.password = password;
-        this.email = (email != null) ? email : "no-email@example.com";  // Evita nulo        this.phone = phone;
+        this.email = email;
         this.address = address;
         this.phone = phone;
     }
@@ -49,7 +53,12 @@ public class User {
 
     //GETTERS AND SETTERS//
 
-
+    public List<Comment> getComments() {
+        return comments;
+    }
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
     public long getId() {
         return id;
     }
@@ -137,4 +146,6 @@ public class User {
     public void setProductList(List<Product> productList) {
         this.productList = productList;
     }
+
+
 }
