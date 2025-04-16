@@ -29,7 +29,7 @@
                 <td>1</td>
                 <td>{{price}}</td>
                 <td>
-                    <a class="btn btn-outline-primary btn-sm"  title="verCarrito" href="/products">Ver</a>
+                    <a class="btn btn-outline-primary btn-sm"  title="verCarrito" href="/products/{{id}}">Ver</a>
                     {{^ifNotEnd}}
                     <a class="btn btn-outline-danger btn-sm"  title="eliminarProducto" href="/shoppingCar/removeProduct/{{id}}/{{idUser}}">Eliminar de la cesta</a>
                     {{/ifNotEnd}}
