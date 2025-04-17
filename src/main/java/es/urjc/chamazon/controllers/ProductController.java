@@ -55,6 +55,9 @@ public class ProductController {
         List<CategoryDTO> categories = productDTO.categoryDTOList();
         List<CommentDTO> comments = commentService.findByProductId(id);
 
+        //Product description handling
+        boolean hasDescription = (productDTO.description() != null && !productDTO.description().trim().isEmpty());
+        model.addAttribute("hasDescription", hasDescription);
         model.addAttribute("product", productDTO);
         model.addAttribute("categories", categories);
         model.addAttribute("comments", comments);
