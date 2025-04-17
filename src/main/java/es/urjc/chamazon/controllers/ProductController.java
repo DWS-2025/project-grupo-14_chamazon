@@ -195,24 +195,21 @@ public class ProductController {
                                  @RequestParam(required = false) Float rating,
                                  @RequestParam(required = false) Long userId) {
 
+        if (rating != null && (rating < 0 || rating > 5)) {
+        rating = null;
+        }                            
+
         List<Product> filteredProducts = productService.findByFilters(categoryId, minPrice, maxPrice, rating);
-
-        // Verify filters
-        boolean hasFilters = categoryId != null || minPrice != null || maxPrice != null || rating != null;
-
-        if (hasFilters) {
-            // If filters are applied, show filtered products
-            filteredProducts = productService.findByFilters(categoryId, minPrice, maxPrice, rating);
-        } else {
-            // If no filters are applied, show all products
-            productService.getProducts();
-        }
 
         // Add all necessary attributes to the model
         List<CategoryDTOExtended> allCategories = categoryService.getCategories();
         model.addAttribute("products", filteredProducts);
         model.addAttribute("categories", allCategories);
         model.addAttribute("users", userService.getAllUsers());
+
+        boolean hasFilters = categoryId != null || minPrice != null || maxPrice != null || rating != null;
+        model.addAttribute("hasNoResults", filteredProducts.isEmpty() && hasFilters);   
+
 
         // Preserve filter parameters in the model
         model.addAttribute("categoryId", categoryId != null ? categoryId.toString() : "");

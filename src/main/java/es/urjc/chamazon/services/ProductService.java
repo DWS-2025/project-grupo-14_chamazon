@@ -277,32 +277,7 @@ public class ProductService {
     }
 
     public List<Product> findByFilters(Long categoryId, Float minPrice, Float maxPrice, Float rating) {
-        // Apply filters
-        if (categoryId != null) {
-            if (minPrice != null && maxPrice != null) {
-                return productRepository.findByCategoryIdAndPriceBetween(categoryId, minPrice, maxPrice);
-            } else if (rating != null) {
-                return productRepository.findByCategoryIdAndRatingGreaterThanEqual(categoryId, rating);
-            } else {
-                return productRepository.findByCategoryId(categoryId);
-            }
-        } else if (minPrice != null && maxPrice != null) {
-            if (rating != null) {
-                // If we need to filter by price range AND rating
-                return productRepository.findByPriceBetween(minPrice, maxPrice).stream()
-                        .filter(p -> p.getRating() != null && p.getRating() >= rating)
-                        .collect(Collectors.toList());
-            } else {
-                // Just price range
-                return productRepository.findByPriceBetween(minPrice, maxPrice);
-            }
-        } else if (rating != null) {
-            // Just rating
-            return productRepository.findByRatingGreaterThanEqual(rating);
-        } else {
-            // No filters - return all
-            return productRepository.findAll();
-        }
+        return productRepository.findByFilters(categoryId, minPrice, maxPrice, rating);
     }
 
 
