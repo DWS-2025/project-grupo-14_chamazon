@@ -194,11 +194,7 @@ public class ProductController {
                                  @RequestParam(required = false) Float maxPrice,
                                  @RequestParam(required = false) Float rating,
                                  @RequestParam(required = false) Long userId) {
-
-        if (rating != null && (rating < 0 || rating > 5)) {
-        rating = null;
-        }                            
-
+                        
         List<Product> filteredProducts = productService.findByFilters(categoryId, minPrice, maxPrice, rating);
 
         // Add all necessary attributes to the model
@@ -207,8 +203,8 @@ public class ProductController {
         model.addAttribute("categories", allCategories);
         model.addAttribute("users", userService.getAllUsers());
 
-        boolean hasFilters = categoryId != null || minPrice != null || maxPrice != null || rating != null;
-        model.addAttribute("hasNoResults", filteredProducts.isEmpty() && hasFilters);   
+       // boolean hasFilters = categoryId != null || minPrice != null || maxPrice != null || rating != null;
+        //model.addAttribute("hasNoResults", filteredProducts.isEmpty() && hasFilters);   
 
 
         // Preserve filter parameters in the model
