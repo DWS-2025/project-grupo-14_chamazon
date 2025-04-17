@@ -195,6 +195,7 @@ public class ProductService {
             }
         }
         this.save(newProduct);
+        System.out.println("Product description " + newProduct.getDescription());
         if (productDTO.categoryDTOList() != null) {
             for (CategoryDTO categoryDTO : productDTO.categoryDTOList()) {
                 categoryService.addProductToCategory(categoryDTO.id(), newProduct.getId());
