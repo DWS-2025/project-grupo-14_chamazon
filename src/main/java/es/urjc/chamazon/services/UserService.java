@@ -3,6 +3,7 @@ package es.urjc.chamazon.services;
 
 import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.dto.UserMapper;
+import es.urjc.chamazon.models.Comment;
 import es.urjc.chamazon.models.ShoppingCar;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.repositories.UserRepository;
@@ -42,8 +43,20 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
-        //commentService.deleteByUserId(id);
-        userRepository.deleteById(id);
+
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            for (Comment comment : user.getComments()) {
+                comment.setUser(null);
+            }
+            user.getComments().clear();
+
+            userRepository.save(user);
+
+            userRepository.delete(user);
+        }
     }
 
     public void save(UserDTO userDTO) {

@@ -56,8 +56,36 @@ public class CommentService {
 
     //Method to delete a comment by its id
     public void deleteById(Long id) {
+        Optional<Comment> optionalComment = commentRepository.findById(id);
 
-        commentRepository.deleteById(id);
+        if (optionalComment.isPresent()) {
+            Comment comment = optionalComment.get();
+
+            User user = comment.getUser();
+            if (user != null) {
+                user.getComments().remove(comment);
+                comment.setUser(null);
+            }
+
+            Product product = comment.getProduct();
+            if (product != null) {
+                product.getCommentList().remove(comment);
+                comment.setProduct(null);
+            }
+
+            commentRepository.deleteById(comment.getId());
+        }
+    }
+
+    //Method to delete all comments wiht user_id == null
+    public void deleteCommentsWithoutUser() {
+        Optional<List<Comment>> orphanComments = commentRepository.findByUserIsNull();
+
+        if (orphanComments.isPresent()) {
+            for (Comment comment : orphanComments.get()) {
+                this.deleteById(comment.getId());
+            }
+        }
     }
 
     //Method to find all comments by product id and convert them to DTOs
@@ -76,6 +104,7 @@ public class CommentService {
             Product product = optionalProduct.get();
 
             Comment comment = new Comment(commentTxt, rating, user, product);
+            user.getComments().add(comment);
             commentRepository.save(comment);
             return true;
         }
