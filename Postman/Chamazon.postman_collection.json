@@ -1,0 +1,705 @@
+{
+	"info": {
+		"_postman_id": "3befa1d1-79b2-47b0-92eb-0486b2a28790",
+		"name": "Chamazon",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43857341",
+		"_collection_link": "https://victor-5489845.postman.co/workspace/029186c5-c97e-4ad4-8cd8-95e275597334/collection/43857341-3befa1d1-79b2-47b0-92eb-0486b2a28790?action=share&source=collection_link&creator=43857341"
+	},
+	"item": [
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "GET_ALL_Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/products/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE_Image_From_Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/products/{{productID}}/image",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products",
+								"{{productID}}",
+								"image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/products/{{productID}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products",
+								"{{productID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CREATE_Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"nuevo producto API\",\r\n    \"price\":34,\r\n    \"description\":\"nuevo producto que estamos metiendo desde API\",\r\n    \"rating\":3,\r\n    \"categoryDTOList\": [\r\n\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/products/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE_Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/products/{{productID}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products",
+								"{{productID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ASSIGN_Image_To_Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "imageFile",
+									"type": "file",
+									"src": "/C:/Users/Victor_URJC/Downloads/chamazon.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/products/{{productID}}/image",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products",
+								"{{productID}}",
+								"image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE_Product",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"id\": 1,\r\n        \"name\": \"Best Seller Novel Edited desde API\",\r\n        \"price\": 12.0,\r\n        \"description\": \"Estamos editando desde API\",\r\n        \"rating\": null,\r\n        \"image\": \"/products/1/image\",\r\n        \"categoryDTOList\": []\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/products/{{productID}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products",
+								"{{productID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "GET_ALL_Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/categories/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"categories",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CREATE_Category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"categoria desde Api\",\r\n    \"description\": \"esta categoria se ha creado desde la Api REST\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/categories/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"categories",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE_Category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/categories/1",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"categories",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE_Category",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"modified name\",\r\n    \"description\":\"modified description\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/categories/{{categoryID}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"categories",
+								"{{categoryID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_Products_From_Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/categories/{{categoryID}}/products",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"categories",
+								"{{categoryID}}",
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "GET_ALL_Comments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/comments",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_Comment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/comments/{{commentID}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"comments",
+								"{{commentID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CREATE_Comment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"comment\": \"Comentario desde Postman2.0\",\r\n  \"rating\": 5,\r\n  \"user\": {\r\n    \"id\": 1\r\n  },\r\n  \"product\": {\r\n    \"id\": 2\r\n  }\r\n} ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/comments",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE_Comment",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"comment\": \"Comentario modificado desde API\",\r\n    \"rating\": 3,\r\n    \"user\": {\r\n        \"id\": 2\r\n    },\r\n    \"product\": {\r\n        \"id\": 1\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/comments/{{commentID}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"comments",
+								"{{commentID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE_Comment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/comments/{{commentID}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"comments",
+								"{{commentID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ShoppingCars",
+			"item": [
+				{
+					"name": "GET_ShoppingCar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/shoppingCar/{{shoppingCarID}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"shoppingCar",
+								"{{shoppingCarID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_Products_From_ShoppingCar",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/shoppingCar/{{shoppingCarID}}/products",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"shoppingCar",
+								"{{shoppingCarID}}",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_Current_ShoppingCar_From_User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/shoppingCar/user/{{userID}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"shoppingCar",
+								"user",
+								"{{userID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_ShoppingCarsHistory_From_User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/shoppingCar/user/{{userID}}/history",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"shoppingCar",
+								"user",
+								"{{userID}}",
+								"history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADD_Product_To_UserShoppingCar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/shoppingCar/user/{{userID}}/product/{{productID}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"shoppingCar",
+								"user",
+								"{{userID}}",
+								"product",
+								"{{productID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "REMOVE_Product_From_UserShoppingCar",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/shoppingCar/user/{{userID}}/product/{{productID}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"shoppingCar",
+								"user",
+								"{{userID}}",
+								"product",
+								"{{productID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "END_UserPurchase",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/shoppingCar/user/{{userID}}/endPurchase",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"shoppingCar",
+								"user",
+								"{{userID}}",
+								"endPurchase"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "GET_ALL_Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET_User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/users/{{userID}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								"{{userID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CREATE_User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\": \"NewUser\",\r\n    \"password\": \"1234567\",\r\n    \"email\": \"newUser@mail.com\",\r\n    \"phone\": \"\",\r\n    \"address\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE_User",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\": \"MOdified userName\",\r\n    \"password\": \"6\",\r\n    \"email\": \"modifedemail@email.com\",\r\n    \"phone\": \"890731\",\r\n    \"address\": \"nueva direccion\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/users/{{userID}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								"{{userID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE_User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/users/{{userID}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								"{{userID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "http://127.0.0.1:8080/api",
+			"type": "string"
+		},
+		{
+			"key": "shoppingCarID",
+			"value": "1",
+			"type": "default"
+		},
+		{
+			"key": "userID",
+			"value": "1",
+			"type": "default"
+		},
+		{
+			"key": "productID",
+			"value": "1",
+			"type": "default"
+		},
+		{
+			"key": "categoryID",
+			"value": "1",
+			"type": "default"
+		},
+		{
+			"key": "commentID",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
