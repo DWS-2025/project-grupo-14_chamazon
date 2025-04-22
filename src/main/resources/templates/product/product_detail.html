@@ -22,12 +22,22 @@
                 <div class="card-body">
                     <h2 class="card-title">{{name}}</h2>
                     <p class="card-text"><strong>ID:</strong> {{id}}</p>
-                    <p class="card-text"><strong>Descripción:</strong> {{description}}</p>
-                    <p class="card-text"><strong>Precio:</strong> <span class="text-success fw-bold">{{price}}</span></p>
-                    <p class="card-text"><strong>Calificación: </strong><span class="text-success fw-bold">{{#rating}}{{rating}}{{/rating}}{{^rating}}No tiene calificación todavía{{/rating}}</span></p>
+                    <p class="card-text"><strong>Descripción:</strong>
+                        {{#hasDescription}}
+                         {{description}}
+                        {{/hasDescription}}
+                        {{^hasDescription}}
+                         No hay descripción disponible
+                        {{/hasDescription}}
+                    </p>
+                    <p class="card-text"><strong>Precio:</strong> {{price}}
+                    <p class="card-text"><strong>Calificación:</strong> {{#rating}}{{rating}}{{/rating}}{{^rating}} No tiene calificación todavía{{/rating}}
                     <p class="card-text"><strong>Categoría(s):</strong>
                         {{#categories}}
-                        <span class="badge bg-secondary me-1">{{name}}</span>
+                         {{name}}
+                        {{/categories}}
+                        {{^categories}}
+                         No hay categorías asignadas
                         {{/categories}}
                     </p>
                     <div class="mt-4">

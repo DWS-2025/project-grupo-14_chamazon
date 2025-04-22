@@ -55,6 +55,9 @@ public class ProductController {
         List<CategoryDTO> categories = productDTO.categoryDTOList();
         List<CommentDTO> comments = commentService.findByProductId(id);
 
+        //Product description handling
+        boolean hasDescription = (productDTO.description() != null && !productDTO.description().trim().isEmpty());
+        model.addAttribute("hasDescription", hasDescription);
         model.addAttribute("product", productDTO);
         model.addAttribute("categories", categories);
         model.addAttribute("comments", comments);
@@ -93,7 +96,11 @@ public class ProductController {
 
         // Get the id of the product to add it to the category list
         Long productId = savedProduct.id();
-        if (categoryId != null && !categoryId.isEmpty()) {
+        if (categoryId == null || categoryId.isEmpty()){
+            // If no categories are selected, redirect to the product list
+            return "redirect:/products";
+        }
+        else if (categoryId != null && !categoryId.isEmpty()) {
             for (Long categoryIdentified : categoryId) {
                 categoryService.addProductToCategory(categoryIdentified, productId);
             }
@@ -187,25 +194,18 @@ public class ProductController {
                                  @RequestParam(required = false) Float maxPrice,
                                  @RequestParam(required = false) Float rating,
                                  @RequestParam(required = false) Long userId) {
-
+                        
         List<Product> filteredProducts = productService.findByFilters(categoryId, minPrice, maxPrice, rating);
-
-        // Verify filters
-        boolean hasFilters = categoryId != null || minPrice != null || maxPrice != null || rating != null;
-
-        if (hasFilters) {
-            // If filters are applied, show filtered products
-            filteredProducts = productService.findByFilters(categoryId, minPrice, maxPrice, rating);
-        } else {
-            // If no filters are applied, show all products
-            productService.getProducts();
-        }
 
         // Add all necessary attributes to the model
         List<CategoryDTOExtended> allCategories = categoryService.getCategories();
         model.addAttribute("products", filteredProducts);
         model.addAttribute("categories", allCategories);
         model.addAttribute("users", userService.getAllUsers());
+
+       // boolean hasFilters = categoryId != null || minPrice != null || maxPrice != null || rating != null;
+        //model.addAttribute("hasNoResults", filteredProducts.isEmpty() && hasFilters);   
+
 
         // Preserve filter parameters in the model
         model.addAttribute("categoryId", categoryId != null ? categoryId.toString() : "");

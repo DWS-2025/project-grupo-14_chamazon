@@ -180,7 +180,7 @@ public class ProductService {
         return toDTO(product);
     }
 
- //for adding new products
+    //for adding new products
     public ProductDTO save(ProductDTOExtended productDTO, MultipartFile imageFile){
         Product newProduct = toProductFromExtended(productDTO);
 
@@ -195,6 +195,7 @@ public class ProductService {
             }
         }
         this.save(newProduct);
+        System.out.println("Product description " + newProduct.getDescription());
         if (productDTO.categoryDTOList() != null) {
             for (CategoryDTO categoryDTO : productDTO.categoryDTOList()) {
                 categoryService.addProductToCategory(categoryDTO.id(), newProduct.getId());
@@ -218,33 +219,33 @@ public class ProductService {
         Product product = getEntityId(id);
         if(product.getImage()!= null){
             return new InputStreamResource(product.getImageFile().getBinaryStream());
-		} else {
-			throw new NoSuchElementException();
+        } else {
+            throw new NoSuchElementException();
         }
     }
 
     public void replaceProductImage(long id, InputStream inputStream, long size) {
 
-		Product product = productRepository.findById(id).orElseThrow();
+        Product product = productRepository.findById(id).orElseThrow();
 
-		product.setImageFile(BlobProxy.generateProxy(inputStream, size));
+        product.setImageFile(BlobProxy.generateProxy(inputStream, size));
 
-		productRepository.save(product);
-	}
+        productRepository.save(product);
+    }
 
-	public void deletePostImage(long id) {
+    public void deletePostImage(long id) {
 
-		Product product = getEntityId(id);
+        Product product = getEntityId(id);
 
-		if(product.getImage() == null){
-			throw new NoSuchElementException();
-		}
+        if(product.getImage() == null){
+            throw new NoSuchElementException();
+        }
 
-		product.setImageFile(null);
-		product.setImage(null);
+        product.setImageFile(null);
+        product.setImage(null);
 
-		save(product);
-	}
+        save(product);
+    }
 
 
     public void deleteById(long id) {
@@ -276,30 +277,7 @@ public class ProductService {
     }
 
     public List<Product> findByFilters(Long categoryId, Float minPrice, Float maxPrice, Float rating) {
-        // Apply filters
-        if (categoryId != null) {
-            if (minPrice != null && maxPrice != null) {
-                return productRepository.findByCategoryIdAndPriceBetween(categoryId, minPrice, maxPrice);
-            } else if (rating != null) {
-                return productRepository.findByCategoryIdAndRatingGreaterThanEqual(categoryId, rating);
-            } else {
-                return productRepository.findByCategoryId(categoryId);
-            }
-        } else if (minPrice != null && maxPrice != null) {
-            if (rating != null) {
-                // If we need to filter by price range AND rating
-                return productRepository.findByPriceBetween(minPrice, maxPrice).stream().filter(p -> p.getRating() >= rating).collect(Collectors.toList());
-            } else {
-                // Just price range
-                return productRepository.findByPriceBetween(minPrice, maxPrice);
-            }
-        } else if (rating != null) {
-            // Just rating
-            return productRepository.findByRatingGreaterThanEqual(rating);
-        } else {
-            // No filters - return all
-            return productRepository.findAll();
-        }
+        return productRepository.findByFilters(categoryId, minPrice, maxPrice, rating);
     }
 
 

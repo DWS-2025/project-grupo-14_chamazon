@@ -190,5 +190,42 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.js"></script>
 <script src="/js/price-range-slider.js"></script>
 
+<script>
+    const categorySelect = document.getElementById('categoryIdSelect');
+    const ratingSelect = document.getElementById('ratingSelect');
+    const clearFiltersButton = document.querySelector('a[href="/products"]');
+
+    // Restore selections from localStorage on page load
+    window.addEventListener('DOMContentLoaded', () => {
+        // No restore if on products page
+        if (!window.location.href.includes('/products?') && !window.location.href.endsWith('/products')) {
+            const savedCategoryValue = localStorage.getItem('selectedCategoryId');
+            if (savedCategoryValue) {
+                categorySelect.value = savedCategoryValue;
+            }
+
+            const savedRatingValue = localStorage.getItem('selectedRating');
+            if (savedRatingValue) {
+                ratingSelect.value = savedRatingValue;
+            }
+        }
+    });
+
+    // Save category selection to localStorage when changed
+    categorySelect.addEventListener('change', () => {
+        localStorage.setItem('selectedCategoryId', categorySelect.value);
+    });
+
+    // Save rating selection to localStorage when changed
+    ratingSelect.addEventListener('change', () => {
+        localStorage.setItem('selectedRating', ratingSelect.value);
+    });
+
+    // Clean localStorage when clear filters button is clicked
+    clearFiltersButton.addEventListener('click', (e) => {
+        localStorage.removeItem('selectedCategoryId');
+        localStorage.removeItem('selectedRating');
+    });
+</script>
 
 {{>footer}}

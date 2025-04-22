@@ -17,20 +17,16 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p JOIN p.categoryList c WHERE c.id = :categoryId")
     List<Product> findByCategoryId(@Param("categoryId") Long categoryId);
 
-    List <Product> findByPrice(Float price);
 
-    List <Product> findByPriceBetween(Float minPrice, Float maxPrice);
 
-    @Query("SELECT p FROM Product p JOIN p.categoryList c WHERE c.id = :categoryId AND p.price BETWEEN :minPrice AND :maxPrice")
-    List<Product> findByCategoryIdAndPriceBetween(
-            @Param("categoryId") Long categoryId,
-            @Param("minPrice") Float minPrice,
-            @Param("maxPrice") Float maxPrice);
-
-    List<Product> findByRatingGreaterThanEqual(Float minRating);
-
-    @Query("SELECT p FROM Product p JOIN p.categoryList c WHERE c.id = :categoryId AND p.rating >= :minRating")
-    List<Product> findByCategoryIdAndRatingGreaterThanEqual(@Param("categoryId") Long categoryId, @Param("minRating") Float minRating);
-
+@Query("SELECT DISTINCT p FROM Product p LEFT JOIN p.categoryList c " +
+       "WHERE (:categoryId IS NULL OR c.id = :categoryId) " +
+       "AND (:minPrice IS NULL OR :maxPrice IS NULL OR p.price BETWEEN :minPrice AND :maxPrice) " +
+       "AND (:rating IS NULL OR p.rating >= :rating)")
+List<Product> findByFilters(
+        @Param("categoryId") Long categoryId,
+        @Param("minPrice") Float minPrice,
+        @Param("maxPrice") Float maxPrice,
+        @Param("rating") Float rating);
 
 }
