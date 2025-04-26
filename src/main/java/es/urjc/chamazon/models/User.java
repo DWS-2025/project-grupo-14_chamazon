@@ -15,7 +15,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    private String type;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> type;
+
     private String userName;
     private String firstName;
     private String surname;
@@ -39,8 +42,8 @@ public class User {
 
     }
 
-    public User(String type, String userName, String firstName, String surname, String password, String email, String phone, String address) {
-        this.type = type;
+    public User(String userName, String firstName, String surname, String password, String email, String phone, String address, String... type) {
+        this.type = List.of(type);
         this.userName = userName;
         this.firstName = firstName;
         this.surname = surname;
@@ -67,11 +70,11 @@ public class User {
         this.id = id;
     }
 
-    public String getType() {
+    public List<String> getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(List<String> type) {
         this.type = type;
     }
 

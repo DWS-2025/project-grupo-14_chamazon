@@ -14,11 +14,13 @@
         {{#categories}}
         <div class="d-flex justify-content-between align-items-center list-group-item">
             <a href="/categories/products?id={{id}}" class="text-decoration-none flex-grow-1">{{name}}</a>
+            {{#isAdmin}}
             <a href="/categories/edit?id={{id}}" class="btn btn-outline-secondary btn-sm ms-2">Editar</a>
             <form action="/categories/delete" method="post">
                 <input type="hidden" name="id" value="{{id}}">
                 <button type="submit" class="btn btn-outline-danger btn-sm ms-2">Eliminar</button>
             </form>
+            {{/isAdmin}}
         </div>
         {{/categories}}
     </div>

@@ -11,6 +11,7 @@ import es.urjc.chamazon.repositories.CategoryRepository;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,6 +19,9 @@ public class ChamazonBDD{
 
     @Autowired
     private CommentMapper commentMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     private final ProductService productService;
@@ -108,8 +112,8 @@ public class ChamazonBDD{
 
 
 
-        userService.saveUser(new User("Admin", "PepeAdmin", "Pepe", "Montero", "123", "pepe@mail.com", "098", "q"));
-        userService.saveUser(new User("Cliente", "User2", "Maria", "Carrera ", "321", "maria@mail.com", "100", "p"));
+        userService.saveUser(new User( "PepeAdmin", "Pepe", "Montero", passwordEncoder.encode("123") , "pepe@mail.com", "098", "q", "ADMIN"));
+        userService.saveUser(new User( "User2", "Maria", "Carrera ", passwordEncoder.encode("321"),  "maria@mail.com", "100", "p", "USER"));
 
         //shoppingCarService.addProductToUserShoppingCar(1L,1L);
 

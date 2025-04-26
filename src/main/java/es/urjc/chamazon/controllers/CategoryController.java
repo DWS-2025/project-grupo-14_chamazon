@@ -7,6 +7,9 @@ import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.services.CategoryService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,14 +26,13 @@ public class CategoryController {
     private CategoryService categoryService;
 
 
-    @GetMapping("/")
-    public String home() {
-        return "main";
-    }
-
     @GetMapping("/categories")
     public String getAllCategories(Model model) {
         try{
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            boolean isAdmin = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            System.out.println(isAdmin);
+            model.addAttribute("isAdmin", isAdmin);
             model.addAttribute("categories", categoryService.getCategories());
             return "/category/categories";
         }catch (NoSuchElementException e){
