@@ -42,6 +42,10 @@ public class UserService {
         return userOpt.orElse(null);
     }
 
+    public UserDTO findByUserName(String name) {
+        return toDTO(userRepository.findByUserName(name).orElseThrow());
+    }
+
     public void deleteUser(Long id) {
 
         Optional<User> optionalUser = userRepository.findById(id);
@@ -58,6 +62,7 @@ public class UserService {
             userRepository.delete(user);
         }
     }
+
 
     public void save(UserDTO userDTO) {
         User user = toUser(userDTO);
@@ -95,6 +100,8 @@ public class UserService {
     private List<User> toUsers(List<UserDTO> usersDTO){
         return userMapper.toUsers(usersDTO);
     }
+
+
 
 
 
