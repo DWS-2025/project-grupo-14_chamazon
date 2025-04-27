@@ -58,11 +58,13 @@ public class SecurityConfiguration {
                         .requestMatchers("/categories/products").permitAll()
                         .requestMatchers("/commentView/commentList").permitAll()
 
+
                         .requestMatchers("/commentView/edit/{id}").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/commentView/delete/{id}").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/commentView/add").hasAnyRole("ADMIN", "USER")
 
                         .requestMatchers("/users/edit").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/users").hasAnyRole("USER", "ADMIN")
 
                         .requestMatchers("/categories/add").hasRole("ADMIN")
                         .requestMatchers("/categories/delete").hasRole("ADMIN")
@@ -85,7 +87,7 @@ public class SecurityConfiguration {
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .failureUrl("/loginerror")
-                        .defaultSuccessUrl("/categories")
+                        .defaultSuccessUrl("/")
                         .permitAll()
                 )
                 .logout(logout -> logout

@@ -2,15 +2,14 @@
 package es.urjc.chamazon.services;
 
 import es.urjc.chamazon.dto.UserDTO;
+import es.urjc.chamazon.dto.UserDTOExtended;
 import es.urjc.chamazon.dto.UserMapper;
 import es.urjc.chamazon.models.Comment;
-import es.urjc.chamazon.models.ShoppingCar;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,8 +41,8 @@ public class UserService {
         return userOpt.orElse(null);
     }
 
-    public UserDTO findByUserName(String name) {
-        return toDTO(userRepository.findByUserName(name).orElseThrow());
+    public UserDTOExtended findByUserName(String name) {
+        return toDTOExtended(userRepository.findByUserName(name).orElseThrow());
     }
 
     public void deleteUser(Long id) {
@@ -99,6 +98,9 @@ public class UserService {
     }
     private List<User> toUsers(List<UserDTO> usersDTO){
         return userMapper.toUsers(usersDTO);
+    }
+    private UserDTOExtended toDTOExtended(User user){
+        return userMapper.toDTOExtended(user);
     }
 
 
