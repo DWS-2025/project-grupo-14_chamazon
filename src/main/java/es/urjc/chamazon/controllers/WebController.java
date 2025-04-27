@@ -1,6 +1,7 @@
 package es.urjc.chamazon.controllers;
 
 import es.urjc.chamazon.dto.UserDTO;
+import es.urjc.chamazon.dto.UserDTOExtended;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,7 +34,7 @@ public class WebController {
     @GetMapping("/private")
     public String privatePage(Model model, HttpServletRequest request) {
         String name = request.getUserPrincipal().getName();
-        UserDTO user = userService.findByUserName(name);
+        UserDTOExtended user = userService.findByUserName(name);
         model.addAttribute("username", user.userName());
         model.addAttribute("admin", request.isUserInRole("ADMIN"));
         return "private";

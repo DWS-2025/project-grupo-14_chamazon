@@ -1,0 +1,55 @@
+{{>header}}
+</head>
+<body class="bg-light">
+{{>navBar}}
+
+<div class="container mt-5">
+    <div class="card mx-auto shadow-lg" style="max-width: 800px;">
+        <div class="card-header bg-primary text-white text-center">
+            <h2>Perfil de {{user.firstName}} {{user.surname}}</h2>
+        </div>
+
+        <div class="card-body">
+            <div class="mb-4">
+                <h5 class="card-title">Información de Usuario</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Username:</strong> {{user.userName}}</li>
+                    <li class="list-group-item"><strong>Email:</strong> {{user.email}}</li>
+                    <li class="list-group-item"><strong>Teléfono:</strong> {{user.phone}}</li>
+                    <li class="list-group-item"><strong>Dirección:</strong> {{user.address}}</li>
+                    <li class="list-group-item">
+                        <strong>Roles:</strong>
+                        {{#user.type}}
+                        <span class="badge bg-success">{{.}}</span>
+                        {{/user.type}}
+                    </li>
+                </ul>
+            </div>
+
+            <div class="mt-4">
+                <h5 class="card-title">Comentarios</h5>
+                {{#user.commentDTOList}}
+                <div class="card mb-3 shadow-sm border-light">
+                    <div class="card-body">
+                        <p class="card-text"><strong>Producto:</strong> {{this.product.name}}</p>
+                        <p class="card-text"><strong>Comentario:</strong> {{this.comment}}</p>
+                        <p class="card-text"><strong>Calificación:</strong> {{this.rating}}</p>
+
+                    </div>
+                </div>
+                {{/user.commentDTOList}}
+                {{^user.commentDTOList}}
+                <div class="alert alert-secondary">Este usuario aún no tiene comentarios.</div>
+                {{/user.commentDTOList}}
+            </div>
+        </div>
+
+        <div class="card-footer text-center">
+            <a href="/" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left"></i> Volver a la página principal
+            </a>
+        </div>
+    </div>
+</div>
+
+{{> footer}}

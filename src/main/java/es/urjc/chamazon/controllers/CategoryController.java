@@ -7,6 +7,7 @@ import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.services.CategoryService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,17 +30,14 @@ public class CategoryController {
     @GetMapping("/categories")
     public String getAllCategories(Model model) {
         try{
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            boolean isAdmin = auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
-            System.out.println(isAdmin);
-            model.addAttribute("isAdmin", isAdmin);
             model.addAttribute("categories", categoryService.getCategories());
             return "/category/categories";
         }catch (NoSuchElementException e){
-            return "error/error";
+            return "/error";
         }
 
     }
+
 
     @GetMapping("/categories/add")
     public String addCategory(Model model) {
@@ -58,7 +56,7 @@ public class CategoryController {
             categoryService.deleteCategory(id);
             return "redirect:/categories";
         }catch (NoSuchElementException e) {
-            return "/error/error";
+            return "/error";
         }
     }
 
@@ -69,7 +67,7 @@ public class CategoryController {
             model.addAttribute("category", categoryDTO);
             return "/category/editCategory";
         } catch (NoSuchElementException e) {
-            return "/error/error";
+            return "/error";
         }
     }
 
@@ -79,7 +77,7 @@ public class CategoryController {
             categoryService.editCategory(updatedCategoryDTO.id(), updatedCategoryDTO);
             return "redirect:/categories";
         }catch (NoSuchElementException e) {
-            return "/error/error";
+            return "/error";
         }
     }
 
@@ -91,8 +89,7 @@ public class CategoryController {
             model.addAttribute("products", categoryService.getProductsByCategoryId(id));
             return "product/products_list";
         } catch (NoSuchElementException e) {
-            return "/error/error";
+            return "/error";
         }
     }
-
 }

@@ -1,15 +1,22 @@
 
 package es.urjc.chamazon.controllers;
 
+import es.urjc.chamazon.dto.CommentDTO;
 import es.urjc.chamazon.dto.UserDTO;
+import es.urjc.chamazon.dto.UserDTOExtended;
+import es.urjc.chamazon.models.Comment;
 import es.urjc.chamazon.services.CommentService;
 import es.urjc.chamazon.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -29,7 +36,23 @@ public class UserController {
             model.addAttribute("users", userService.getAllUsers());
             return "/user/users";
         }catch (NoSuchElementException e){
-            return "/error/error";
+            return "/error";
+        }
+    }
+
+    @GetMapping("/user")
+    public String user(Model model) {
+        try{
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String username = auth.getName();
+            UserDTOExtended userDTOExtended = userService.findByUserName(username);
+            model.addAttribute("user", userDTOExtended);
+            for (CommentDTO comment : userDTOExtended.commentDTOList()){
+                System.out.println(comment.getComment());
+            }
+            return "/user/userIndividual";
+        }catch (NoSuchElementException e){
+            return "/error";
         }
     }
 
@@ -93,7 +116,7 @@ public class UserController {
             model.addAttribute("user", userDTO);
             return "/user/editUser";
         }catch (NoSuchElementException e){
-            return "error/error";
+            return "/error";
         }
     }
 
@@ -103,7 +126,7 @@ public class UserController {
             userService.updateUser(userDTO.id(), userDTO);
             return "redirect:/users";
         }catch (NoSuchElementException e){
-            return "error/error";
+            return "/error";
         }
     }
 }

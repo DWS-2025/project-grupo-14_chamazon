@@ -22,9 +22,16 @@
         <li class="nav-item">
           <a class="nav-link" href="/categories">Categorías</a>
         </li>
+
+        {{#userLink}}
+        {{^isEmpty}}
         <li class="nav-item">
-          <a class="nav-link" href="/users">Usuario</a>
+          <a class="nav-link" href="{{userLink}}">Usuario</a>
         </li>
+        {{/isEmpty}}
+        {{/userLink}}
+
+
         <li class="nav-item">
           <a class="nav-link" href="/commentView/commentList">Comentarios</a>
         </li>
@@ -32,6 +39,9 @@
           <a class="nav-link" href="/login">Iniciar sesión</a>
         </li>
       </ul>
+      <form class="d-flex ms-auto" action="/logout" method="POST">
+        <button class="btn btn-secondary" type="submit">Cerrar sesión</button>
+      </form>
     </div>
 
   </div>
