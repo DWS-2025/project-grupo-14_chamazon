@@ -106,9 +106,11 @@
             <!-- Product Title and Add Products BUtton -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2>Productos</h2>
+                {{#isAdmin}}
                 <a href="/products/add" class="btn btn-success">
                     <i class="fas fa-plus"></i> Añadir Producto
                 </a>
+                {{/isAdmin}}
             </div>
 
             <!-- Prorduct's grid -->

@@ -6,7 +6,12 @@
 
 <div class="container my-5">
   <div class="d-flex justify-content mt-3">
+    {{#isAdmin}}
     <a class="btn btn-primary" href="/users" role="button">VOLVER</a>
+    {{/isAdmin}}
+    {{^isAdmin}}
+    <a class="btn btn-primary" href="/user" role="button">VOLVER</a>
+    {{/isAdmin}}
   </div>
   <div class="row justify-content-center">
     <div class="col-md-6">

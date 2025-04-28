@@ -6,15 +6,18 @@ public class CommentDTO {
     private int rating;
     private UserDTO user;
     private ProductDTO product;
+    private boolean canEditOrDelete; // NUEVO
+
 
     public CommentDTO() {}
 
-    public CommentDTO(Long id, String comment, int rating, UserDTO user, ProductDTO product) {
+    public CommentDTO(Long id, String comment, int rating, UserDTO user, ProductDTO product, boolean canEditOrDelete) {
         this.id = id;
         this.comment = comment;
         this.rating = rating;
         this.user = user;
         this.product = product;
+        this.canEditOrDelete = canEditOrDelete;
     }
 
     // Getters y Setters
@@ -56,6 +59,9 @@ public class CommentDTO {
 
     public void setProduct(ProductDTO product) {
         this.product = product;
+    }
+    public boolean isCanEditOrDelete() {
+        return canEditOrDelete;
     }
 }
 
