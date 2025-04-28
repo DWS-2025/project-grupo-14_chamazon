@@ -17,12 +17,6 @@
                     <li class="list-group-item"><strong>Email:</strong> {{user.email}}</li>
                     <li class="list-group-item"><strong>Teléfono:</strong> {{user.phone}}</li>
                     <li class="list-group-item"><strong>Dirección:</strong> {{user.address}}</li>
-                    <li class="list-group-item">
-                        <strong>Roles:</strong>
-                        {{#user.type}}
-                        <span class="badge bg-success">{{.}}</span>
-                        {{/user.type}}
-                    </li>
                 </ul>
             </div>
 
@@ -34,7 +28,12 @@
                         <p class="card-text"><strong>Producto:</strong> {{this.product.name}}</p>
                         <p class="card-text"><strong>Comentario:</strong> {{this.comment}}</p>
                         <p class="card-text"><strong>Calificación:</strong> {{this.rating}}</p>
-
+                        <div>
+                            <a href="/commentView/edit/{{this.id}}" class="btn btn-warning btn-sm">Editar</a>
+                            <form action="/commentView/delete/{{this.id}}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este comentario?')">Eliminar</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 {{/user.commentDTOList}}
@@ -45,11 +44,22 @@
         </div>
 
         <div class="card-footer text-center">
-            <a href="/" class="btn btn-outline-primary">
-                <i class="fas fa-arrow-left"></i> Volver a la página principal
-            </a>
+            <a class="btn btn-outline-primary btn-sm" href="/shoppingCar/history/{{user.id}}">Carrito</a>
+            <a class="btn btn-outline-secondary btn-sm" href="/users/edit?id={{user.id}}">Editar</a>
+            <a class="btn btn-outline-danger btn-sm" onclick="confirmDeleteUser({{{user.id}}})">Eliminar</a>
+            <a class="btn btn-outline-primary btn-sm" href="/">Volver a la página principal</a>
         </div>
     </div>
 </div>
 
+<script>
+
+    function confirmDeleteUser(id) {
+        const confirmed = confirm('¿Estás seguro de que deseas eliminar este usuario?');
+        if (confirmed) {
+            window.location.href = `/user/delete?id=${id}`;
+        }
+    }
+
+</script>
 {{> footer}}

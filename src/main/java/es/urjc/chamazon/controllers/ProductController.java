@@ -46,6 +46,8 @@ public class ProductController {
 
     @GetMapping("/products")
     public String products(Model model, @RequestParam(required = false) Long userId) {
+
+
         model.addAttribute("products", productService.getProducts());
         model.addAttribute("users", userService.getAllUsers());
         model.addAttribute("categories", categoryService.getCategories());
@@ -55,16 +57,31 @@ public class ProductController {
 
     @GetMapping("/products/{id}")
     public String product(@PathVariable long id, Model model) {
+
+
         ProductDTOExtended productDTO = productService.getProduct(id);
         List<CategoryDTO> categories = productDTO.categoryDTOList();
-        List<CommentDTO> comments = commentService.findByProductId(id);
 
-        //Product description handling
+        System.out.println(productDTO.commentDTOList());
+
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAuthenticated = auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken);
+        boolean isAdmin = isAuthenticated && auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        String currentUsername = isAuthenticated ? auth.getName() : null;
+
+        List<CommentDTO> commentDTOs = commentService.findByProductId(id).stream().map(comment -> {
+            boolean isOwner = isAuthenticated && comment.getUser().userName().equals(currentUsername);
+            boolean canEditOrDelete = isAdmin || isOwner;
+            return new CommentDTO(comment.getId(), comment.getComment(), comment.getRating(), comment.getUser(), comment.getProduct() ,canEditOrDelete);
+        }).collect(Collectors.toList());
+
         boolean hasDescription = (productDTO.description() != null && !productDTO.description().trim().isEmpty());
         model.addAttribute("hasDescription", hasDescription);
         model.addAttribute("product", productDTO);
         model.addAttribute("categories", categories);
-        model.addAttribute("comments", comments);
+        model.addAttribute("comments", commentDTOs);
         return "product/product_detail";
     }
 

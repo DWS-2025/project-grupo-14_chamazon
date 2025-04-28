@@ -31,18 +31,22 @@
         {{/isEmpty}}
         {{/userLink}}
 
-
+        {{#isAdmin}}
         <li class="nav-item">
           <a class="nav-link" href="/commentView/commentList">Comentarios</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/login">Iniciar sesión</a>
-        </li>
+        {{/isAdmin}}
       </ul>
-      <form class="d-flex ms-auto" action="/logout" method="POST">
-        <button class="btn btn-secondary" type="submit">Cerrar sesión</button>
-      </form>
-    </div>
 
+      <div class="ms-auto d-flex">
+        <form action="login" method="GET" class="me-2">
+          <button class="btn btn-primary" type="submit">Iniciar sesión</button>
+        </form>
+
+        <form action="/logout" method="POST">
+          <button class="btn btn-secondary" type="submit">Cerrar sesión</button>
+        </form>
+      </div>
+    </div>
   </div>
 </nav>
