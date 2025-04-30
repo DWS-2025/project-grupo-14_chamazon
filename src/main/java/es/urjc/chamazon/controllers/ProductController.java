@@ -1,5 +1,6 @@
 package es.urjc.chamazon.controllers;
 
+import es.urjc.chamazon.configurations.SecurityUtils;
 import es.urjc.chamazon.dto.*;
 import es.urjc.chamazon.models.Category;
 import es.urjc.chamazon.models.Product;
@@ -47,10 +48,12 @@ public class ProductController {
     @GetMapping("/products")
     public String products(Model model, @RequestParam(required = false) Long userId) {
 
-
         model.addAttribute("products", productService.getProducts());
         model.addAttribute("users", userService.getAllUsers());
         model.addAttribute("categories", categoryService.getCategories());
+        if (!SecurityUtils.isAdmin()){
+            userId = (Long) model.getAttribute("idUser");
+        }
         model.addAttribute("selectedUserId", userId);
         return "product/products_list";
     }
@@ -58,23 +61,24 @@ public class ProductController {
     @GetMapping("/products/{id}")
     public String product(@PathVariable long id, Model model) {
 
-
         ProductDTOExtended productDTO = productService.getProduct(id);
         List<CategoryDTO> categories = productDTO.categoryDTOList();
 
-        System.out.println(productDTO.commentDTOList());
-
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAuthenticated = auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken);
-        boolean isAdmin = isAuthenticated && auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-        String currentUsername = isAuthenticated ? auth.getName() : null;
+        boolean isAuthenticated = SecurityUtils.isAuthenticated();
+        boolean isAdmin = SecurityUtils.isAdmin();
+        String currentUsername = SecurityUtils.getCurrentUsername();
 
         List<CommentDTO> commentDTOs = commentService.findByProductId(id).stream().map(comment -> {
             boolean isOwner = isAuthenticated && comment.getUser().userName().equals(currentUsername);
             boolean canEditOrDelete = isAdmin || isOwner;
-            return new CommentDTO(comment.getId(), comment.getComment(), comment.getRating(), comment.getUser(), comment.getProduct() ,canEditOrDelete);
+            return new CommentDTO(
+                    comment.getId(),
+                    comment.getComment(),
+                    comment.getRating(),
+                    comment.getUser(),
+                    comment.getProduct(),
+                    canEditOrDelete
+            );
         }).collect(Collectors.toList());
 
         boolean hasDescription = (productDTO.description() != null && !productDTO.description().trim().isEmpty());
@@ -233,6 +237,9 @@ public class ProductController {
         model.addAttribute("minPrice", minPrice != null ? minPrice.toString() : "");
         model.addAttribute("maxPrice", maxPrice != null ? maxPrice.toString() : "");
         model.addAttribute("rating", rating != null ? rating.toString() : "");
+        if (!SecurityUtils.isAdmin()){
+            userId = (Long) model.getAttribute("idUser");
+        }
         model.addAttribute("selectedUserId", userId);
 
         return "product/products_list";

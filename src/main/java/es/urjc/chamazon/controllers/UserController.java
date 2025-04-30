@@ -1,6 +1,7 @@
 
 package es.urjc.chamazon.controllers;
 
+import es.urjc.chamazon.configurations.SecurityUtils;
 import es.urjc.chamazon.dto.CommentDTO;
 import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.dto.UserDTOExtended;
@@ -47,9 +48,6 @@ public class UserController {
             String username = auth.getName();
             UserDTOExtended userDTOExtended = userService.findByUserName(username);
             model.addAttribute("user", userDTOExtended);
-            for (CommentDTO comment : userDTOExtended.commentDTOList()){
-                System.out.println(comment.getComment());
-            }
             return "/user/userIndividual";
         }catch (NoSuchElementException e){
             return "/error";
@@ -122,9 +120,14 @@ public class UserController {
 
     @PostMapping("/users/edit")
     public String editUser(@RequestParam Long id, UserDTO userDTO) {
+        boolean isAdmin = SecurityUtils.isAdmin();
         try {
             userService.updateUser(userDTO.id(), userDTO);
-            return "redirect:/users";
+            if (isAdmin) {
+                return "redirect:/users";
+            }else{
+                return "redirect:/user";
+            }
         }catch (NoSuchElementException e){
             return "/error";
         }

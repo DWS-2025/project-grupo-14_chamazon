@@ -64,7 +64,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/commentView/add").hasAnyRole("ADMIN", "USER")
 
                         .requestMatchers("/users/edit").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/users").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/user").hasRole("USER")
+                        .requestMatchers("user/delete").hasAnyRole("ADMIN", "USER")
 
                         .requestMatchers("/categories/add").hasRole("ADMIN")
                         .requestMatchers("/categories/delete").hasRole("ADMIN")
@@ -72,13 +73,13 @@ public class SecurityConfiguration {
                         .requestMatchers("/products/add").hasRole("ADMIN")
                         .requestMatchers("/products/{id}/edit").hasRole("ADMIN")
                         .requestMatchers("/products/{id}/delete").hasRole("ADMIN")
-                        .requestMatchers("user/delete").hasAnyRole("ADMIN")
-                        .requestMatchers("/users").hasAnyRole("ADMIN")
+                        .requestMatchers("/users").hasRole("ADMIN")
 
-                        .requestMatchers("/shoppingCar/history/{idUser}").hasRole("USER")
-                        .requestMatchers("/shoppingCar/{id}").hasRole("USER")
-                        .requestMatchers("/shoppingCar/endPurchase/{idUser}").hasRole("USER")
-                        .requestMatchers("/shoppingCar/removeProduct/{idProduct}/{idUser}").hasRole("USER")
+
+                        .requestMatchers("/shoppingCar/history/{idUser}").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/shoppingCar/{id}").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/shoppingCar/endPurchase/{idUser}").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/shoppingCar/removeProduct/{idProduct}/{idUser}").hasAnyRole("USER", "ADMIN")
 
                         .anyRequest().authenticated()
 
