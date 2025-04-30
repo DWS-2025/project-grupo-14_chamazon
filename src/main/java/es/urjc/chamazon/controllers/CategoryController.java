@@ -6,6 +6,7 @@ import es.urjc.chamazon.dto.CategoryDTOExtended;
 import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.services.CategoryService;
 
+import es.urjc.chamazon.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,8 @@ public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private UserService userService;
 
 
     @GetMapping("/categories")
@@ -84,9 +87,10 @@ public class CategoryController {
     @GetMapping("/categories/products")
     public String getProductsByCategory(@RequestParam Long id, Model model) {
         try{
-            List<ProductDTO> products =  categoryService.getProductsByCategoryId(id);
             model.addAttribute("category", categoryService.getCategory(id));
+            model.addAttribute("categories", categoryService.getCategories());
             model.addAttribute("products", categoryService.getProductsByCategoryId(id));
+            model.addAttribute("users", userService.getAllUsers());
             return "product/products_list";
         } catch (NoSuchElementException e) {
             return "/error";

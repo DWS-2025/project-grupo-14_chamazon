@@ -17,7 +17,7 @@
             <div class="card shadow-sm p-4">
                 <h2 class="mb-3 text-center text-primary">Añadir Comentario: {{product.name}}</h2>
                 <form action="/commentView/add?productId={{product.id}}" method="post">
-
+                    {{#isAdmin}}
                     <div class="mb-3">
                         <label for="userId" class="form-label">Usuario:</label>
                         <select id="userId" name="userId" class="form-select" required>
@@ -27,6 +27,11 @@
                             {{/users}}
                         </select>
                     </div>
+                    {{/isAdmin}}
+
+                    {{^isAdmin}}
+                    <input type="hidden" name="userId" value="{{currentUserId}}">
+                    {{/isAdmin}}
 
                     <div class="mb-3">
                         <label for="commentTxt" class="form-label">Comentario:</label>

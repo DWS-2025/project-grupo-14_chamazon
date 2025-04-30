@@ -4,9 +4,19 @@
 {{>navBar}}
 
 <div class="container my-5">
+    {{#isAdmin}}
     <div class="d-flex justify-content mt-3">
         <a class="btn btn-primary" href="/users" role="button">VOLVER</a>
     </div>
+    {{/isAdmin}}
+
+    {{^isAdmin}}
+    {{#isAuthenticated}}
+    <div class="d-flex justify-content mt-3">
+        <a class="btn btn-primary" href="/" role="button">VOLVER</a>
+    </div>
+    {{/isAuthenticated}}
+    {{/isAdmin}}
 </div>
 <div class="container my-5">
     <h1 class="mb-4 text-center">Historial de carritos</h1>

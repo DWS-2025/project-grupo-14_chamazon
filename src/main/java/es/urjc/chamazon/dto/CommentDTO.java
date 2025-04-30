@@ -60,6 +60,7 @@ public class CommentDTO {
     public void setProduct(ProductDTO product) {
         this.product = product;
     }
+
     public boolean isCanEditOrDelete() {
         return canEditOrDelete;
     }
