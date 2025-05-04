@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.ui.Model;
 
-@ControllerAdvice
+//@ControllerAdvice
 public class GlobalModelAttributes {
 
-    @Autowired
-    UserService userService;
+/*    @Autowired
+    UserService userService;*/
 
-    @ModelAttribute
+/*    @ModelAttribute
     public void addAttributes(Model model) {
         model.addAttribute("userLink",SecurityUtils.isAdmin() ? "/users" : "/user");
         model.addAttribute("isAdmin", SecurityUtils.isAdmin());
@@ -26,7 +26,7 @@ public class GlobalModelAttributes {
         if (username != null) {
             model.addAttribute("idUser", userService.findByUserName(username).id());
         }
-    }
+    }*/
 
     /*private static String getUserLinkByRole() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

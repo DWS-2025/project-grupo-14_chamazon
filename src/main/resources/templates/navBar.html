@@ -51,11 +51,13 @@
         {{^isAuthenticated}}
         <form action="login" method="GET" class="me-2">
           <button class="btn btn-primary" type="submit">Iniciar sesión</button>
+          <input type="hidden" name="_csrf" value="{{token}}"/>
         </form>
         {{/isAuthenticated}}
 
         <form action="/logout" method="POST">
           <button class="btn btn-secondary" type="submit">Cerrar sesión</button>
+          <input type="hidden" name="_csrf" value="{{token}}"/>
         </form>
       </div>
     </div>

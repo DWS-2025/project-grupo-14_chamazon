@@ -1,13 +1,15 @@
 package es.urjc.chamazon.controllers;
 
-import es.urjc.chamazon.dto.UserDTO;
+import es.urjc.chamazon.configurations.SecurityUtils;
 import es.urjc.chamazon.dto.UserDTOExtended;
-import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+import java.security.Principal;
 
 @Controller
 public class WebController {
@@ -17,6 +19,35 @@ public class WebController {
     public WebController(UserService userService) {
         this.userService = userService;
     }
+
+    @ModelAttribute
+    public void addAttributes(Model model, HttpServletRequest request) {
+
+        Principal principal = request.getUserPrincipal();
+
+        if (principal != null) {
+            model.addAttribute("userLink", SecurityUtils.isAdmin() ? "/users" : "/user");
+            model.addAttribute("userName", principal.getName());
+            model.addAttribute("isAuthenticated", true);
+            model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
+            model.addAttribute("idUser", userService.findByUserName(principal.getName()).id());
+        }else{
+            model.addAttribute("isAuthenticated",false);
+        }
+
+    }
+
+
+/*    @ModelAttribute
+    public void addAttributes(Model model) {
+        model.addAttribute("userLink", SecurityUtils.isAdmin() ? "/users" : "/user");
+        model.addAttribute("isAdmin", SecurityUtils.isAdmin());
+        model.addAttribute("isAuthenticated", SecurityUtils.isAuthenticated());
+        String username = SecurityUtils.getCurrentUsername();
+        if (username != null) {
+            model.addAttribute("idUser", userService.findByUserName(username).id());
+        }
+    }*/
 
     @GetMapping("/")
     public String index() {
@@ -31,6 +62,8 @@ public class WebController {
     public String loginerror() {
         return "loginerror";
     }
+
+    //FOR EXAMPLES
     @GetMapping("/private")
     public String privatePage(Model model, HttpServletRequest request) {
         String name = request.getUserPrincipal().getName();

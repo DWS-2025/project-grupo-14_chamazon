@@ -7,7 +7,9 @@ import es.urjc.chamazon.dto.ShoppingCarExtendedDTO;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.services.ShoppingCarService;
 import es.urjc.chamazon.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.server.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +30,16 @@ public class ShoppingCarController {
 
 
     @GetMapping("/history/{idUser}")
-    public String shoppingCarHistory (@PathVariable Long idUser, Model model) {
+    public String shoppingCarHistory (@PathVariable Long idUser, Model model, HttpServletRequest request) {
+
+        //TODO
+/*        if (request.isUserInRole("ADMIN")) {
+
+        }*/
+
+/*        CsrfToken token = (CsrfToken) request.getAttribute("_csrf");
+        model.addAttribute("token", token.getToken());*/
+
         model.addAttribute("userName", userService.getUser(idUser).userName());
         List<ShoppingCarExtendedDTO> listShoppingCarDTO = shoppingCarService.getShoppingCarDTOListByUserId(idUser);
 
