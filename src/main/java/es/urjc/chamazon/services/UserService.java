@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +32,8 @@ public class UserService {
     @Autowired
     private ShoppingCarService shoppingCarService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     public List<UserDTO> getAllUsers() {
@@ -67,6 +70,11 @@ public class UserService {
         }
     }
 
+    public void saveNewUser(UserDTO userDTO) {
+        User user = toUser(userDTO);
+        user.setPassword( passwordEncoder.encode(user.getPassword()));
+        saveUser(user);
+    }
 
     public void save(UserDTO userDTO) {
         User user = toUser(userDTO);
