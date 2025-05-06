@@ -34,6 +34,9 @@ public class CommentService {
     @Autowired
     private CommentMapper commentMapper;
 
+    @Autowired
+    private SanitizationService sanitizationService;
+
     //Method to find all comments converted to DTOs
     public List <CommentDTO> findAll() {
 
@@ -49,7 +52,9 @@ public class CommentService {
 
     //Method to save a comment (it receives a DTO and converts it to a domain object)
     public CommentDTO save(CommentDTO commentDTO) {
-        Comment comment = commentMapper.toDomain(commentDTO);
+        //sanitize comment text
+        CommentDTO sanitizedCommentDTO = sanitizationService.sanitizeCommentDTO(commentDTO);
+        Comment comment = commentMapper.toDomain(sanitizedCommentDTO);
         Comment savedComment = commentRepository.save(comment);
         return commentMapper.toDTO(savedComment);
     }
@@ -97,13 +102,15 @@ public class CommentService {
 
 
     public boolean createComment(String commentTxt, int rating, Long userId, Long productId) {
+        //sanitize comment text by creating
+        String sanitizedCreatedComment = sanitizationService.sanitizeQuill(commentTxt);
         Optional<Product> optionalProduct = productService.findById(productId);
         User user = userService.getUserById(userId);
 
         if (optionalProduct.isPresent() && user != null) {
             Product product = optionalProduct.get();
 
-            Comment comment = new Comment(commentTxt, rating, user, product);
+            Comment comment = new Comment(sanitizedCreatedComment, rating, user, product);
             user.getComments().add(comment);
             commentRepository.save(comment);
             return true;

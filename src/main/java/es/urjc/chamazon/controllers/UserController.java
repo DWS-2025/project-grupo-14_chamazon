@@ -9,7 +9,6 @@ import es.urjc.chamazon.models.Comment;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.CommentService;
 import es.urjc.chamazon.services.UserService;
-import es.urjc.chamazon.services.SanitizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,8 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.security.core.Authentication;
 
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Safelist;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -34,8 +31,6 @@ public class UserController {
     private UserService userService;
     @Autowired
     private CommentService commentService;
-    @Autowired
-    private SanitizationService sanitizationService;
 
 
     @GetMapping("/users")
@@ -93,8 +88,7 @@ public class UserController {
             return "/user/addUser";
         }
 
-        UserDTO sanitizedUserDTO = sanitizationService.sanitizeUserDTO(newUserDTO);
-        userService.save(sanitizedUserDTO);
+        userService.save(newUserDTO);
         return "redirect:/users";
     }
 
@@ -131,8 +125,7 @@ public class UserController {
     public String editUser(@RequestParam Long id, UserDTO userDTO) {
         boolean isAdmin = SecurityUtils.isAdmin();
         try {
-            UserDTO sanitizedUpdatedUserDTO = sanitizationService.sanitizeUserDTO(userDTO);
-            userService.updateUser(sanitizedUpdatedUserDTO.id(), sanitizedUpdatedUserDTO);
+            userService.updateUser(userDTO.id(), userDTO);
             if (isAdmin) {
                 return "redirect:/users";
             }else{

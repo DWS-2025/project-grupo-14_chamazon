@@ -1,44 +1,47 @@
 package es.urjc.chamazon.services;
+
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
 import org.springframework.stereotype.Service;
 
 import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.dto.ProductDTO;
+import es.urjc.chamazon.dto.ProductDTOExtended;
 import es.urjc.chamazon.dto.CommentDTO;
-import es.urjc.chamazon.dto.ShoppingCarDTO;
+import es.urjc.chamazon.models.Product;
 
+import es.urjc.chamazon.dto.ShoppingCarDTO;
+import es.urjc.chamazon.dto.ShoppingCarExtendedDTO;
 
 @Service
 public class SanitizationService {
-    
 
-    //Use jsoup to sanitize inputs forms
+    //---------------------------------PRINCIPAL METHODS FOR SANITIZATION---------------------------------
+
+    // Use jsoup to sanitize inputs forms
     public String sanitizeBasic(String input) {
-        if(input == null) {
+        if (input == null) {
             return null;
         }
 
         return Jsoup.clean(input, Safelist.basic());
     }
 
-
-    //Use JSOUP to sanitize inputs forms with none
-    public String sanitizeNone (String input){
-        if(input == null) {
+    // Use JSOUP to sanitize inputs forms with none
+    public String sanitizeNone(String input) {
+        if (input == null) {
             return null;
         }
         return Jsoup.clean(input, Safelist.none());
     }
 
-    //Jsoup to sanitize custom text using QuillJS
-
+    // Jsoup to sanitize custom text using QuillJS - made for comments
     public String sanitizeQuill(String input) {
-        if(input == null) {
+        if (input == null) {
             return null;
         }
 
-        // Define a custom Safelist for QuillJS
+        // Custom whitelist quilljs
         Safelist quillSafelist = new Safelist()
                 .addTags("p", "br", "strong", "em", "ul", "ol", "li", "a")
                 .addAttributes("a", "href")
@@ -48,9 +51,9 @@ public class SanitizationService {
         return Jsoup.clean(input, quillSafelist);
     }
 
-    //Use jsoup method for imgs
+    // Use jsoup method for imgs
     public String sanitizeImg(String input) {
-        if(input == null) {
+        if (input == null) {
             return null;
         }
 
@@ -64,9 +67,11 @@ public class SanitizationService {
     }
 
 
+    //---------------------------------ENTITIES SANITIZATION---------------------------------
 
+    // Sanitize userdto
     public UserDTO sanitizeUserDTO(UserDTO userDTO) {
-        if(userDTO == null) {
+        if (userDTO == null) {
             return null;
         }
 
@@ -75,24 +80,60 @@ public class SanitizationService {
                 sanitizeNone(userDTO.firstName()),
                 sanitizeNone(userDTO.surname()),
                 sanitizeNone(userDTO.userName()),
-                userDTO.password(), 
+                userDTO.password(),
                 sanitizeNone(userDTO.email()),
                 sanitizeBasic(userDTO.phone()),
-                sanitizeBasic(userDTO.address())
-        );
+                sanitizeBasic(userDTO.address()));
     }
 
-    public ProductDTO sanitizeProductDTO(ProductDTO productDTO) {
+    // Sanitize producdto for addding
+    public ProductDTOExtended sanitizeProductDTO(ProductDTOExtended productDTO) {
         if(productDTO == null) {
             return null;
         }
 
-        return new ProductDTO(
-                productDTO.id(),
-                sanitizeNone(productDTO.name()),
-                productDTO.price(),
-                sanitizeBasic(productDTO.description()),
-                sanitizeImg(productDTO.image())
-        );
+        return new ProductDTOExtended(
+            productDTO.id(),
+            sanitizeNone(productDTO.name()),
+            productDTO.price(),
+            sanitizeBasic(productDTO.description()),
+            productDTO.rating(),
+            sanitizeImg(productDTO.image()),
+            productDTO.commentDTOList(),
+            productDTO.categoryDTOList());
     }
+
+    // Sanitize product for updating
+    public Product sanitizePoduct (Product product) {
+        if(product == null) {
+            return null;
+        }
+
+        Product sanitizedProduct = new Product();
+        sanitizedProduct.setId(product.getId());
+        sanitizedProduct.setName(sanitizeNone(product.getName()));
+        sanitizedProduct.setPrice(product.getPrice());
+        sanitizedProduct.setDescription(sanitizeQuill(product.getDescription()));
+        sanitizedProduct.setRating(product.getRating());
+        sanitizedProduct.setImage(sanitizeImg(product.getImage()));
+            
+        return sanitizedProduct;
+    }
+
+
+    // Sanitize commentdto
+    public CommentDTO sanitizeCommentDTO(CommentDTO commentDTO) {
+        if (commentDTO == null) {
+            return null;
+        }
+
+        return new CommentDTO(
+        commentDTO.getId(),
+        sanitizeQuill(commentDTO.getComment()), 
+        commentDTO.getRating(),
+        commentDTO.getUser(),
+        commentDTO.getProduct(),
+        commentDTO.isCanEditOrDelete());
+    }
+
 }
