@@ -97,6 +97,7 @@
                             <option value="{{id}}">{{userName}}</option>
                             {{/users}}
                         </select>
+                        <input type="hidden" name="_csrf" value="{{token}}"/>
                     </form>
                 </div>
             </div>
@@ -155,6 +156,7 @@
                                     <button type="submit" class="btn btn-outline-secondary btn-sm mb-1">
                                         <i class="fas fa-edit"></i> Editar
                                     </button>
+                                    <input type="hidden" name="_csrf" value="{{token}}"/>
                                 </form>
 
                                 <form action="/products/{{id}}/delete" method="POST">
@@ -162,6 +164,7 @@
                                             onclick="return confirm('¿Estás seguro?')">
                                         <i class="fas fa-trash"></i> Eliminar
                                     </button>
+                                    <input type="hidden" name="_csrf" value="{{token}}"/>
                                 </form>
                                 {{/isAdmin}}
 
@@ -172,6 +175,7 @@
                                     <button type="submit" class="btn btn-success btn-sm w-100">
                                         <i class="fas fa-cart-plus"></i> Añadir al carrito
                                     </button>
+                                    <input type="hidden" name="_csrf" value="{{token}}"/>
                                 </form>
                                 {{/selectedUserId}}
                             </div>
