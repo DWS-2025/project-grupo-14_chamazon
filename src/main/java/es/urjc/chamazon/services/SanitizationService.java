@@ -99,6 +99,9 @@ public class SanitizationService {
             sanitizeBasic(productDTO.description()),
             productDTO.rating(),
             sanitizeImg(productDTO.image()),
+            productDTO.originalFileName(),
+            productDTO.storedFileName(),
+            productDTO.filePath(),
             productDTO.commentDTOList(),
             productDTO.categoryDTOList());
     }
