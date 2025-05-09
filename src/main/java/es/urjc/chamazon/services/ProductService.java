@@ -63,6 +63,9 @@ public class ProductService {
     @Value("${file.upload-dir}")
     private String uploadDir;
     private final Set<String> ALLOWED_EXTENSIONS = Set.of("pdf", "doc", "docx");
+    @Autowired
+    private SanitizationService sanitizationService;
+
 
     public Collection<ProductDTOExtended> getProducts() { // findAllProducts
         return toDTOsExtended(productRepository.findAll());
@@ -134,7 +137,8 @@ public class ProductService {
 
     //for bbdd
     void save(Product product) {
-        productRepository.save(product);
+        Product sanitizedProduct = sanitizationService.sanitizePoduct(product);
+        productRepository.save(sanitizedProduct);
     }
 
 
@@ -152,11 +156,14 @@ public class ProductService {
 
     // for updating product which has been saved before in CONTROLLER
     public ProductDTO update(Product existingProduct, Product newProduct, MultipartFile imageFile) throws IOException, SQLException {
+        //Sanitize new product
+        Product sanitizedNewProduct = sanitizationService.sanitizePoduct(newProduct);
+
         // Update existing  product with new values
-        existingProduct.setName(newProduct.getName());
-        existingProduct.setPrice(newProduct.getPrice());
-        existingProduct.setDescription(newProduct.getDescription());
-        existingProduct.setRating(newProduct.getRating());
+        existingProduct.setName(sanitizedNewProduct.getName());
+        existingProduct.setPrice(sanitizedNewProduct.getPrice());
+        existingProduct.setDescription(sanitizedNewProduct.getDescription());
+        existingProduct.setRating(sanitizedNewProduct.getRating());
 
 
         if (!imageFile.isEmpty()) {
@@ -171,17 +178,20 @@ public class ProductService {
     }
 
     public ProductDTOExtended replaceProduct(long id, ProductDTOExtended newProductDTO) {
+        //sanitize productDTO
+        ProductDTOExtended sanitizedProductReplacedDTO = sanitizationService.sanitizeProductDTO(newProductDTO);
+
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow();
 
 
-        existingProduct.setName(newProductDTO.name());
-        existingProduct.setPrice(newProductDTO.price());
-        existingProduct.setDescription(newProductDTO.description());
-        existingProduct.setRating(newProductDTO.rating());
+        existingProduct.setName(sanitizedProductReplacedDTO.name());
+        existingProduct.setPrice(sanitizedProductReplacedDTO.price());
+        existingProduct.setDescription(sanitizedProductReplacedDTO.description());
+        existingProduct.setRating(sanitizedProductReplacedDTO.rating());
 
         if (newProductDTO.categoryDTOList() != null) {
-            List<CategoryDTO> categories = newProductDTO.categoryDTOList();
+            List<CategoryDTO> categories = sanitizedProductReplacedDTO.categoryDTOList();
             existingProduct.setCategoryList(categoryMapper.toCategories(categories));
         }
 
@@ -198,7 +208,10 @@ public class ProductService {
 
     //for adding new products
     public ProductDTO save(ProductDTOExtended productDTO, MultipartFile imageFile){
-        Product newProduct = toProductFromExtended(productDTO);
+        //sanitize productDTO
+        ProductDTOExtended sanitizedProductDTO = sanitizationService.sanitizeProductDTO(productDTO);
+
+        Product newProduct = toProductFromExtended(sanitizedProductDTO);
 
         this.save(newProduct);
 
@@ -210,7 +223,6 @@ public class ProductService {
                 throw new RuntimeException(e);
             }
         }
-
         this.save(newProduct);
         if (productDTO.categoryDTOList() != null) {
             for (CategoryDTO categoryDTO : productDTO.categoryDTOList()) {

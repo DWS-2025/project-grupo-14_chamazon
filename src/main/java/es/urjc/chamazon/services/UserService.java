@@ -31,7 +31,8 @@ public class UserService {
     @Autowired
     private ShoppingCarService shoppingCarService;
 
-
+    @Autowired
+    private SanitizationService sanitizationService;
 
     public List<UserDTO> getAllUsers() {
         return toDTOs(userRepository.findAll());
@@ -69,7 +70,8 @@ public class UserService {
 
 
     public void save(UserDTO userDTO) {
-        User user = toUser(userDTO);
+        UserDTO sanitizedUserDTO = sanitizationService.sanitizeUserDTO(userDTO);
+        User user = toUser(sanitizedUserDTO);
         saveUser(user);
 
     }
@@ -79,9 +81,11 @@ public class UserService {
     }
 
     public void updateUser(Long id, UserDTO updatedUserDTO) {
+        UserDTO sanitizedUpdatedUserDTO = sanitizationService.sanitizeUserDTO(updatedUserDTO);
+
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
-            User user = toUser(updatedUserDTO);
+            User user = toUser(sanitizedUpdatedUserDTO);
             userOptional.get().setId(id);
             userOptional.get().setUserName(user.getUserName());
             userOptional.get().setPassword(user.getPassword());

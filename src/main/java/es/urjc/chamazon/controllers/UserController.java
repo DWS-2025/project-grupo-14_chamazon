@@ -6,6 +6,7 @@ import es.urjc.chamazon.dto.CommentDTO;
 import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.dto.UserDTOExtended;
 import es.urjc.chamazon.models.Comment;
+import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.CommentService;
 import es.urjc.chamazon.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.security.core.Authentication;
+
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -69,6 +71,7 @@ public class UserController {
     @PostMapping("/users/add")
     public String addUser(UserDTO newUserDTO, Model model) {
         model.addAttribute("user", newUserDTO);
+
         if (newUserDTO.userName() == null || newUserDTO.userName().trim().isEmpty()) {
             model.addAttribute("error", "El nombre es obligatorio.");
             return "/user/addUser";
