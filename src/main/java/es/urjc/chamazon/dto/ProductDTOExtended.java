@@ -9,6 +9,9 @@ public record ProductDTOExtended(
         String description,
         Float rating,
         String image,
+        String originalFileName,  // Nuevo campo
+        String storedFileName,    // Nuevo campo
+        String filePath,
         List<CommentDTO> commentDTOList,
         List<CategoryDTO> categoryDTOList
 ){
