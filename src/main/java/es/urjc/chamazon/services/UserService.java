@@ -8,11 +8,6 @@ import es.urjc.chamazon.models.Comment;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,6 +34,8 @@ public class UserService {
     }
 
     public UserDTO getUser(Long Id) {
+        System.out.println("User id: " + Id);
+        System.out.println("Surname: " + userRepository.findById(Id).get().getSurName());
         return toDTO(userRepository.findById(Id).orElseThrow());
     }
 
@@ -48,6 +45,7 @@ public class UserService {
     }
 
     public UserDTOExtended findByUserName(String name) {
+        System.out.println("User name: " + userRepository.findByUserName(name).orElseThrow().getSurName());
         return toDTOExtended(userRepository.findByUserName(name).orElseThrow());
     }
 

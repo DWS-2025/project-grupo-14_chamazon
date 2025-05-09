@@ -78,7 +78,7 @@ public class SanitizationService {
         return new UserDTO(
                 userDTO.id(),
                 sanitizeNone(userDTO.firstName()),
-                sanitizeNone(userDTO.surname()),
+                sanitizeNone(userDTO.surName()),
                 sanitizeNone(userDTO.userName()),
                 userDTO.password(),
                 sanitizeNone(userDTO.email()),
