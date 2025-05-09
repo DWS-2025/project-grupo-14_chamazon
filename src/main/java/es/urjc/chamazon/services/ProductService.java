@@ -6,20 +6,34 @@ import es.urjc.chamazon.models.Comment;
 import es.urjc.chamazon.models.Product;
 
 import es.urjc.chamazon.models.ShoppingCar;
+import org.apache.tomcat.util.http.fileupload.FileUpload;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.text.Normalizer;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,7 +60,9 @@ public class ProductService {
     @Autowired
     private CategoryMapper categoryMapper;
 
-
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+    private final Set<String> ALLOWED_EXTENSIONS = Set.of("pdf", "doc", "docx");
 
     public Collection<ProductDTOExtended> getProducts() { // findAllProducts
         return toDTOsExtended(productRepository.findAll());
@@ -194,8 +210,8 @@ public class ProductService {
                 throw new RuntimeException(e);
             }
         }
+
         this.save(newProduct);
-        System.out.println("Product description " + newProduct.getDescription());
         if (productDTO.categoryDTOList() != null) {
             for (CategoryDTO categoryDTO : productDTO.categoryDTOList()) {
                 categoryService.addProductToCategory(categoryDTO.id(), newProduct.getId());
@@ -280,5 +296,63 @@ public class ProductService {
         return productRepository.findByFilters(categoryId, minPrice, maxPrice, rating);
     }
 
+    public void attachFileToProduct(Long productId, MultipartFile file) throws IOException {
+        System.out.println("Intentando guardar archivo para producto ID: " + productId);
+        System.out.println("Nombre original del archivo: " + file.getOriginalFilename());
+        System.out.println("Tamaño del archivo: " + file.getSize() + " bytes");
+
+
+        // Validar extensión
+        String fileExtension = StringUtils.getFilenameExtension(file.getOriginalFilename());
+        if (fileExtension == null || !ALLOWED_EXTENSIONS.contains(fileExtension.toLowerCase())) {
+            throw new IllegalArgumentException("Solo se permiten archivos PDF, DOC, DOCX o TXT");
+        }
+
+        // Crear directorio si no existe
+        Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        // Generar nombre seguro manteniendo extensión original
+        String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
+        String safeFilename = generateSafeFilename(originalFilename);
+
+        // Guardar archivo en disco
+        Path targetLocation = uploadPath.resolve(safeFilename);
+        Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+        // Actualizar producto
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        product.setOriginalFileName(originalFilename);
+        product.setStoredFileName(safeFilename);
+        product.setFilePath("/uploads/" + safeFilename);
+    }
+
+    private String generateSafeFilename(String originalFilename) {
+        String baseName = UUID.randomUUID().toString();
+        String extension = StringUtils.getFilenameExtension(originalFilename);
+        return extension != null ? baseName + "." + extension : baseName;
+    }
+
+    public Resource loadFileAsResource(Long productId) throws IOException {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        if (product.getStoredFileName() == null) {
+            throw new FileNotFoundException("Este producto no tiene archivo adjunto");
+        }
+
+        Path filePath = Paths.get(uploadDir).resolve(product.getStoredFileName()).normalize();
+        Resource resource = new UrlResource(filePath.toUri());
+
+        if (!resource.exists()) {
+            throw new FileNotFoundException("Archivo no encontrado: " + product.getOriginalFileName());
+        }
+
+        return resource;
+    }
 
 }
