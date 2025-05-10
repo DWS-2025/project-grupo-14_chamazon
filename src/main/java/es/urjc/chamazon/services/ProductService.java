@@ -135,11 +135,7 @@ public class ProductService {
     }
 
 
-    //for bbdd
-    void save(Product product) {
-        Product sanitizedProduct = sanitizationService.sanitizePoduct(product);
-        productRepository.save(sanitizedProduct);
-    }
+
 
 
     public ProductDTOExtended createProduct (ProductDTOExtended productDTO ) {
@@ -206,15 +202,19 @@ public class ProductService {
         return toDTO(product);
     }
 
+    //for bbdd
+    Product save(Product product) {
+        Product sanitizedProduct = sanitizationService.sanitizePoduct(product);
+        productRepository.save(sanitizedProduct);
+        return sanitizedProduct;
+    }
     //for adding new products
     public ProductDTO save(ProductDTOExtended productDTO, MultipartFile imageFile){
         //sanitize productDTO
         ProductDTOExtended sanitizedProductDTO = sanitizationService.sanitizeProductDTO(productDTO);
-
         Product newProduct = toProductFromExtended(sanitizedProductDTO);
-
+        newProduct = sanitizationService.sanitizePoduct(newProduct);
         this.save(newProduct);
-
         if (!imageFile.isEmpty()) {
             try {
                 newProduct.setImageFile(BlobProxy.generateProxy(imageFile.getInputStream(), imageFile.getSize()));
