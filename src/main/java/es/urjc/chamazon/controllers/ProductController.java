@@ -142,7 +142,6 @@ public class ProductController {
                              @RequestParam("imageFileParameter") MultipartFile imageFileParameter, @RequestParam(value = "fileParameter", required = false) MultipartFile file) throws IOException {
         // Save the product with the img file to get the id first before saving to
         // category list and then save the product to the category list.
-
         ProductDTO savedProduct = productService.save(productDTO, imageFileParameter);
 
         // Get the id of the product to add it to the category list

@@ -13,5 +13,6 @@ public interface UserMapper {
     List<UserDTO> toDTOs(List<User> users);
     List<User> toUsers(List<UserDTO> usersDTOs);
     @Mapping(target = "commentDTOList", source = "comments")
+    @Mapping(target = "surName", source = "surName")
     UserDTOExtended toDTOExtended(User user);
 }

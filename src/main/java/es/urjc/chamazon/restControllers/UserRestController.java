@@ -4,6 +4,7 @@ package es.urjc.chamazon.restControllers;
 import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.services.CategoryService;
 import es.urjc.chamazon.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,8 +51,8 @@ public class UserRestController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<UserDTO> deleteUser(@PathVariable long id){
-        userService.deleteUser(id);
+    public ResponseEntity<UserDTO> deleteUser(@PathVariable long id, HttpServletRequest request){
+        userService.deleteUser(id, request);
         return ResponseEntity.ok(userService.getUser(id));
     }
 }
