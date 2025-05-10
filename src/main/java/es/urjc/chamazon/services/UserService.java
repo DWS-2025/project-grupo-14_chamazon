@@ -51,8 +51,9 @@ public class UserService {
         return userOpt.orElse(null);
     }
 
-    public UserDTOExtended findByUserName(String name) {
-        return toDTOExtended(userRepository.findByUserName(name).orElseThrow());
+    public Optional<UserDTOExtended> findByUserName(String username) {
+        return userRepository.findByUserName(username)
+                .map(userMapper::toDTOExtended);
     }
 
     public void deleteUser(Long id) {

@@ -39,9 +39,11 @@
 
         {{#isAuthenticated}}
         {{^isAdmin}}
+        {{#idUser}}
         <li class="nav-item">
           <a class="nav-link" href="/shoppingCar/history/{{idUser}}">Cesta</a>
         </li>
+        {{/idUser}}
         {{/isAdmin}}
         {{/isAuthenticated}}
       </ul>

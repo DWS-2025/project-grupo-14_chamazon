@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RepositoryUserDetailsService implements UserDetailsService {
@@ -19,20 +20,23 @@ public class RepositoryUserDetailsService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username)
-            throws UsernameNotFoundException {
-
+    public UserDetails loadUserByUsername(String username) {
 
         es.urjc.chamazon.models.User user = userRepository.findByUserName(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() ->
+                     new UsernameNotFoundException("User not found")
+                );
 
-        List<GrantedAuthority> roles = new ArrayList<>();
-        for (String role : user.getType()) {
-            roles.add(new SimpleGrantedAuthority("ROLE_" + role));
-        }
+        List<GrantedAuthority> roles = user.getType().stream()
+                .map(role -> new SimpleGrantedAuthority(role))
+                .collect(Collectors.toList());
 
-        return new org.springframework.security.core.userdetails.User(user.getUserName(),
-                user.getPassword(), roles);
+        return new User(
+                user.getUserName(),
+                user.getPassword(),
+                true, true, true, true,
+                roles
+        );
     }
 }
 

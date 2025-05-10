@@ -111,10 +111,12 @@ public class ChamazonBDD{
         }
 
 
+        String encodedPassword = passwordEncoder.encode("123");
+        System.out.println("Contraseña codificada para PepeAdmin: " + encodedPassword);
 
-        userService.saveUser(new User( "PepeAdmin", "Pepe", "Montero", passwordEncoder.encode("123") , "pepe@mail.com", "098", "q", "ADMIN"));
-        userService.saveUser(new User( "User2", "Maria", "Carrera ", passwordEncoder.encode("321"),  "maria@mail.com", "100", "p", "USER"));
-        userService.saveUser(new User( "User3", "Fernando", "Alonso", passwordEncoder.encode("333"), "fernando@mail.com", "200", "r", "USER"));
+        userService.saveUser(new User( "PepeAdmin", "Pepe", "Montero", passwordEncoder.encode("123") , "pepe@mail.com", "098", "q", "ROLE_ADMIN"));
+        userService.saveUser(new User( "User2", "Maria", "Carrera ", passwordEncoder.encode("321"),  "maria@mail.com", "100", "p", "ROLE_USER"));
+        userService.saveUser(new User( "User3", "Fernando", "Alonso", passwordEncoder.encode("333"), "fernando@mail.com", "200", "r", "ROLE_USER"));
 
         //shoppingCarService.addProductToUserShoppingCar(1L,1L);
 

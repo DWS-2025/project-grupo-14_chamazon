@@ -75,7 +75,7 @@ public class UserController {
         try{
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String username = auth.getName();
-            UserDTOExtended userDTOExtended = userService.findByUserName(username);
+            UserDTOExtended userDTOExtended = userService.findByUserName(username).get();
             model.addAttribute("user", userDTOExtended);
             return "/user/userIndividual";
         }catch (NoSuchElementException e){

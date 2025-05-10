@@ -9,7 +9,7 @@ import java.util.Objects;
 
 
 
-@SessionScope
+
 @Entity(name = "USR")
 public class User {
     @Id
