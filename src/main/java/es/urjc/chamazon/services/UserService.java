@@ -76,6 +76,10 @@ public class UserService {
 
     }
     void saveUser(User user) {
+        // When a user is created, it is assigned the role of USER by default
+        if (user.getType() == null || user.getType().isEmpty()) {
+            user.setType(List.of("USER"));
+        }
         userRepository.save(user);
         shoppingCarService.assignSCToUser(user);
     }
