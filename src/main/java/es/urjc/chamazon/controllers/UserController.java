@@ -74,12 +74,12 @@ public class UserController {
         model.addAttribute("user", newUserDTO);
 
         if (newUserDTO.firstName() == null || newUserDTO.firstName().trim().isEmpty()) {
-            model.addAttribute("error", "El usuario es obligatorio.");
+            model.addAttribute("error", "El nombre es obligatorio.");
             return "/user/addUser";
         }
 
         if (newUserDTO.surName() == null || newUserDTO.surName().trim().isEmpty()) {
-            model.addAttribute("error", "El usuario es obligatorio.");
+            model.addAttribute("error", "El apellido es obligatorio.");
             return "/user/addUser";
         }
 
@@ -104,24 +104,30 @@ public class UserController {
     }
 
     @GetMapping("user/delete")
-    public String deleteUser(@RequestParam long id, Model model) {
-        userService.deleteUser(id);
+    public String deleteUser(@RequestParam long id, HttpServletRequest request) {
+        boolean isAdmin = SecurityUtils.isAdmin();
+        userService.deleteUser(id, request);
         commentService.deleteCommentsWithoutUser();
-        return "redirect:/users";
+        if (isAdmin) {
+            return "redirect:/users";
+        }else{
+            return "redirect:/";
+        }
+
     }
 
-    @PostMapping("user/delete")
-    public String deleteUser(@RequestParam long id) {
-        userService.deleteUser(id);
+
+    /*@PostMapping("user/delete")
+    public String deleteUser(@RequestParam long id, HttpServletRequest request) {
+        userService.deleteUser(id, request);
         commentService.deleteCommentsWithoutUser();
-        return "redirect:/users";
-    }
+        return "redirect:/";
+    }*/
 
     @GetMapping("users/edit")
     public String editUser(@RequestParam Long id, Model model) {
         try{
             UserDTO userDTO = userService.getUser(id);
-            System.out.println(userDTO.surName());
             model.addAttribute("user", userDTO);
             return "/user/editUser";
         }catch (NoSuchElementException e){

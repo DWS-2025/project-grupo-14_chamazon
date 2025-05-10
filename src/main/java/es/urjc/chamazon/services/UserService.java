@@ -1,13 +1,21 @@
 
 package es.urjc.chamazon.services;
 
+import es.urjc.chamazon.configurations.SecurityConfiguration;
+import es.urjc.chamazon.configurations.SecurityUtils;
 import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.dto.UserDTOExtended;
 import es.urjc.chamazon.dto.UserMapper;
 import es.urjc.chamazon.models.Comment;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.repositories.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,7 +23,8 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepository;
@@ -29,13 +38,15 @@ public class UserService {
     @Autowired
     private SanitizationService sanitizationService;
 
+    @Autowired
+    private RepositoryUserDetailsService userDetailService;
+
+
     public List<UserDTO> getAllUsers() {
         return toDTOs(userRepository.findAll());
     }
 
     public UserDTO getUser(Long Id) {
-        System.out.println("User id: " + Id);
-        System.out.println("Surname: " + userRepository.findById(Id).get().getSurName());
         return toDTO(userRepository.findById(Id).orElseThrow());
     }
 
@@ -45,11 +56,10 @@ public class UserService {
     }
 
     public UserDTOExtended findByUserName(String name) {
-        System.out.println("User name: " + userRepository.findByUserName(name).orElseThrow().getSurName());
         return toDTOExtended(userRepository.findByUserName(name).orElseThrow());
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(Long id, HttpServletRequest request) {
 
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
@@ -64,6 +74,8 @@ public class UserService {
 
             userRepository.delete(user);
         }
+        SecurityUtils.logout(request);
+
     }
 
 
@@ -80,17 +92,44 @@ public class UserService {
 
     public void updateUser(Long id, UserDTO updatedUserDTO) {
         UserDTO sanitizedUpdatedUserDTO = sanitizationService.sanitizeUserDTO(updatedUserDTO);
-
         Optional<User> userOptional = userRepository.findById(id);
+
         if (userOptional.isPresent()) {
             User user = toUser(sanitizedUpdatedUserDTO);
-            userOptional.get().setId(id);
-            userOptional.get().setUserName(user.getUserName());
-            userOptional.get().setPassword(user.getPassword());
-            userOptional.get().setEmail(user.getEmail());
-            userOptional.get().setPhone(user.getPhone());
-            userOptional.get().setAddress(user.getAddress());
-            userRepository.save(userOptional.get());
+
+            User existingUser = userOptional.get();
+            String currentUsername = SecurityUtils.getCurrentUsername();
+            boolean isSelfEdit = currentUsername.equals(existingUser.getUserName());
+            String newUsername = sanitizedUpdatedUserDTO.userName();
+
+            if (!existingUser.getUserName().equals(newUsername)) {
+                if (userRepository.findByUserName(newUsername).isPresent()) {
+                    throw new IllegalArgumentException("El nombre de usuario ya está en uso");
+                }
+                existingUser.setUserName(newUsername);
+            }
+
+            existingUser.setId(id);
+            existingUser.setFirstName(user.getFirstName());
+            existingUser.setSurName(user.getSurName());
+            existingUser.setEmail(user.getEmail());
+            existingUser.setPhone(user.getPhone());
+            existingUser.setAddress(user.getAddress());
+            String newPasswrod = updatedUserDTO.password();
+            if (newPasswrod != null && !newPasswrod.isEmpty()) {
+                String encodedPassword = passwordEncoder.encode(newPasswrod);
+                existingUser.setPassword(encodedPassword);
+            }
+            userRepository.save(existingUser);
+            if (isSelfEdit && !currentUsername.equals(newUsername)) {
+                UserDetails updatedUserDetails = userDetailService.loadUserByUsername(newUsername);
+                Authentication newAuth = new UsernamePasswordAuthenticationToken(
+                        updatedUserDetails,
+                        updatedUserDetails.getPassword(),
+                        updatedUserDetails.getAuthorities()
+                );
+                SecurityContextHolder.getContext().setAuthentication(newAuth);
+            }
         }
     }
 
