@@ -10,7 +10,10 @@ public record ProductDTO(
         String name,
         Float price,
         String description,
-        String image
+        String image,
+        String originalFileName,  // Nuevo campo
+        String storedFileName,    // Nuevo campo
+        String filePath
 ){
 }
     

@@ -6,8 +6,10 @@ import es.urjc.chamazon.dto.CommentDTO;
 import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.dto.UserDTOExtended;
 import es.urjc.chamazon.models.Comment;
+import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.CommentService;
 import es.urjc.chamazon.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.security.core.Authentication;
+
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -42,7 +45,7 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public String user(Model model) {
+    public String user(Model model, HttpServletRequest request) {
         try{
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String username = auth.getName();
@@ -69,8 +72,19 @@ public class UserController {
     @PostMapping("/users/add")
     public String addUser(UserDTO newUserDTO, Model model) {
         model.addAttribute("user", newUserDTO);
-        if (newUserDTO.userName() == null || newUserDTO.userName().trim().isEmpty()) {
+
+        if (newUserDTO.firstName() == null || newUserDTO.firstName().trim().isEmpty()) {
             model.addAttribute("error", "El nombre es obligatorio.");
+            return "/user/addUser";
+        }
+
+        if (newUserDTO.surName() == null || newUserDTO.surName().trim().isEmpty()) {
+            model.addAttribute("error", "El apellido es obligatorio.");
+            return "/user/addUser";
+        }
+
+        if (newUserDTO.userName() == null || newUserDTO.userName().trim().isEmpty()) {
+            model.addAttribute("error", "El usuario es obligatorio.");
             return "/user/addUser";
         }
 
@@ -90,22 +104,25 @@ public class UserController {
     }
 
     @GetMapping("user/delete")
-    public String deleteUser(@RequestParam long id, Model model) {
-        userService.deleteUser(id);
-        System.out.println("User deleted: " + id);
+    public String deleteUser(@RequestParam long id, HttpServletRequest request) {
+        boolean isAdmin = SecurityUtils.isAdmin();
+        userService.deleteUser(id, request);
         commentService.deleteCommentsWithoutUser();
-        System.out.println("Comment deleted: " + id);
-        return "redirect:/users";
+        if (isAdmin) {
+            return "redirect:/users";
+        }else{
+            return "redirect:/";
+        }
+
     }
 
-    @PostMapping("user/delete")
-    public String deleteUser(@RequestParam long id) {
-        userService.deleteUser(id);
-        System.out.println("User deleted: " + id);
+
+    /*@PostMapping("user/delete")
+    public String deleteUser(@RequestParam long id, HttpServletRequest request) {
+        userService.deleteUser(id, request);
         commentService.deleteCommentsWithoutUser();
-        System.out.println("Comment deleted: " + id);
-        return "redirect:/users";
-    }
+        return "redirect:/";
+    }*/
 
     @GetMapping("users/edit")
     public String editUser(@RequestParam Long id, Model model) {

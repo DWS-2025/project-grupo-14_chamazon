@@ -10,8 +10,21 @@
 {{>navBar}}
 
 <div class="container my-5">
-  <div class="d-flex justify-content mt-3">
-    <a class="btn btn-primary" href="/commentView/commentList" role="button">VOLVER</a>
+
+  <div class="container my-5">
+    {{#isAdmin}}
+    <div class="d-flex justify-content mt-3">
+      <a class="btn btn-primary" href="/commentView/commentList" role="button">VOLVER</a>
+    </div>
+    {{/isAdmin}}
+
+    {{^isAdmin}}
+    {{#isAuthenticated}}
+    <div class="d-flex justify-content mt-3">
+      <a class="btn btn-primary" href="/products" role="button">VOLVER</a>
+    </div>
+    {{/isAuthenticated}}
+    {{/isAdmin}}
   </div>
 
   <h1 class="mb-4 text-center">Editar Comentario</h1>

@@ -8,8 +8,21 @@
 {{>navBar}}
 
 <div class="container my-5">
-    <div class="d-flex justify-content mt-3">
-        <a class="btn btn-primary ms-3" href="/commentView/commentList" role="button">Ver Comentarios</a>
+
+    <div class="container my-5">
+        {{#isAdmin}}
+        <div class="d-flex justify-content mt-3">
+            <a class="btn btn-primary ms-3" href="/commentView/commentList" role="button">Ver Comentarios</a>
+        </div>
+        {{/isAdmin}}
+
+        {{^isAdmin}}
+        {{#isAuthenticated}}
+        <div class="d-flex justify-content mt-3">
+            <a class="btn btn-primary" href="/user" role="button">Ver comentarios</a>
+        </div>
+        {{/isAuthenticated}}
+        {{/isAdmin}}
     </div>
 
     <div class="row justify-content-center">

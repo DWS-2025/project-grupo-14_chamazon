@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,8 +20,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -32,6 +38,9 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     @Autowired
     private CategoryService categoryService;
@@ -64,6 +73,22 @@ public class ProductController {
         ProductDTOExtended productDTO = productService.getProduct(id);
         List<CategoryDTO> categories = productDTO.categoryDTOList();
 
+        // Verificación mejorada del archivo
+        boolean hasFile = false;
+        String originalFilename = null;
+
+        try {
+            originalFilename = fileStorageService.getOriginalFilename(id);
+            Path filePath = Paths.get(fileStorageService.getFileStorageLocation().toString(),
+                    id + "_" + originalFilename);
+            if (Files.exists(filePath)) {
+                hasFile = true;
+                model.addAttribute("fileName", originalFilename);
+            }
+        } catch (Exception e) {
+            // No hacer nada, hasFile sigue siendo false
+        }
+
         boolean isAuthenticated = SecurityUtils.isAuthenticated();
         boolean isAdmin = SecurityUtils.isAdmin();
         String currentUsername = SecurityUtils.getCurrentUsername();
@@ -86,6 +111,7 @@ public class ProductController {
         model.addAttribute("product", productDTO);
         model.addAttribute("categories", categories);
         model.addAttribute("comments", commentDTOs);
+        model.addAttribute("hasFile", hasFile);
         return "product/product_detail";
     }
 
@@ -113,14 +139,18 @@ public class ProductController {
     @PostMapping("/products/add")
     public String addProduct(Model model, @ModelAttribute ProductDTOExtended productDTO,
                              @RequestParam(value = "categoryId", required = false) List<Long> categoryId,
-                             @RequestParam("imageFileParameter") MultipartFile imageFileParameter) throws IOException {
+                             @RequestParam("imageFileParameter") MultipartFile imageFileParameter, @RequestParam(value = "fileParameter", required = false) MultipartFile file) throws IOException {
         // Save the product with the img file to get the id first before saving to
         // category list and then save the product to the category list.
-
         ProductDTO savedProduct = productService.save(productDTO, imageFileParameter);
 
         // Get the id of the product to add it to the category list
         Long productId = savedProduct.id();
+
+        if (file != null && !file.isEmpty()) {
+            fileStorageService.storeFile(file, productId);
+        }
+
         if (categoryId == null || categoryId.isEmpty()){
             // If no categories are selected, redirect to the product list
             return "redirect:/products";
@@ -243,6 +273,33 @@ public class ProductController {
         model.addAttribute("selectedUserId", userId);
 
         return "product/products_list";
+    }
+
+    @PostMapping("/products/{id}/attach-file")
+    public String attachFile(@PathVariable Long id,
+                             @RequestParam("file") MultipartFile file,
+                             RedirectAttributes redirectAttributes) {
+        try {
+            String fileName = fileStorageService.storeFile(file, id);
+            redirectAttributes.addFlashAttribute("message",
+                    "Archivo subido correctamente: " + fileName.substring(fileName.indexOf('_') + 1));
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Error al subir archivo: " + e.getMessage());
+        }
+        return "redirect:/products/" + id;
+    }
+
+    @GetMapping("/products/{id}/download-file")
+    public ResponseEntity<Resource> downloadFile(@PathVariable Long id) throws IOException {
+        Resource resource = (Resource) fileStorageService.loadFileAsResource(id);
+        String originalFilename = fileStorageService.getOriginalFilename(id);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + originalFilename + "\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
     }
 
 }

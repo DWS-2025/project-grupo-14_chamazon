@@ -41,6 +41,13 @@ public class Product {
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "productList")
     private List<ShoppingCar> shoppingCarList;
 
+    private String originalFileName;
+
+    private String storedFileName;
+
+    private String filePath;
+
+
     public Product() { }
 
     public Product(String name, Float price, String description, Blob imageFile, Float rating) {
@@ -144,6 +151,26 @@ public class Product {
     }
     public List<Comment> getCommentList() {
         return commentList;
+    }
+
+    public void setOriginalFileName(String pdfFileName) {
+        this.originalFileName = pdfFileName;
+    }
+    public String getOriginalFileName() {
+        return originalFileName;
+    }
+
+    public void setStoredFileName(String storedFileName) {
+        this.storedFileName = storedFileName;
+    }
+    public String getStoredFileName() {
+        return storedFileName;
+    }
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+    public String getFilePath() {
+        return filePath;
     }
 
     @Override
