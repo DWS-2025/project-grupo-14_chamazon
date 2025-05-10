@@ -54,9 +54,18 @@
         </form>
         {{/isAuthenticated}}
 
+        {{^isAuthenticated}}
+        <form action="login" method="GET" class="me-2">
+          <button class="btn btn-info" type="submit">Registrarse</button>
+        </form>
+        {{/isAuthenticated}}
+
+        {{#isAuthenticated}}
         <form action="/logout" method="POST">
           <button class="btn btn-secondary" type="submit">Cerrar sesión</button>
         </form>
+        {{/isAuthenticated}}
+
       </div>
     </div>
   </div>

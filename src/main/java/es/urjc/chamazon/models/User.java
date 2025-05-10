@@ -5,8 +5,6 @@ import org.springframework.web.context.annotation.SessionScope;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
 
 
 @SessionScope
@@ -21,7 +19,7 @@ public class User {
 
     private String userName;
     private String firstName;
-    private String surname;
+    private String surName;
     private String password;
     private String email;
     private String phone;
@@ -42,11 +40,11 @@ public class User {
 
     }
 
-    public User(String userName, String firstName, String surname, String password, String email, String phone, String address, String... type) {
+    public User(String userName, String firstName, String surName, String password, String email, String phone, String address, String... type) {
         this.type = List.of(type);
         this.userName = userName;
         this.firstName = firstName;
-        this.surname = surname;
+        this.surName = surName;
         this.password = password;
         this.email = email;
         this.address = address;
@@ -94,12 +92,12 @@ public class User {
         this.firstName = firstName;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getSurName() {
+        return surName;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setSurName(String surName) {
+        this.surName = surName;
     }
 
     public String getPassword() {

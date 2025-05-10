@@ -7,7 +7,7 @@ import java.util.List;
 public record UserDTOExtended (
         Long id,
         String firstName,
-        String surname,
+        String surName,
         String userName,
         String password,
         String email,
