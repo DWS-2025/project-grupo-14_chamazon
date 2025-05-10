@@ -88,8 +88,8 @@ public class ChamazonBDD{
         backpack.getCategoryList().add(travel);
 
 
-        //Producto en muchas categorias:
-        // Opcional: Producto en múltiples categorías
+        // Product in many categories:
+        // Optional: Product in multiple categories 
         Product smartwatch = new Product("Smart Watch", 199.99F,
                 "Fitness tracker with notifications", 4.0F);
         smartwatch.getCategoryList().add(clothing);
@@ -114,6 +114,7 @@ public class ChamazonBDD{
 
         userService.saveUser(new User( "PepeAdmin", "Pepe", "Montero", passwordEncoder.encode("123") , "pepe@mail.com", "098", "q", "ADMIN"));
         userService.saveUser(new User( "User2", "Maria", "Carrera ", passwordEncoder.encode("321"),  "maria@mail.com", "100", "p", "USER"));
+        userService.saveUser(new User( "User3", "Fernando", "Alonso", passwordEncoder.encode("333"), "fernando@mail.com", "200", "r", "USER"));
 
         //shoppingCarService.addProductToUserShoppingCar(1L,1L);
 
@@ -126,6 +127,7 @@ public class ChamazonBDD{
 
         User user1 = userService.getUserById(1L);
         User user2 = userService.getUserById(2L);
+        User user3 = userService.getUserById(3L);
 
         Product product1 = productService.findById(1L).orElse(null);
         Product product2 = productService.findById(2L).orElse(null);
@@ -133,15 +135,17 @@ public class ChamazonBDD{
 
         if (user1 != null && user2 != null && product1 != null && product2 != null && product3 != null) {
 
-            CommentDTO c1 = commentMapper.toDTO(new Comment("Me encanta este producto, ¡lo uso cada dia!", 5, user1, product1)); //Es PepeAdmin
-            CommentDTO c2 = commentMapper.toDTO(new Comment("Podria ser mejor, pero mola", 3, user2, product2)); //Es User2
-            CommentDTO c3 = commentMapper.toDTO(new Comment("Excelente relacion calidad-precio", 4, user1, product3)); //Es PepeAdmin
+            CommentDTO c1 = commentMapper.toDTO(new Comment("Me encanta este producto, ¡lo uso cada dia!", 5, user1, product1)); //Is PepeAdmin
+            CommentDTO c2 = commentMapper.toDTO(new Comment("Podria ser mejor, pero mola", 3, user2, product2)); //Is User2
+            CommentDTO c3 = commentMapper.toDTO(new Comment("Excelente relacion calidad-precio", 4, user1, product3)); //Is PepeAdmin
+            CommentDTO c4 = commentMapper.toDTO(new Comment("No me gusta nada, es muy lento", 1, user3, product1)); //Is User3
 
             commentService.save(c1);
             commentService.save(c2);
             commentService.save(c3);
+            commentService.save(c4);
 
-            // Extra comments to prove the functionality of pagination of Laptop Premium product (now we have 10 comments more)
+            // Extra comments to prove the functionality of pagination of Laptop Premium product (now we have 11 comments more)
             commentService.save(commentMapper.toDTO(new Comment("Muy recomendable, va como un tiro", 5, user2, product1)));
             commentService.save(commentMapper.toDTO(new Comment("Un poco caro, pero vale la pena", 4, user1, product1)));
             commentService.save(commentMapper.toDTO(new Comment("No me conevence del todo, esperaba algo mejor", 2, user2, product1)));
@@ -152,6 +156,7 @@ public class ChamazonBDD{
             commentService.save(commentMapper.toDTO(new Comment("Perfecto para estudiar y jugar", 5, user1, product1)));
             commentService.save(commentMapper.toDTO(new Comment("Igual de malo que el Atletico de Madrid, aparenta mucho pero es una mierda", 1, user1, product1)));
             commentService.save(commentMapper.toDTO(new Comment("Como el Real Madrid, nunca muere, aguanta hasta el final", 5, user2, product1)));
+            commentService.save(commentMapper.toDTO(new Comment("El Aston Martin es muy lento, pero me pagan millones, ¡lo uso cada dia!", 5, user3, product1)));
 
 
 

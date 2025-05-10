@@ -27,11 +27,39 @@ public class SanitizationService {
         return Jsoup.clean(input, Safelist.basic());
     }
 
+    //Custom patterns
+    public String preventSQLInjection(String input) {
+        if (input == null) {
+            return null;
+        }
+        
+        String[] sqlPatterns = {
+            "(?i).*\\b(SELECT|INSERT|UPDATE|DELETE|DROP|ALTER)\\b.*",
+            "(?i).*\\b(UNION|JOIN)\\b.*",
+            "(?i).*\\b(EXEC|EXECUTE)\\b.*",
+            "(?i).*'\\s*--.*",
+            "(?i).*['\\\"]\\s*OR\\s+['\\\"\\d].*",
+            "(?i).*\\bXP_\\w+\\b.*"
+        };
+        
+        for (String pattern : sqlPatterns) {
+            if (input.matches(pattern)) {
+                throw new IllegalArgumentException("Potential SQL injection detected");
+            }
+        }
+        
+        return input;
+    }
+
+
     // Use JSOUP to sanitize inputs forms with none
     public String sanitizeNone(String input) {
         if (input == null) {
             return null;
         }
+
+        //using the customized sql and then sanitise with jsoup
+        input = preventSQLInjection(input);
         return Jsoup.clean(input, Safelist.none());
     }
 
