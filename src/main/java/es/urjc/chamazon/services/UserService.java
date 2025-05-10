@@ -14,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +34,9 @@ public class UserService {
 
     @Autowired
     private SanitizationService sanitizationService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<UserDTO> getAllUsers() {
         return toDTOs(userRepository.findAll());
@@ -76,6 +80,8 @@ public class UserService {
 
     }
     void saveUser(User user) {
+        // To encode the password before saving the user
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         // When a user is created, it is assigned the role of USER by default
         if (user.getType() == null || user.getType().isEmpty()) {
             user.setType(List.of("USER"));
