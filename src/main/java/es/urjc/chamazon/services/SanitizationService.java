@@ -106,7 +106,7 @@ public class SanitizationService {
         return new UserDTO(
                 userDTO.id(),
                 sanitizeNone(userDTO.firstName()),
-                sanitizeNone(userDTO.surname()),
+                sanitizeNone(userDTO.surName()),
                 sanitizeNone(userDTO.userName()),
                 userDTO.password(),
                 sanitizeNone(userDTO.email()),
@@ -119,9 +119,8 @@ public class SanitizationService {
         if(productDTO == null) {
             return null;
         }
-
         return new ProductDTOExtended(
-            productDTO.id(),
+                null,
             sanitizeNone(productDTO.name()),
             productDTO.price(),
             sanitizeBasic(productDTO.description()),
@@ -139,16 +138,14 @@ public class SanitizationService {
         if(product == null) {
             return null;
         }
-
-        Product sanitizedProduct = new Product();
-        sanitizedProduct.setId(product.getId());
-        sanitizedProduct.setName(sanitizeNone(product.getName()));
-        sanitizedProduct.setPrice(product.getPrice());
-        sanitizedProduct.setDescription(sanitizeQuill(product.getDescription()));
-        sanitizedProduct.setRating(product.getRating());
-        sanitizedProduct.setImage(sanitizeImg(product.getImage()));
+        product.setId(product.getId());
+        product.setName(sanitizeNone(product.getName()));
+        product.setPrice(product.getPrice());
+        product.setDescription(sanitizeQuill(product.getDescription()));
+        product.setRating(product.getRating());
+        product.setImage(sanitizeImg(product.getImage()));
             
-        return sanitizedProduct;
+        return product;
     }
 
 
