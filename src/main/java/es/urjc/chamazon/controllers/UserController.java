@@ -42,7 +42,7 @@ public class UserController {
 
     @PostMapping("/register")
     public String processRegistration(@ModelAttribute("userDTO") UserDTO userDTO, Model model) {
-        // Validaciones básicas (puedes ampliarlas luego)
+
         if (userDTO.userName() == null || userDTO.userName().isBlank()) {
             model.addAttribute("error", "El nombre de usuario es obligatorio");
             return "user/register";
@@ -55,9 +55,8 @@ public class UserController {
             model.addAttribute("error", "Email inválido");
             return "user/register";
         }
-        // Guardar (UserService añadirá el ROLE_USER por nosotros)
+
         userService.save(userDTO);
-        // Redirigimos al login para que el usuario acceda
         return "redirect:/login";
     }
 
