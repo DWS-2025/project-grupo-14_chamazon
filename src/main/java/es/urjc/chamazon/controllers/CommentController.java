@@ -53,7 +53,7 @@ public class CommentController {
             model.addAttribute("users", users);
         } else {
             String username = auth.getName();
-            Long userId = userService.findByUserName(username).id();
+            Long userId = userService.findByUserName(username).get().id();
             model.addAttribute("currentUserId", userId);
         }
 

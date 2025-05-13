@@ -1,8 +1,6 @@
 package es.urjc.chamazon.controllers;
 
-import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.dto.UserDTOExtended;
-import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
@@ -28,13 +26,14 @@ public class WebController {
     }
 
     @GetMapping("/loginerror")
-    public String loginerror() {
+    public String loginerror(Model model) {
+        model.addAttribute("error", "Login failed. Please check your credentials.");
         return "loginerror";
     }
     @GetMapping("/private")
     public String privatePage(Model model, HttpServletRequest request) {
         String name = request.getUserPrincipal().getName();
-        UserDTOExtended user = userService.findByUserName(name);
+        UserDTOExtended user = userService.findByUserName(name).get();
         model.addAttribute("username", user.userName());
         model.addAttribute("admin", request.isUserInRole("ADMIN"));
         return "private";

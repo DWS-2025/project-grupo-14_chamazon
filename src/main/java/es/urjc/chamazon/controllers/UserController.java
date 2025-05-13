@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.security.core.Authentication;
@@ -33,6 +34,31 @@ public class UserController {
     @Autowired
     private CommentService commentService;
 
+    @GetMapping("/register")
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("userDTO", new UserDTO(null, "", "", "", "", "", "", ""));
+        return "user/register";
+    }
+
+    @PostMapping("/register")
+    public String processRegistration(@ModelAttribute("userDTO") UserDTO userDTO, Model model) {
+
+        if (userDTO.userName() == null || userDTO.userName().isBlank()) {
+            model.addAttribute("error", "El nombre de usuario es obligatorio");
+            return "user/register";
+        }
+        if (userDTO.password() == null || userDTO.password().isBlank()) {
+            model.addAttribute("error", "La contraseña es obligatoria");
+            return "user/register";
+        }
+        if (!userDTO.email().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            model.addAttribute("error", "Email inválido");
+            return "user/register";
+        }
+
+        userService.save(userDTO);
+        return "redirect:/login";
+    }
 
     @GetMapping("/users")
     public String users(Model model) {
@@ -49,7 +75,7 @@ public class UserController {
         try{
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String username = auth.getName();
-            UserDTOExtended userDTOExtended = userService.findByUserName(username);
+            UserDTOExtended userDTOExtended = userService.findByUserName(username).get();
             model.addAttribute("user", userDTOExtended);
             return "/user/userIndividual";
         }catch (NoSuchElementException e){

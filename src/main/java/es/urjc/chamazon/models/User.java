@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@SessionScope
+
 @Entity(name = "USR")
 public class User {
     @Id

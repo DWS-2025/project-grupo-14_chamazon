@@ -23,9 +23,9 @@ public class GlobalModelAttributes {
         model.addAttribute("isAdmin", SecurityUtils.isAdmin());
         model.addAttribute("isAuthenticated", SecurityUtils.isAuthenticated());
         String username = SecurityUtils.getCurrentUsername();
-        if (username != null) {
-            model.addAttribute("idUser", userService.findByUserName(username).id());
-        }
+        userService.findByUserName(username).ifPresent(user ->
+                model.addAttribute("idUser", user.id())
+        );
     }
 
     /*private static String getUserLinkByRole() {

@@ -1,0 +1,17 @@
+{{>header}}
+</head>
+
+<body class="bg-light d-flex flex-column min-vh-100">
+{{>navBar}}
+
+<div class="container d-flex flex-column justify-content-center align-items-center" style="flex: 1;">
+    <div class="card shadow p-4 mt-5 text-center" style="max-width: 500px; width: 100%;">
+        <div class="card-body">
+            <h2 class="card-title text-danger">Error de inicio de sesión</h2>
+            <div>{{#error}}<p>{{error}}</p>{{/error}}</div>
+            <p class="card-text">El nombre de usuario o la contraseña no son correctos.</p>
+            <a href="/login" class="btn btn-primary mt-3">Volver a intentar</a>
+        </div>
+    </div>
+</div>
+{{>footer}}

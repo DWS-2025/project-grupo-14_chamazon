@@ -1,0 +1,96 @@
+{{> header}}
+</head>
+<body>
+{{> navBar}}
+
+<div class="container my-5">
+    <div class="d-flex justify-content-start mt-3">
+        <a class="btn btn-secondary" href="/" role="button">VOLVER</a>
+    </div>
+
+    <h1 class="mb-4 text-center">Registro de Usuario</h1>
+
+    <div class="card shadow p-4 mx-auto" style="max-width: 500px;">
+        {{#error}}
+        <div class="alert alert-danger" role="alert">{{error}}</div>
+        {{/error}}
+
+        <form action="/register" method="post">
+            <div class="mb-3">
+                <label for="userName" class="form-label">Usuario <span class="text-danger">*</span></label>
+                <input
+                        type="text"
+                        id="userName"
+                        name="userName"
+                        class="form-control"
+                        value="{{userDTO.userName}}"
+                        required>
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Contraseña <span class="text-danger">*</span></label>
+                <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="form-control"
+                        required>
+            </div>
+
+            <div class="mb-3">
+                <label for="firstName" class="form-label">Nombre</label>
+                <input
+                        type="text"
+                        id="firstName"
+                        name="firstName"
+                        class="form-control"
+                        value="{{userDTO.firstName}}">
+            </div>
+
+            <div class="mb-3">
+                <label for="surName" class="form-label">Apellidos</label>
+                <input
+                        type="text"
+                        id="surName"
+                        name="surName"
+                        class="form-control"
+                        value="{{userDTO.surName}}">
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="form-control"
+                        value="{{userDTO.email}}"
+                        required>
+            </div>
+
+            <div class="mb-3">
+                <label for="phone" class="form-label">Teléfono</label>
+                <input
+                        type="text"
+                        id="phone"
+                        name="phone"
+                        class="form-control"
+                        value="{{userDTO.phone}}">
+            </div>
+
+            <div class="mb-3">
+                <label for="address" class="form-label">Dirección</label>
+                <input
+                        type="text"
+                        id="address"
+                        name="address"
+                        class="form-control"
+                        value="{{userDTO.address}}">
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Registrarme</button>
+        </form>
+    </div>
+</div>
+
+{{> footer}}
