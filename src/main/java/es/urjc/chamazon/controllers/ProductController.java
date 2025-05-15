@@ -228,6 +228,7 @@ public class ProductController {
         if (!product.isPresent()) {
             return "redirect:/categories";
         }
+        commentService.deleteCommentByProductId(id);
         productService.deleteById(id);
         return "redirect:/products";
     }

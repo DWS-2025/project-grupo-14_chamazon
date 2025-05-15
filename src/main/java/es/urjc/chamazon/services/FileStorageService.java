@@ -27,17 +27,14 @@ public class FileStorageService {
     }
 
     public String storeFile(MultipartFile file, Long productId) throws IOException {
-        // Validar extensión
         String fileExtension = StringUtils.getFilenameExtension(file.getOriginalFilename());
         if (fileExtension == null || !ALLOWED_EXTENSIONS.contains(fileExtension.toLowerCase())) {
             throw new IllegalArgumentException("Solo se permiten archivos PDF, DOC, DOCX o TXT");
         }
 
-        // Conservar nombre original (sanitizado)
         String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
-        String fileName = productId + "_" + originalFilename; // Vinculamos al producto
+        String fileName = productId + "_" + originalFilename;
 
-        // Guardar en disco
         Path targetLocation = this.fileStorageLocation.resolve(fileName);
         Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
@@ -45,7 +42,6 @@ public class FileStorageService {
     }
 
     public Resource loadFileAsResource(Long productId) throws IOException {
-        // Buscar todos los archivos que empiecen con el productId
         try (Stream<Path> paths = Files.walk(this.fileStorageLocation)) {
             Optional<Path> filePath = paths
                     .filter(Files::isRegularFile)

@@ -135,6 +135,13 @@
                         <div class="card-body">
                             <h5 class="card-title">{{name}}</h5>
                             <p class="card-text">{{description}}</p>
+                            <p class="card-text">
+                                {{#rating}}
+                                <i class="fas fa-star text-warning"></i> {{rating}}/5
+                                {{/rating}}
+                                {{^rating}}
+                                <i class="fas fa-star text-muted"></i> Sin valoraciones
+                                {{/rating}}
                             <h6 class="card-subtitle mb-2 text-primary">{{price}}</h6>
                             {{#category}}
                             <p class="card-subtitle mb-2 text-muted">{{name}}</p>

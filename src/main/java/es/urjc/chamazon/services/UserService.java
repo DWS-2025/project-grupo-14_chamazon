@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +42,6 @@ public class UserService {
     @Autowired
     private RepositoryUserDetailsService userDetailService;
 
-
     public List<UserDTO> getAllUsers() {
         return toDTOs(userRepository.findAll());
     }
@@ -55,8 +55,9 @@ public class UserService {
         return userOpt.orElse(null);
     }
 
-    public UserDTOExtended findByUserName(String name) {
-        return toDTOExtended(userRepository.findByUserName(name).orElseThrow());
+    public Optional<UserDTOExtended> findByUserName(String username) {
+        return userRepository.findByUserName(username)
+                .map(userMapper::toDTOExtended);
     }
 
     public void deleteUser(Long id, HttpServletRequest request) {
@@ -92,6 +93,12 @@ public class UserService {
 
     }
     void saveUser(User user) {
+        // To encode the password before saving the user
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        // When a user is created, it is assigned the role of USER by default
+        if (user.getType() == null || user.getType().isEmpty()) {
+            user.setType(List.of("USER"));
+        }
         userRepository.save(user);
         shoppingCarService.assignSCToUser(user);
     }
@@ -138,6 +145,12 @@ public class UserService {
             }
         }
     }
+
+    // Logic of userName comprobation encapsulated in the service
+    public boolean userNameExists (String userName) {
+        return userRepository.existsByUserName(userName);
+    }
+
 
     private UserDTO toDTO(User user){
         return userMapper.toDTO(user);

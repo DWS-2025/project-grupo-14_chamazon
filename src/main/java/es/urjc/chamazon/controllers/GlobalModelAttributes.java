@@ -11,22 +11,22 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.ui.Model;
 
-//@ControllerAdvice
+@ControllerAdvice
 public class GlobalModelAttributes {
 
-/*    @Autowired
-    UserService userService;*/
+    @Autowired
+    UserService userService;
 
-/*    @ModelAttribute
+    @ModelAttribute
     public void addAttributes(Model model) {
         model.addAttribute("userLink",SecurityUtils.isAdmin() ? "/users" : "/user");
         model.addAttribute("isAdmin", SecurityUtils.isAdmin());
         model.addAttribute("isAuthenticated", SecurityUtils.isAuthenticated());
         String username = SecurityUtils.getCurrentUsername();
-        if (username != null) {
-            model.addAttribute("idUser", userService.findByUserName(username).id());
-        }
-    }*/
+        userService.findByUserName(username).ifPresent(user ->
+                model.addAttribute("idUser", user.id())
+        );
+    }
 
     /*private static String getUserLinkByRole() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

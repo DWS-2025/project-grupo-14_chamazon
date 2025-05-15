@@ -123,5 +123,14 @@ public class CommentService {
         return commentRepository.findByProductId(productId, pageable);
     }
 
+
+    public void deleteCommentByProductId(Long productId) {
+        Optional<List<Comment>> comments = commentRepository.findByProduct_Id(productId);
+        if (comments.isPresent()) {
+            for (Comment comment : comments.get()) {
+                this.deleteById(comment.getId());
+            }
+        }
+    }
 }
 
