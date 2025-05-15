@@ -1,4 +1,5 @@
-document.addEventListener('DOMContentLoaded', function() {
+
+function initQuill() {
     // We initialize Quill over the div #editor
     var quill = new Quill('#editor', {
         theme: 'snow',
@@ -12,15 +13,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-
-    var existing = document.querySelector('#contenido').value;
-    if (existing) {
-        quill.root.innerHTML = existing;
+    // Get the hidden field and, if previous content exists, assign it to the editor
+    var hiddenInput = document.getElementById('contenido');
+    if (hiddenInput.value.trim()) {
+        quill.root.innerHTML = hiddenInput.value;
     }
 
-    // When the user clicks the "Submit" button, we save the HTML contents on the hidden field
-    var form = document.querySelector('form');
-    form.addEventListener('submit', function() {
-        document.querySelector('#contenido').value = quill.root.innerHTML;
-    });
-});
+    // Select the container element by getting form action's id
+    var form = document.getElementById('CommentFormQJS');
+    if (form) {
+        form.addEventListener('submit', function() {
+            // Update the hidden field
+            hiddenInput.value = quill.root.innerHTML;
+            console.log("Contenido del editor:", hiddenInput.value);
+        });
+    } else {
+        console.error('Formulario no encontrado.');
+    }
+}
+
+if (document.readyState !== 'loading') {
+    initQuill();
+} else {
+    document.addEventListener('DOMContentLoaded', initQuill);
+}
