@@ -1,5 +1,5 @@
 <h1 align="center">Welcome to Chamazon! 🛒</h1>
-<h3 align="center">Group 14 — Secure Web Development — "Buy your 10 mark :)"</h3>
+<h3 align="center">Group 14 — Secure Web Development :)"</h3>
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/DWS-2025/project-grupo-14_chamazon/main/content/images/Chamazon.png" alt="Chamazon Logo" width="500"/>
@@ -76,16 +76,16 @@ Each member contributed with dedication and unique skills. Below we it is shown 
 ### 👤 Beatriz Sanz Granados — [btrisss](https://github.com/btrisss)
 
 #### 🌟 Contribution Summary
-Beatriz worked extensively on the Comment entity, focusing on its full integration within the REST API. She developed the Comment REST controller, implemented DTOs and Mappers, and adapted both the service and model layers to align with RESTful standards. Additionally, she implemented AJAX-based pagination to dynamically load comments on demand, enhancing performance and improving the overall user experience.
+(me falta modificar esto)Beatriz worked extensively on the Comment entity, focusing on its full integration within the REST API. She developed the Comment REST controller, implemented DTOs and Mappers, and adapted both the service and model layers to align with RESTful standards. Additionally, she implemented AJAX-based pagination to dynamically load comments on demand, enhancing performance and improving the overall user experience.
 
 #### 📝 Notable Commits
-1. [Creación CommentRestController y poblar de comentarios BBDD](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/48c6d8ef7da2553d01c68d66f82a35a5700b9720)
-2. [Refactor Comentario con DTOs de user y product](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/da3aef3a377a849c9d01044f4b19afd282ed9aaf)
-3. [AJAX Pagination Completo](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/b052c1a21ecd6ab5f33c0879d580d4ab842b188d)
-4. [Creación de CommentDTO y su respectivo Mapper](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/6b7bc64870973c3128ff8562280f37e5ba7d797d)
-5. [Corrección en las rutas de Controller](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/0cad28eba12eca4cad795cc444af55e7c2512562)
+1. [Evitar usuarios duplicados](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/5e980b87103c7c3b6ed0d6234284e4b2d4b991c8)
+2. [Form de Registro](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/1f4db0cdbe4d70a25a8aca7ae5cd31f7a02caf51)
+3. [Guardar password cifrada en BD al guardar usuario en BD](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/42686d6cbdd93e36d4e7274e288c58b77bbc74d0)
+
 
 #### 📁 Most Contributed Files
+(me falta modificar esto)
 
 - `src/main/java/es/urjc/chamazon/models/Comment.java`
 - `src/main/java/es/urjc/chamazon/services/CommentService.java`
