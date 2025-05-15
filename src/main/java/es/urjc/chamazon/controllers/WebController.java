@@ -23,7 +23,7 @@ public class WebController {
         this.userService = userService;
     }
 
-    @ModelAttribute
+/*    @ModelAttribute
     public void addAttributes(Model model, HttpServletRequest request) {
 
         Principal principal = request.getUserPrincipal();
@@ -33,23 +33,26 @@ public class WebController {
             model.addAttribute("userName", principal.getName());
             model.addAttribute("isAuthenticated", true);
             model.addAttribute("isAdmin", request.isUserInRole("ADMIN"));
-            model.addAttribute("idUser", userService.findByUserName(principal.getName()).orElse(null).id());
+            //model.addAttribute("idUser", userService.findByUserName(principal.getName()).ifPresent(null).id());
+            userService.findByUserName(principal.getName()).ifPresent(user ->
+                    model.addAttribute("idUser", user.id()));
         }else{
             model.addAttribute("isAuthenticated",false);
         }
 
-    }
+    }*/
 
 
-/*    @ModelAttribute
+/*
     public void addAttributes(Model model) {
-        model.addAttribute("userLink", SecurityUtils.isAdmin() ? "/users" : "/user");
+        model.addAttribute("userLink",SecurityUtils.isAdmin() ? "/users" : "/user");
         model.addAttribute("isAdmin", SecurityUtils.isAdmin());
         model.addAttribute("isAuthenticated", SecurityUtils.isAuthenticated());
         String username = SecurityUtils.getCurrentUsername();
-        if (username != null) {
-            model.addAttribute("idUser", userService.findByUserName(username).id());
-        }
+        userService.findByUserName(username).ifPresent(user ->
+                model.addAttribute("idUser", user.id())
+        );
+    }
     }*/
 
     @GetMapping("/")
