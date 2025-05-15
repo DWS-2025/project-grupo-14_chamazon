@@ -46,10 +46,17 @@
                     <input type="hidden" name="userId" value="{{currentUserId}}">
                     {{/isAdmin}}
 
+
                     <div class="mb-3">
-                        <label for="commentTxt" class="form-label">Comentario:</label>
-                        <textarea class="form-control" id="commentTxt" name="commentTxt" rows="3" required></textarea> <!-- name debe ser igual a lo que espera el controlador y el for y id que sean iguales también -->
+                        <label for="editor" class="form-label">Comentario:</label>
+
+                        <!-- Quill Container -->
+                        <div id="editor" style="height: 200px; background: white;"></div>
+
+                        <!-- Hidden field with the resultant HTML of Quill -->
+                        <input type="hidden" id="contenido" name="commentTxt" required>
                     </div>
+                    <!-- When doing the post request, the value of the hidden field will be the HTML content of the Quill editor, no the plaintext -->
 
                     <div class="mb-3">
                         <label for="rating" class="form-label">Calificación:</label>

@@ -37,10 +37,17 @@
         <input type="text" id="user" name="userName" class="form-control" value="{{comment.user.userName}}" readonly>
       </div>
 
+
       <div class="mb-3">
-        <label for="comment" class="form-label">Comentario editado:</label>
-        <input type="text" id="comment" name="comment" class="form-control" value="{{comment.comment}}" required>
+        <label for="editor" class="form-label">Comentario editado:</label>
+
+        <!-- Quill Container -->
+        <div id="editor" style="height: 200px; background: white;"></div>
+
+        <!-- Hidden field with the resultant HTML of Quill -->
+        <input type="hidden" id="contenido" name="comment" required>
       </div>
+      <!-- When doing the post request, the value of the hidden field will be the HTML content of the Quill editor, no the plaintext -->
 
       <div class="mb-3">
         <label for="rating" class="form-label">Nueva Calificación:</label>
