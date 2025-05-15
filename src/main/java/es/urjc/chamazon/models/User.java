@@ -17,7 +17,10 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> type;
 
+    //We create a unique userName for avoiding duplicates
+    @Column (unique = true, nullable = false)
     private String userName;
+
     private String firstName;
     private String surName;
     private String password;

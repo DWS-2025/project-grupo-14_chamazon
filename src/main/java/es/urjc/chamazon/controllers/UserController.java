@@ -56,6 +56,11 @@ public class UserController {
             return "user/register";
         }
 
+        if (userService.userNameExists(userDTO.userName())) {
+            model.addAttribute("error", "Ten más imaginación, el nombre de usuario ya está en uso");
+            return "user/register";
+        }
+
         userService.save(userDTO);
         return "redirect:/login";
     }

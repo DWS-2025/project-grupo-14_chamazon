@@ -140,6 +140,12 @@ public class UserService {
         }
     }
 
+    // Logic of userName comprobation encapsulated in the service
+    public boolean userNameExists (String userName) {
+        return userRepository.existsByUserName(userName);
+    }
+
+
     private UserDTO toDTO(User user){
         return userMapper.toDTO(user);
     }
