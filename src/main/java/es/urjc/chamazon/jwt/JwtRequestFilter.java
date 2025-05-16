@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,7 +18,7 @@ import java.io.IOException;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
-	
+
 	private static final Logger log = LoggerFactory.getLogger(JwtRequestFilter.class);
 
 	private final UserDetailsService userDetailsService;
@@ -44,6 +45,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		} catch (Exception ex) {
 			log.error("Exception processing JWT Token: ", ex);
+
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.setContentType("application/json");
+			response.getWriter().write("""
+            {
+              "error": "Unauthorized",
+              "message": "%s",
+              "path": "%s"
+            }
+            """.formatted(ex.getMessage(), request.getRequestURI()));
+			return;
 		}
 
 		filterChain.doFilter(request, response);
