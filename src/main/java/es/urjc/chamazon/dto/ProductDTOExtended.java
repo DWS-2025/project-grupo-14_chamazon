@@ -12,7 +12,7 @@ public record ProductDTOExtended(
         String originalFileName,  // Nuevo campo
         String storedFileName,    // Nuevo campo
         String filePath,
-        List<CommentDTO> commentDTOList,
+        List<CommentDTOSimple> commentDTOList,
         List<CategoryDTO> categoryDTOList
 ){
 }
