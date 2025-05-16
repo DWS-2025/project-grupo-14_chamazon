@@ -130,7 +130,7 @@ public class UserController {
             return "/user/addUser";
         }
 
-        userService.save(newUserDTO);
+        userService.saveNewUser(newUserDTO);
         return "redirect:/users";
     }
 

@@ -79,6 +79,12 @@ public class UserService {
 
     }
 
+    public void saveNewUser(UserDTO userDTO) {
+        UserDTO sanitizedUserDTO = sanitizationService.sanitizeUserDTO(userDTO);
+        User user = toUser(sanitizedUserDTO);
+        user.setPassword( passwordEncoder.encode(user.getPassword()));
+        saveUser(user);
+    }
 
     public void save(UserDTO userDTO) {
         UserDTO sanitizedUserDTO = sanitizationService.sanitizeUserDTO(userDTO);

@@ -23,9 +23,11 @@
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                <input type="hidden" name="_csrf" value="{{token}}"/>
             </form>
         </div>
     </div>
 </div>
 
 {{>footer}}
+
