@@ -1,6 +1,5 @@
 package es.urjc.chamazon.configurations;
 
-
 import es.urjc.chamazon.services.RepositoryUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,10 +20,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 import es.urjc.chamazon.jwt.UnauthorizedHandlerJwt;
 import es.urjc.chamazon.jwt.JwtRequestFilter;
-
 
 @Configuration
 @EnableWebSecurity
@@ -101,8 +102,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/admin/users/**").hasRole("ADMIN")
 
                         // Anything else
-                        .anyRequest().permitAll()
-                );
+                        .anyRequest().permitAll());
 
         // Disable Form login Authentication
         http.formLogin(formLogin -> formLogin.disable());
@@ -122,16 +122,36 @@ public class SecurityConfiguration {
         return http.build();
     }
 
-
     @Bean
     @Order(2)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.authenticationProvider(authenticationProvider());
 
+        http.headers(headers -> headers
+                .contentSecurityPolicy(csp -> csp
+                        .policyDirectives(
+                                "default-src 'self'; " +
+                                        "script-src 'self' https://cdn.quilljs.com; " +
+                                        "style-src 'self' https://cdn.quilljs.com; " +
+                                        "img-src 'self' data:; " +
+                                        "object-src 'none'; " +
+                                        "frame-ancestors 'self'; " +
+                                        "form-action 'self'; " +
+                                        "base-uri 'none'; " +
+                                        "upgrade-insecure-requests;"))
+                .httpStrictTransportSecurity(hsts -> hsts
+                        .includeSubDomains(true)
+                        .maxAgeInSeconds(31536000))
+                .frameOptions(frame -> frame.sameOrigin())
+                .contentTypeOptions(withDefaults())
+                .referrerPolicy(referrer -> referrer
+                        .policy(org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER))
+                .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)));
+                
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        //PUBLIC PAGES
+                        // PUBLIC PAGES
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("login").permitAll()
@@ -148,7 +168,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/categories/products").permitAll()
                         .requestMatchers("/commentView/commentList").permitAll()
 
-                        //REGISTER PAGES
+                        // REGISTER PAGES
                         .requestMatchers("/commentView/edit/{id}").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/commentView/delete/{id}").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/commentView/add").hasAnyRole("ADMIN", "USER")
@@ -162,7 +182,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/shoppingCar/endPurchase/{idUser}").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/shoppingCar/removeProduct/{idProduct}/{idUser}").hasAnyRole("USER", "ADMIN")
 
-                        //ADMIN PAGES
+                        // ADMIN PAGES
                         .requestMatchers("/categories/add").hasRole("ADMIN")
                         .requestMatchers("/categories/delete").hasRole("ADMIN")
                         .requestMatchers("/categories/edit").hasRole("ADMIN")
@@ -179,16 +199,14 @@ public class SecurityConfiguration {
                         .loginPage("/login")
                         .failureUrl("/loginerror")
                         .defaultSuccessUrl("/")
-                        .permitAll()
-                )
+                        .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
-                        .permitAll()
-                );
+                        .permitAll());
 
         // Disable CSRF at the moment
-        //http.csrf(csrf -> csrf.disable());
+        // http.csrf(csrf -> csrf.disable());
 
         return http.build();
     }
