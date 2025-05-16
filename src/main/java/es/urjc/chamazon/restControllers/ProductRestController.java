@@ -13,6 +13,7 @@ import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -63,9 +64,9 @@ public class ProductRestController {
     public ResponseEntity <ProductDTOExtended> getProduct(@PathVariable long id) { // same as findById
         ProductDTOExtended productDTO = productService.getProduct(id);
         try{
-            return ResponseEntity.ok(productDTO);
+            return new ResponseEntity<>(productDTO, HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -80,18 +81,22 @@ public class ProductRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTOExtended> replaceProduct(@PathVariable long id, @RequestBody ProductDTOExtended newProductDTO) throws SQLException {
-        ProductDTOExtended productDTO = productService.replaceProduct(id, newProductDTO);
-       return ResponseEntity.ok(productDTO);
+    public ResponseEntity<ProductDTOExtended> replaceProduct(@PathVariable long id, @RequestBody ProductDTOExtended newProductDTO)   {
+        try {
+            ProductDTOExtended productDTO = productService.replaceProduct(id, newProductDTO);
+            return new ResponseEntity<>(productDTO, HttpStatus.OK);
+        }catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ProductDTO> deleteProduct(@PathVariable long id) {
         try {
             productService.deleteById(id);
-            return ResponseEntity.ok().build();
+            return new ResponseEntity<>(null, HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
 
