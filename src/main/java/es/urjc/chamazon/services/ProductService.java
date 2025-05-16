@@ -84,6 +84,7 @@ public class ProductService {
             return null;
         }
     }
+
     public Collection<ProductDTOExtended> findCategoryFromProduct(long id) {
         return toDTOsExtended(productRepository.findByCategoryId(id));
     }
@@ -208,6 +209,7 @@ public class ProductService {
         productRepository.save(sanitizedProduct);
         return sanitizedProduct;
     }
+
     //for adding new products
     public ProductDTO save(ProductDTOExtended productDTO, MultipartFile imageFile){
         //sanitize productDTO
@@ -306,65 +308,6 @@ public class ProductService {
 
     public List<Product> findByFilters(Long categoryId, Float minPrice, Float maxPrice, Float rating) {
         return productRepository.findByFilters(categoryId, minPrice, maxPrice, rating);
-    }
-
-    public void attachFileToProduct(Long productId, MultipartFile file) throws IOException {
-        System.out.println("Intentando guardar archivo para producto ID: " + productId);
-        System.out.println("Nombre original del archivo: " + file.getOriginalFilename());
-        System.out.println("Tamaño del archivo: " + file.getSize() + " bytes");
-
-
-        // Validar extensión
-        String fileExtension = StringUtils.getFilenameExtension(file.getOriginalFilename());
-        if (fileExtension == null || !ALLOWED_EXTENSIONS.contains(fileExtension.toLowerCase())) {
-            throw new IllegalArgumentException("Solo se permiten archivos PDF, DOC, DOCX o TXT");
-        }
-
-        // Crear directorio si no existe
-        Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
-        // Generar nombre seguro manteniendo extensión original
-        String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
-        String safeFilename = generateSafeFilename(originalFilename);
-
-        // Guardar archivo en disco
-        Path targetLocation = uploadPath.resolve(safeFilename);
-        Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-
-        // Actualizar producto
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-
-        product.setOriginalFileName(originalFilename);
-        product.setStoredFileName(safeFilename);
-        product.setFilePath("/uploads/" + safeFilename);
-    }
-
-    private String generateSafeFilename(String originalFilename) {
-        String baseName = UUID.randomUUID().toString();
-        String extension = StringUtils.getFilenameExtension(originalFilename);
-        return extension != null ? baseName + "." + extension : baseName;
-    }
-
-    public Resource loadFileAsResource(Long productId) throws IOException {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-
-        if (product.getStoredFileName() == null) {
-            throw new FileNotFoundException("Este producto no tiene archivo adjunto");
-        }
-
-        Path filePath = Paths.get(uploadDir).resolve(product.getStoredFileName()).normalize();
-        Resource resource = new UrlResource(filePath.toUri());
-
-        if (!resource.exists()) {
-            throw new FileNotFoundException("Archivo no encontrado: " + product.getOriginalFileName());
-        }
-
-        return resource;
     }
 
 }

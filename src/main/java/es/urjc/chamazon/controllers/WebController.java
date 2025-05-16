@@ -70,13 +70,12 @@ public class WebController {
         return "loginerror";
     }
 
-    //FOR EXAMPLES
-    @GetMapping("/private")
+    /*@GetMapping("/private")
     public String privatePage(Model model, HttpServletRequest request) {
         String name = request.getUserPrincipal().getName();
         UserDTOExtended user = userService.findByUserName(name).get();
         model.addAttribute("username", user.userName());
         model.addAttribute("admin", request.isUserInRole("ADMIN"));
         return "private";
-    }
+    }*/
 }

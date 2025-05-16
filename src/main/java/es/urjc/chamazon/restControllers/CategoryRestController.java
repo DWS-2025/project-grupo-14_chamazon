@@ -5,6 +5,7 @@ import es.urjc.chamazon.dto.CategoryDTO;
 import es.urjc.chamazon.dto.CategoryDTOExtended;
 import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.services.CategoryService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

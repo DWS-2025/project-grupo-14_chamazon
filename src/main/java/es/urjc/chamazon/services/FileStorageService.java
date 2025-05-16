@@ -68,7 +68,7 @@ public class FileStorageService {
 
             if (filePath.isPresent()) {
                 String filename = filePath.get().getFileName().toString();
-                return filename.substring(filename.indexOf('_') + 1); // Elimina el productId_
+                return filename.substring(filename.indexOf('_') + 1);
             }
         }
 
