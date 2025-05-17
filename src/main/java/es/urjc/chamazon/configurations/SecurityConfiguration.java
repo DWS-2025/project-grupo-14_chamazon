@@ -72,40 +72,48 @@ public class SecurityConfiguration {
 
         http
                 .securityMatcher("/api/**")
-                .exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandlerJwt));
-        http
+                .exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandlerJwt))
                 .authorizeHttpRequests(authorize -> authorize
 
-                        // PUBLIC API
-                        .requestMatchers(HttpMethod.GET, "/api/products/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/comments/**").permitAll()
+                        // === PUBLIC API (sin login) ===
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/products/",
+                                "/api/products/filter",
+                                "/api/products/{id}",
+                                "/api/products/{id}/images",
+                                "/api/categories",
+                                "/api/categories/",
+                                "/api/categories/{id}",
+                                "/api/categories/{id}/products",
+                                "/api/categories/products",
+                                "/api/commentView/commentList"
+                        ).permitAll()
 
-                        // COMMENTS (USER or ADMIN)
+                        // === COMMENTS (USER o ADMIN) ===
                         .requestMatchers(HttpMethod.POST, "/api/comments/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/comments/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/comments/**").hasAnyRole("USER", "ADMIN")
 
-                        // PRODUCTS (ADMIN only)
-                        .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
-
-                        // CATEGORIES (ADMIN only)
+                        // === CATEGORIES (ADMIN) ===
                         .requestMatchers(HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/categories/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasRole("ADMIN")
 
-                        // SHOPPING CART (USER or ADMIN)
+                        // === PRODUCTS (ADMIN) ===
+                        .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
+
+                        // === SHOPPING CART (USER o ADMIN) ===
                         .requestMatchers("/api/cart/**").hasAnyRole("USER", "ADMIN")
 
-                        // USERS (USER or ADMIN)
-                        .requestMatchers(HttpMethod.GET,"/api/users/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST,"/api/users/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/users/**").hasRole("ADMIN")
+                        // === USERS ===
+                        .requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/users/**").permitAll() // Registro público
+                        .requestMatchers(HttpMethod.PUT, "/api/users/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasAnyRole("USER", "ADMIN")
 
-                        // Anything else
+                        // === Anything else in /api/** (no autorizado por defecto) ===
                         .anyRequest().permitAll()
                 );
 

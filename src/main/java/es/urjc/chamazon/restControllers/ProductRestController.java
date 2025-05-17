@@ -1,33 +1,21 @@
 package es.urjc.chamazon.restControllers;
 
-import es.urjc.chamazon.dto.ProductDTO;
-import es.urjc.chamazon.dto.ProductDTOExtended;
-import es.urjc.chamazon.dto.ProductMapper;
+import es.urjc.chamazon.dto.*;
 import es.urjc.chamazon.models.Product;
-import es.urjc.chamazon.services.CategoryService;
-import es.urjc.chamazon.services.ProductService;
+import es.urjc.chamazon.models.User;
+import es.urjc.chamazon.services.*;
 
-import java.util.NoSuchElementException;
-
-import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URI;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
@@ -36,71 +24,74 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 public class ProductRestController {
 
     @Autowired
-    ProductService productService;
+    private ProductService productService;
 
-    @Autowired
-    ProductMapper productMapper;
     @Autowired
     private CategoryService categoryService;
 
-    /*
-     * @GetMapping("/{id}")
-     * public Page<ProductDTO> getProducts(Pageable pageable) { // same as findall
-     * return productService.getProducts(pageable);
-     * }
-     */
+    @Autowired
+    private FileStorageService fileStorageService;
 
-    @GetMapping("/") // same as findAllProducts
-    public ResponseEntity<Collection<ProductDTOExtended>> getProducts() { // same as findAllProducts
-        Collection <ProductDTOExtended> productsDTOs = productService.getProducts();
+    @Autowired
+    private ShoppingCarService shoppingCarService;
+
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ProductMapper productMapper;
+
+    // === GET ALL PRODUCTS ===
+    @GetMapping("")
+    public ResponseEntity<Collection<ProductDTOExtended>> getProducts() {
+        return ResponseEntity.ok(productService.getProducts());
+    }
+
+    // === GET SINGLE PRODUCT ===
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDTOExtended> getProduct(@PathVariable long id) {
         try {
-            return ResponseEntity.ok(productsDTOs);
+            return ResponseEntity.ok(productService.getProduct(id));
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity <ProductDTOExtended> getProduct(@PathVariable long id) { // same as findById
-        ProductDTOExtended productDTO = productService.getProduct(id);
-        try{
-            return new ResponseEntity<>(productDTO, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    // === CREATE PRODUCT ===
+    @PostMapping("")
+    public ResponseEntity<ProductDTOExtended> createProduct(@RequestBody ProductDTOExtended productDTO) {
+        ProductDTOExtended savedProduct = productService.createProduct(productDTO);
+        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(savedProduct.id()).toUri();
+        return ResponseEntity.created(location).body(savedProduct);
     }
 
-    @PostMapping("/") // same as save when the user has added a new product
-    public ResponseEntity<ProductDTOExtended> createProduct(@RequestBody ProductDTOExtended productDTO)
-    {
-        productService.createProduct(productDTO);
-
-        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(productDTO.id()).toUri();
-
-        return ResponseEntity.created(location).body(productDTO);
-    }
-
+    // === UPDATE PRODUCT ===
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTOExtended> replaceProduct(@PathVariable long id, @RequestBody ProductDTOExtended newProductDTO)   {
+    public ResponseEntity<ProductDTOExtended> replaceProduct(@PathVariable long id, @RequestBody ProductDTOExtended newProductDTO) {
         try {
             ProductDTOExtended productDTO = productService.replaceProduct(id, newProductDTO);
-            return new ResponseEntity<>(productDTO, HttpStatus.OK);
-        }catch (NoSuchElementException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.ok(productDTO);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 
+    // === DELETE PRODUCT ===
     @DeleteMapping("/{id}")
-    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable long id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable long id) {
         try {
+            commentService.deleteCommentByProductId(id);
             productService.deleteById(id);
-            return new ResponseEntity<>(null, HttpStatus.OK);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
 
-
+    // === UPLOAD PRODUCT IMAGE ===
     @PostMapping("/{id}/image")
     public ResponseEntity<Object> createProductImage(@PathVariable long id, @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
         URI location = fromCurrentRequest().build().toUri();
@@ -108,24 +99,76 @@ public class ProductRestController {
         return ResponseEntity.created(location).build();
     }
 
+    // === GET PRODUCT IMAGE ===
     @GetMapping("/{id}/image")
     public ResponseEntity<Object> getProductImage(@PathVariable long id) throws SQLException, IOException {
         Resource productImage = productService.getProductImage(id);
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "image/jpeg").body(productImage);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
+                .body(productImage);
     }
 
+    // === REPLACE PRODUCT IMAGE ===
     @PutMapping("/{id}/image")
     public ResponseEntity<Object> replaceProductImage(@PathVariable long id, @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
-
         productService.replaceProductImage(id, imageFile.getInputStream(), imageFile.getSize());
         return ResponseEntity.noContent().build();
     }
 
+    // === DELETE PRODUCT IMAGE ===
     @DeleteMapping("/{id}/image")
-    public ResponseEntity<Object> deletePostImage(@PathVariable long id) throws IOException {
+    public ResponseEntity<Object> deleteProductImage(@PathVariable long id) throws IOException {
         productService.deletePostImage(id);
         return ResponseEntity.noContent().build();
     }
 
-    
+    // === FILTER PRODUCTS ===
+    @GetMapping("/filter")
+    public ResponseEntity<List<ProductDTOExtended>> filterProducts(
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Float minPrice,
+            @RequestParam(required = false) Float maxPrice,
+            @RequestParam(required = false) Float rating
+    ) {
+        List<Product> filtered = productService.findByFilters(categoryId, minPrice, maxPrice, rating);
+        List<ProductDTOExtended> filteredDTOs = filtered.stream()
+                .map(productMapper::toDTOExtended)
+                .toList();
+        return ResponseEntity.ok(filteredDTOs);
+    }
+
+    // === ADD TO CART ===
+    @PostMapping("/{productId}/add-to-cart/{userId}")
+    public ResponseEntity<Void> addToCart(@PathVariable long productId, @PathVariable long userId) {
+        Optional<Product> product = productService.findById(productId);
+        if (product.isPresent()) {
+            shoppingCarService.addProductToUserShoppingCar(productId, userId);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    // === ATTACH FILE TO PRODUCT ===
+    @PostMapping("/{id}/file")
+    public ResponseEntity<String> attachFile(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        try {
+            String fileName = fileStorageService.storeFile(file, id);
+            return ResponseEntity.ok("Archivo subido: " + fileName);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al subir archivo: " + e.getMessage());
+        }
+    }
+
+    // === DOWNLOAD FILE ATTACHED TO PRODUCT ===
+    @GetMapping("/{id}/file")
+    public ResponseEntity<Resource> downloadFile(@PathVariable Long id) throws IOException {
+        Resource resource = fileStorageService.loadFileAsResource(id);
+        String originalFilename = fileStorageService.getOriginalFilename(id);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + originalFilename + "\"")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
+    }
+
 }
