@@ -128,7 +128,7 @@ public class SecurityConfiguration {
 
         http.authenticationProvider(authenticationProvider());
 
-        http.headers(headers -> headers
+        /*http.headers(headers -> headers
                 .contentSecurityPolicy(csp -> csp
                         .policyDirectives(
                                 "default-src 'self'; " +
@@ -148,7 +148,7 @@ public class SecurityConfiguration {
                 .referrerPolicy(referrer -> referrer
                         .policy(org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER))
                 .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)));
-                
+               */ 
         http
                 .authorizeHttpRequests(authorize -> authorize
                         // PUBLIC PAGES
