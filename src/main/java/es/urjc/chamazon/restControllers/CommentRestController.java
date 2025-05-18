@@ -14,7 +14,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,23 +73,18 @@ public class CommentRestController {
                 commentDTO.getProduct().id()
         );
 
-        if (created) {
-            boolean isAdmin = SecurityUtils.isAdmin();
-            String redirectUrl = isAdmin ?
-                    "/commentView/commentList?productId=" + commentDTO.getProduct().id() :
-                    "/products/" + commentDTO.getProduct().id();
 
-            return ResponseEntity.ok(redirectUrl);
+        if (created) {
+            return ResponseEntity.ok("Comentario creado correctamente.");
         } else {
             return ResponseEntity.badRequest().body("No se pudo crear el comentario");
         }
     }
 
 
-
     // 4. UPDATE COMMENT (like POST /edit/{id})
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateComment(
+    public ResponseEntity<?> updateComment(
             @PathVariable Long id,
             @RequestBody CommentDTO updatedCommentDTO,
             Authentication auth) {
@@ -110,14 +107,14 @@ public class CommentRestController {
         existingCommentDTO.setProduct(updatedCommentDTO.getProduct());
         commentService.save(existingCommentDTO);
 
-        String redirectUrl = "/products/" + existingCommentDTO.getProduct().id();
-        return ResponseEntity.ok(redirectUrl);
+
+        return ResponseEntity.ok(commentService.findById(id));
     }
 
 
     // 5. DELETE COMMENT (like POST /delete/{id})
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteComment(@PathVariable Long id, Authentication auth) {
+    public ResponseEntity<?> deleteComment(@PathVariable Long id, Authentication auth) {
         CommentDTO commentDTO = commentService.findById(id);
 
         if (commentDTO == null) {
@@ -127,12 +124,27 @@ public class CommentRestController {
         String username = auth.getName();
         var user = userService.findByUserName(username);
 
-        if (!commentDTO.getUser().id().equals(user.get().id() ) && !SecurityUtils.isAdmin()) {
+        if (!commentDTO.getUser().id().equals(user.get().id()) && !SecurityUtils.isAdmin()) {
             return ResponseEntity.status(403).body("No tienes permiso para eliminar este comentario");
         }
 
         commentService.deleteById(id);
-        String redirectUrl = "/products/" + commentDTO.getProduct().id();
-        return ResponseEntity.ok(redirectUrl);
+
+        return ResponseEntity.ok(commentDTO);
+    }
+
+    // 6. GET COMMENTS BY PRODUCT (paginated)
+    @GetMapping("/product/{productId}")
+    public Page<CommentDTO> getCommentsByProduct(
+            @PathVariable Long productId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        // We recover the comments paginated as entities
+        Page<Comment> commentPage = commentService.findByProductId(productId, pageable);
+
+        // Convert the paginated comments to DTOs
+        return commentPage.map(commentMapper::toDTO);
     }
 }
