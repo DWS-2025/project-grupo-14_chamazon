@@ -172,4 +172,15 @@ public class ProductRestController {
                 .body(resource);
     }
 
+    // === DELETE FILE ATTched to product ===
+    @DeleteMapping("/{id}/file")
+    public ResponseEntity<String> deleteFile(@PathVariable Long id) {
+        try {
+            fileStorageService.deleteFile(id);
+            return ResponseEntity.ok("Archivo eliminado");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar archivo: " + e.getMessage());
+        }
+    }
+
 }
