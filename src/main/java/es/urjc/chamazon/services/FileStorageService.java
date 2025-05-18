@@ -78,4 +78,20 @@ public class FileStorageService {
     public Path getFileStorageLocation() {
         return this.fileStorageLocation;
     }
+
+    public void deleteFile(Long productId) throws IOException {
+        try (Stream<Path> paths = Files.walk(this.fileStorageLocation)) {
+            paths
+                    .filter(Files::isRegularFile)
+                    .filter(path -> path.getFileName().toString().startsWith(productId + "_"))
+                    .forEach(path -> {
+                        try {
+                            Files.deleteIfExists(path);
+                        } catch (IOException e) {
+                            // Podrías registrar un warning aquí si falla
+                            e.printStackTrace();
+                        }
+                    });
+        }
+    }
 }

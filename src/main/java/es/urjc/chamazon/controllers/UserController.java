@@ -134,7 +134,7 @@ public class UserController {
         return "redirect:/users";
     }
 
-    @GetMapping("user/delete")
+    @GetMapping("/user/delete")
     public String deleteUser(@RequestParam long id, HttpServletRequest request) {
         boolean isAdmin = SecurityUtils.isAdmin();
         userService.deleteUser(id, request);
@@ -167,18 +167,31 @@ public class UserController {
     }
 
     @PostMapping("/users/edit")
-    public String editUser(@RequestParam Long id, UserDTO userDTO) {
+    public String editUser(@RequestParam Long id, UserDTO userDTO, HttpServletRequest request) {
         boolean isAdmin = SecurityUtils.isAdmin();
         try {
+            // Obtener el usuario actual desde la base de datos
+            UserDTO currentUser = userService.getUser(id);
+
+            // Actualizar el usuario
             userService.updateUser(userDTO.id(), userDTO);
+
+            // Si no es admin y ha cambiado el username, cerrar sesión
+            if (!isAdmin && !currentUser.userName().equals(userDTO.userName())) {
+                // invalidate session y redirigir a logout
+                request.getSession().invalidate();
+                return "redirect:/logout";
+            }
+
             if (isAdmin) {
                 return "redirect:/users";
-            }else{
+            } else {
                 return "redirect:/user";
             }
-        }catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             return "/error";
         }
     }
+
 }
 

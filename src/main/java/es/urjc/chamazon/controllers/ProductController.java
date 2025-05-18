@@ -231,6 +231,11 @@ public class ProductController {
             return "redirect:/categories";
         }
         commentService.deleteCommentByProductId(id);
+        try {
+            fileStorageService.deleteFile(id);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         productService.deleteById(id);
         return "redirect:/products";
     }

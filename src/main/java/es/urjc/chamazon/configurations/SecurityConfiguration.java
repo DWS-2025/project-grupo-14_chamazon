@@ -1,5 +1,6 @@
 package es.urjc.chamazon.configurations;
 
+
 import es.urjc.chamazon.services.RepositoryUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,11 +8,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +31,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 import es.urjc.chamazon.jwt.UnauthorizedHandlerJwt;
 import es.urjc.chamazon.jwt.JwtRequestFilter;
+
 
 @Configuration
 @EnableWebSecurity
@@ -60,6 +66,7 @@ public class SecurityConfiguration {
         return authProvider;
     }
 
+
     @Bean
     @Order(1)
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
@@ -71,41 +78,55 @@ public class SecurityConfiguration {
                 .exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandlerJwt))
                 .authorizeHttpRequests(authorize -> authorize
 
-                        // PUBLIC API
-                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/comments/**").permitAll()
+                        // === PUBLIC API (sin login) ===
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/products",
+                                "/api/products/filter",
+                                "/api/products/{id}",
+                                "/api/products/{id}/images",
+                                "/api/categories",
+                                "/api/categories/",
+                                "/api/categories/{id}",
+                                "/api/categories/{id}/products",
+                                "/api/categories/products",
+                                "/api/commentView/commentList"
+                        ).permitAll()
 
-                        // COMMENTS (USER or ADMIN)
+                        .requestMatchers(HttpMethod.POST, "/api/products/filter").permitAll()
+
+                        // === COMMENTS (USER o ADMIN) ===
                         .requestMatchers(HttpMethod.POST, "/api/comments/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/comments/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/comments/**").hasAnyRole("USER", "ADMIN")
 
-                        // PRODUCTS (ADMIN only)
-                        .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
-
-                        // CATEGORIES (ADMIN only)
+                        // === CATEGORIES (ADMIN) ===
                         .requestMatchers(HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/categories/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasRole("ADMIN")
 
-                        // SHOPPING CART (USER or ADMIN)
+                        // === PRODUCTS (ADMIN) ===
+                        .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
+
+                        // === SHOPPING CART (USER o ADMIN) ===
                         .requestMatchers("/api/cart/**").hasAnyRole("USER", "ADMIN")
 
-                        // USERS (USER or ADMIN)
-                        .requestMatchers(HttpMethod.PUT, "/api/users/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasAnyRole("USER", "ADMIN")
+                        // === USERS ===
+                        .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyRole("USER", "ADMIN") // ver tu info
+                        .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")               // ver todos los usuarios
+                        .requestMatchers(HttpMethod.GET, "/api/users/{id}").authenticated()           // ver un usuario específico (filtrado después)
+                        .requestMatchers(HttpMethod.POST, "/api/users/**").permitAll()                // registro libre
+                        .requestMatchers(HttpMethod.PUT, "/api/users/{id}").authenticated()           // puede editar (se filtra después)
+                        .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").authenticated()        // puede borrar (se filtra después)
 
-                        // ADMIN USER MANAGEMENT
-                        .requestMatchers("/api/admin/users/**").hasRole("ADMIN")
+                        // === Anything else in /api/** (no autorizado por defecto) ===
+                        .anyRequest().permitAll()
+                );
 
-                        // Anything else
-                        .anyRequest().permitAll());
 
         // Disable Form login Authentication
-        http.formLogin(formLogin -> formLogin.disable());
+        http.formLogin(AbstractHttpConfigurer::disable);
 
         // Disable CSRF protection (it is difficult to implement in REST APIs)
         http.csrf(csrf -> csrf.disable());
@@ -121,6 +142,7 @@ public class SecurityConfiguration {
 
         return http.build();
     }
+
 
     @Bean
     @Order(2)
@@ -148,10 +170,10 @@ public class SecurityConfiguration {
                 .referrerPolicy(referrer -> referrer
                         .policy(org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER))
                 .xssProtection(xss -> xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)));
-               */ 
+               */
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        // PUBLIC PAGES
+                        //PUBLIC PAGES
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("login").permitAll()
@@ -168,7 +190,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/categories/products").permitAll()
                         .requestMatchers("/commentView/commentList").permitAll()
 
-                        // REGISTER PAGES
+                        //REGISTER PAGES
                         .requestMatchers("/commentView/edit/{id}").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/commentView/delete/{id}").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/commentView/add").hasAnyRole("ADMIN", "USER")
@@ -182,7 +204,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/shoppingCar/endPurchase/{idUser}").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/shoppingCar/removeProduct/{idProduct}/{idUser}").hasAnyRole("USER", "ADMIN")
 
-                        // ADMIN PAGES
+                        //ADMIN PAGES
                         .requestMatchers("/categories/add").hasRole("ADMIN")
                         .requestMatchers("/categories/delete").hasRole("ADMIN")
                         .requestMatchers("/categories/edit").hasRole("ADMIN")
@@ -199,14 +221,16 @@ public class SecurityConfiguration {
                         .loginPage("/login")
                         .failureUrl("/loginerror")
                         .defaultSuccessUrl("/")
-                        .permitAll())
+                        .permitAll()
+                )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
-                        .permitAll());
+                        .permitAll()
+                );
 
         // Disable CSRF at the moment
-        // http.csrf(csrf -> csrf.disable());
+        //http.csrf(csrf -> csrf.disable());
 
         return http.build();
     }
