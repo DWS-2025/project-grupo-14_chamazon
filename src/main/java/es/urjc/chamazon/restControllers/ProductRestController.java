@@ -124,7 +124,7 @@ public class ProductRestController {
 
     // === FILTER PRODUCTS ===
     @PostMapping("/filter")
-    public ResponseEntity<List<ProductDTOExtended>> filterProducts(
+    public ResponseEntity<List<SimpleProductDTO>> filterProducts(
             @RequestBody FilteredDto filteredDto) {
         List<Product> filtered = productService.findByFilters(
                 filteredDto.categoryId(),
@@ -132,8 +132,8 @@ public class ProductRestController {
                 filteredDto.maxPrice(),
                 filteredDto.rating()
         );
-        List<ProductDTOExtended> filteredDTOs = filtered.stream()
-                .map(productMapper::toDTOExtended)
+        List<SimpleProductDTO> filteredDTOs = filtered.stream()
+                .map(productMapper::toSimpleDTO)
                 .toList();
         return ResponseEntity.ok(filteredDTOs);
     }

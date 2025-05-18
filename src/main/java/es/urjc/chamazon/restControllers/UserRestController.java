@@ -3,6 +3,7 @@ package es.urjc.chamazon.restControllers;
 import es.urjc.chamazon.configurations.SecurityUtils;
 import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.dto.UserDTOExtended;
+import es.urjc.chamazon.dto.UserIndividualDTO;
 import es.urjc.chamazon.services.CommentService;
 import es.urjc.chamazon.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,7 +50,7 @@ public class UserRestController {
         }
 
         try {
-            UserDTO user = userService.getUser(id);
+            UserIndividualDTO user = userService.getUserIndividual(id);
             return ResponseEntity.ok(user);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();

@@ -8,5 +8,5 @@ public record CategoryDTOExtended(
         Long id,
         String name,
         String description,
-        List<ProductDTO> productDTOList){
+        List<SimpleProductDTO> productDTOList){
 }
