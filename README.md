@@ -76,20 +76,21 @@ Each member contributed with dedication and unique skills. Below we it is shown 
 ### 👤 Beatriz Sanz Granados — [btrisss](https://github.com/btrisss)
 
 #### 🌟 Contribution Summary
-(me falta modificar esto)Beatriz worked extensively on the Comment entity, focusing on its full integration within the REST API. She developed the Comment REST controller, implemented DTOs and Mappers, and adapted both the service and model layers to align with RESTful standards. Additionally, she implemented AJAX-based pagination to dynamically load comments on demand, enhancing performance and improving the overall user experience.
+Developed and implemented the user registration form, ensuring proper validation and prevention of duplicate accounts. Secured user authentication by storing encrypted passwords in the database. Additionally, enhanced the comment system by integrating rich text editing, improving both frontend display and backend handling of formatted user input.
 
 #### 📝 Notable Commits
 1. [Evitar usuarios duplicados](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/5e980b87103c7c3b6ed0d6234284e4b2d4b991c8)
 2. [Form de Registro](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/1f4db0cdbe4d70a25a8aca7ae5cd31f7a02caf51)
 3. [Guardar password cifrada en BD al guardar usuario en BD](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/42686d6cbdd93e36d4e7274e288c58b77bbc74d0)
-
+4. [Texto Enriquecido Completo](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/407a1d6e4d2580c5fc73423e1cb3bc922c1ef49d)
+5. [Texto enriquecido en Front](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/1e649209fb403afd8a1a1f2a1a2b2a4b30cf5173)
 
 #### 📁 Most Contributed Files
 (me falta modificar esto)
 
-- `src/main/java/es/urjc/chamazon/models/Comment.java`
+- `src/main/java/resources/js/quill.js`
 - `src/main/java/es/urjc/chamazon/services/CommentService.java`
-- `src/main/java/es/urjc/chamazon/restControllers/CommentRestController.java`
+- `src/main/resources/templates/comment/commentForm.html`
 - `src/main/java/es/urjc/chamazon/controllers/CommentController.java`
 - `src/main/resources/templates/comment/commentList.html`
 
