@@ -50,6 +50,10 @@ public class CommentService {
 
     }
 
+    Comment getCommentById(Long id){
+        return commentRepository.findById(id).orElse(null);
+    }
+
     //Method to save a comment (it receives a DTO and converts it to a domain object)
     public CommentDTO save(CommentDTO commentDTO) {
         //sanitize comment text

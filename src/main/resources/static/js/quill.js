@@ -2,7 +2,13 @@
 function initQuill() {
     // We initialize Quill over the div #editor
     var quill = new Quill('#editor', {
-        theme: 'snow'
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ header: [1, 2, 3] }],  // Header picker
+                ['bold', 'italic', 'underline'] // Opciones: bold, italic, underline
+            ]
+        }
     });
 
     // Get the hidden field and, if previous content exists, assign it to the editor

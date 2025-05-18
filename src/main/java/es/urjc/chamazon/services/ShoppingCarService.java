@@ -1,6 +1,7 @@
 
 package es.urjc.chamazon.services;
 
+import es.urjc.chamazon.configurations.SecurityUtils;
 import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.dto.ProductMapper;
 import es.urjc.chamazon.dto.ShoppingCarDTO;
@@ -206,17 +207,22 @@ public class ShoppingCarService {
     //SHOPPING CAR LIST METHODS//
 
         public List<ShoppingCarExtendedDTO> getShoppingCarDTOListByUserId(Long idUser){
+
+/*            if (this.shoppingCarSecurity(idUser)) {
+                return null;
+            }*/;
+
             return toExtendedDTOList(getShoppingCarListByUserId(idUser));
         }
 
         List<ShoppingCar> getShoppingCarListByUserId(Long idUser) {
             //ToCheck
+
             System.out.println(idUser);
             List<ShoppingCar> shoppingCarList = new ArrayList<>();
             Optional<List<ShoppingCar>> scOptional = shoppingCarRepository.findByUser_Id(idUser);
             if (scOptional.isPresent()) {
                 shoppingCarList = scOptional.get();
-                System.out.println(shoppingCarList);
             }
             return shoppingCarList;
         }
@@ -237,6 +243,24 @@ public class ShoppingCarService {
         }
 
 
+
+/*        boolean shoppingCarSecurity(ShoppingCar sc) {
+            boolean notSecure = false;
+            if ( (!securityService.isAuthorized(sc)) && !securityService.isAdmin()) {
+                notSecure = true;
+            }
+            return notSecure;
+        }
+
+        boolean shoppingCarSecurity(Long idUser) throws Exception {
+            boolean notSecure = false;
+            if ( !securityService.isAuthorized(idUser) && !securityService.isAdmin() ) {
+                notSecure = true;
+                throw new Exception("Mal ");
+            }
+            return notSecure;
+
+        }*/
 
 /*    public Map<Long, Integer> getProductsLengthMap(List<ShoppingCarExtendedDTO> listShoppingCarDTO) {
         Map<Long, Integer> productLengthMap = new HashMap<>();
@@ -260,45 +284,11 @@ public class ShoppingCarService {
         sc.setUser(user);
         this.addShoppingCar(sc);
         return sc;
-    }
-
-
-
-        //public Long getShoppingCarSizeFromActualShoppingCar(Long idUser) {}
-
-
-    //DEPRECATED Methods / Delete on future
-
-    //Create a new List shoppingCar for idUser
-/*    private List<ShoppingCar> addListShoppingCarToUser(int idUser) {
-        List<ShoppingCar> shoppingCarList = new ArrayList<>();
-        shoppingCars.put(idUser, shoppingCarList);
-        return shoppingCarList;
     }*/
 
-    //Create a new shoppingCar for idUser
-/*    private ShoppingCar addShoppingCarToUser(int idUser) {
 
-        sc.setIdUser(idUser);
-        shoppingCars.get(idUser).add(sc);
+    //public Long getShoppingCarSizeFromActualShoppingCar(Long idUser) {}
 
 
-        List<ShoppingCar> newList = shoppingCars.get(idUser);
-        newList.add(sc);
-        shoppingCars.put(idUser,newList);
-
-        return sc;
-    }*/
-
-/*    public List<Product> getProductListFromidList(List<Integer> idProductList) {
-        List<Product> productList = new ArrayList<>();
-        if (!idProductList.isEmpty()) {
-            for (Integer idP : idProductList) {
-                productList.add(productService.findById(idP));
-            }
-            return productList;
-        }
-        return productList;
-    }*/
 }
 
