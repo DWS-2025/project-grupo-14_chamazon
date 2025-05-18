@@ -213,6 +213,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/users/").hasRole("ADMIN")
                         .requestMatchers("/users/add").hasRole("ADMIN")
 
+
                         .anyRequest().authenticated()
 
                 )
