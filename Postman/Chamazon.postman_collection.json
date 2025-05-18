@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "3befa1d1-79b2-47b0-92eb-0486b2a28790",
+		"_postman_id": "0e0958a3-1981-4edf-b803-d731e8dbc4b8",
 		"name": "Chamazon",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "43857341",
-		"_collection_link": "https://victor-5489845.postman.co/workspace/029186c5-c97e-4ad4-8cd8-95e275597334/collection/43857341-3befa1d1-79b2-47b0-92eb-0486b2a28790?action=share&source=collection_link&creator=43857341"
+		"_exporter_id": "33547226"
 	},
 	"item": [
 		{
@@ -29,25 +28,6 @@
 					"response": []
 				},
 				{
-					"name": "DELETE_Image_From_Product",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{baseURL}}/products/{{productID}}/image",
-							"host": [
-								"{{baseURL}}"
-							],
-							"path": [
-								"products",
-								"{{productID}}",
-								"image"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "GET_Product",
 					"request": {
 						"method": "GET",
@@ -60,6 +40,52 @@
 							"path": [
 								"products",
 								"{{productID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DOWNLOAD_File_To_Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/products/{{productID}}/file",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products",
+								"{{productID}}",
+								"file"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Filter",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"categoryId\": 1,\r\n    \"minPrice\": 10.5,\r\n    \"maxPrice\": 50.0,\r\n    \"rating\": 4.5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/products/filter",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products",
+								"filter"
 							]
 						}
 					},
@@ -93,6 +119,71 @@
 					"response": []
 				},
 				{
+					"name": "ASSIGN_Image_To_Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "imageFile",
+									"type": "file",
+									"src": "/C:/Users/Victor_URJC/Downloads/chamazon.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/products/{{productID}}/image",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products",
+								"{{productID}}",
+								"image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ASSIGN_File_To_Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/BCT/Downloads/ejercicio1_datos (1).pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/products/{{productID}}/file",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products",
+								"{{productID}}",
+								"file"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "DELETE_Product",
 					"request": {
 						"method": "DELETE",
@@ -111,20 +202,10 @@
 					"response": []
 				},
 				{
-					"name": "ASSIGN_Image_To_Product",
+					"name": "DELETE_Image_From_Product",
 					"request": {
-						"method": "POST",
+						"method": "DELETE",
 						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "imageFile",
-									"type": "file",
-									"src": "/C:/Users/Victor_URJC/Downloads/chamazon.jpg"
-								}
-							]
-						},
 						"url": {
 							"raw": "{{baseURL}}/products/{{productID}}/image",
 							"host": [
@@ -161,6 +242,25 @@
 							"path": [
 								"products",
 								"{{productID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE_Image_From_Product",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/products/{{productID}}/image",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products",
+								"{{productID}}",
+								"image"
 							]
 						}
 					},
@@ -327,7 +427,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"comment\": \"Comentario desde Postman2.0\",\r\n  \"rating\": 5,\r\n  \"user\": {\r\n    \"id\": 1\r\n  },\r\n  \"product\": {\r\n    \"id\": 2\r\n  }\r\n} ",
+							"raw": "{\r\n  \"comment\": \"Este producto es excelente 2.0\",\r\n  \"rating\": 5,\r\n  \"product\": {\r\n    \"id\": 1\r\n  }\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -335,12 +435,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/comments",
+							"raw": "{{baseURL}}/comments/",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
-								"comments"
+								"comments",
+								""
 							]
 						}
 					},
@@ -353,7 +454,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"comment\": \"Comentario modificado desde API\",\r\n    \"rating\": 3,\r\n    \"user\": {\r\n        \"id\": 2\r\n    },\r\n    \"product\": {\r\n        \"id\": 1\r\n    }\r\n}",
+							"raw": "{\r\n    \"comment\": \"Comentario modificado desde API\",\r\n    \"rating\": 3,\r\n    \"product\": {\r\n        \"id\": 4\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -361,12 +462,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/comments/{{commentID}}",
+							"raw": "{{baseURL}}/comments/edit/{{commentID}}",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
 								"comments",
+								"edit",
 								"{{commentID}}"
 							]
 						}
@@ -607,7 +709,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"userName\": \"MOdified userName\",\r\n    \"password\": \"6\",\r\n    \"email\": \"modifedemail@email.com\",\r\n    \"phone\": \"890731\",\r\n    \"address\": \"nueva direccion\"\r\n    }",
+							"raw": "{\r\n    \"firstName\": \"hola\",\r\n    \"surName\": \"hola\",\r\n    \"userName\": \"MOdified userName\",\r\n    \"password\": \"6\",\r\n    \"email\": \"modifedemail@email.com\",\r\n    \"phone\": \"890731\",\r\n    \"address\": \"nueva direccion\"\r\n    }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -640,6 +742,100 @@
 							"path": [
 								"users",
 								"{{userID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_Actual_User",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "User Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/auth/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/auth/refresh",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"username\": \"user\", \"password\": \"pass\" }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/auth/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/auth/logout",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"auth",
+								"logout"
 							]
 						}
 					},

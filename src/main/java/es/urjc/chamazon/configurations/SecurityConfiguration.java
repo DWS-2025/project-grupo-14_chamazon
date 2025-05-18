@@ -88,11 +88,11 @@ public class SecurityConfiguration {
                                 "/api/categories/",
                                 "/api/categories/{id}",
                                 "/api/categories/{id}/products",
-                                "/api/categories/products",
-                                "/api/commentView/commentList"
+                                "/api/comments/",
+                                "/api/comments/{id}",
+                                "/api/products/{id}/file"
                         ).permitAll()
 
-                        .requestMatchers(HttpMethod.POST, "/api/products/filter").permitAll()
 
                         // === COMMENTS (USER o ADMIN) ===
                         .requestMatchers(HttpMethod.POST, "/api/comments/**").hasAnyRole("USER", "ADMIN")
@@ -105,20 +105,20 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasRole("ADMIN")
 
                         // === PRODUCTS (ADMIN) ===
+                        .requestMatchers(HttpMethod.POST, "/api/products/").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
 
                         // === SHOPPING CART (USER o ADMIN) ===
-                        .requestMatchers("/api/cart/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/shoppingCar/**").hasAnyRole("USER", "ADMIN")
 
                         // === USERS ===
-                        .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyRole("USER", "ADMIN") // ver tu info
                         .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")               // ver todos los usuarios
-                        .requestMatchers(HttpMethod.GET, "/api/users/{id}").authenticated()           // ver un usuario específico (filtrado después)
+                        .requestMatchers(HttpMethod.GET, "/api/users/{id}").hasAnyRole("ADMIN","USER")           // ver un usuario específico (filtrado después)
                         .requestMatchers(HttpMethod.POST, "/api/users/**").permitAll()                // registro libre
-                        .requestMatchers(HttpMethod.PUT, "/api/users/{id}").authenticated()           // puede editar (se filtra después)
-                        .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").authenticated()        // puede borrar (se filtra después)
+                        .requestMatchers(HttpMethod.PUT, "/api/users/{id}").hasAnyRole("ADMIN","USER")           // puede editar (se filtra después)
+                        .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").hasAnyRole("ADMIN","USER")       // puede borrar (se filtra después)
 
                         // === Anything else in /api/** (no autorizado por defecto) ===
                         .anyRequest().permitAll()
@@ -211,8 +211,9 @@ public class SecurityConfiguration {
                         .requestMatchers("/products/add").hasRole("ADMIN")
                         .requestMatchers("/products/{id}/edit").hasRole("ADMIN")
                         .requestMatchers("/products/{id}/delete").hasRole("ADMIN")
-                        .requestMatchers("/users").hasRole("ADMIN")
+                        .requestMatchers("/users/").hasRole("ADMIN")
                         .requestMatchers("/users/add").hasRole("ADMIN")
+
 
                         .anyRequest().authenticated()
 

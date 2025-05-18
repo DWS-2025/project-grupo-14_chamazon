@@ -12,7 +12,7 @@ public class ShoppingCarDTO {
 
     private Long id;
     private LocalDateTime dateSold;
-    private UserDTO user;
+    private SimpletUserDTO user;
 
     public Long getId() {
         return id;
@@ -31,11 +31,11 @@ public class ShoppingCarDTO {
     }
 
 
-    public UserDTO getUser() {
+    public SimpletUserDTO getUser() {
         return user;
     }
 
-    public void setUser(UserDTO user) {
+    public void setUser(SimpletUserDTO user) {
         this.user = user;
     }
 

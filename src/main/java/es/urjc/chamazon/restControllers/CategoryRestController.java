@@ -3,6 +3,7 @@ package es.urjc.chamazon.restControllers;
 import es.urjc.chamazon.dto.CategoryDTO;
 import es.urjc.chamazon.dto.CategoryDTOExtended;
 import es.urjc.chamazon.dto.ProductDTO;
+import es.urjc.chamazon.dto.SimpleProductDTO;
 import es.urjc.chamazon.services.CategoryService;
 import es.urjc.chamazon.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

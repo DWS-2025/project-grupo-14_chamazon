@@ -15,9 +15,12 @@ public interface ProductMapper {
     @Mapping(source = "commentList", target = "commentDTOList")
     ProductDTOExtended toDTOExtended(Product product);
     ProductDTO toDTO(Product product);
+    SimpleProductDTO toSimpleDTO(Product product);
     Product toProduct(ProductDTO productDTO);
-    Collection<ProductDTO> toDTOs(Collection<Product> products);
+    Collection<ProductDTO>toProductDTOs(Collection<Product> products);
+    Collection<SimpleProductDTO> toDTOs(Collection<Product> products);
     Collection<Product> toProduct(Collection<ProductDTO> productDTOs);
     Collection<ProductDTOExtended> toDTOsExtended(Collection<Product> products);
     Product toProductFromExtended(ProductDTOExtended productDTOExtended);
+    Collection<SimpleProductDTO> toSimpleDTOs(Collection<Product> products);
 }
