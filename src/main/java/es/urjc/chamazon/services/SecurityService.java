@@ -1,6 +1,8 @@
 package es.urjc.chamazon.services;
 
 import es.urjc.chamazon.configurations.SecurityUtils;
+import es.urjc.chamazon.models.Comment;
+import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.ShoppingCar;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.repositories.UserRepository;
@@ -21,6 +23,10 @@ public class SecurityService {
     UserService userService;
     @Autowired
     private ShoppingCarService shoppingCarService;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private CommentService commentService;
 
 
 /*    @Autowired
@@ -59,13 +65,6 @@ public class SecurityService {
                 userID.equals(sesionUser().getId());
     }
 
-    public void permission(Long idUser) throws Exception {
-        boolean notSecure = false;
-        if ( !this.isAuthorized(idUser) && !this.isAdmin() ) {
-            throw new Exception("No tiene permisos para acceder a la pagina");
-        }
-    }
-
     public void permission() throws Exception {
         boolean notSecure = false;
         if ( !this.isAuthenticated() && !this.isAdmin() ) {
@@ -73,9 +72,27 @@ public class SecurityService {
         }
     }
 
+    public void permission(Long idUser) throws Exception {
+
+        if ( !this.isAuthorized(idUser) && !this.isAdmin() ) {
+            throw new Exception("No tiene permisos para acceder a la pagina");
+        }
+    }
 
     public void shoppingCarPermission(Long shoppingCarID) throws Exception {
         ShoppingCar sc = shoppingCarService.getShoppingCarById(shoppingCarID);
         this.permission(sc.getUserId());
     }
+
+    public void productPermission(Long productID) throws Exception {
+        Product product = productService.getEntityId(productID);
+        this.permission(product.getUser().getId());
+    }
+
+    public void commentPermission(Long commentID) throws Exception {
+        Comment comment = commentService.getCommentById(commentID);
+        this.permission(comment.getUser().getId());
+    }
+
+
 }
