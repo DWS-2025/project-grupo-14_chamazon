@@ -7,7 +7,7 @@ import java.util.List;
 public class ShoppingCarExtendedDTO {
     private Long id;
     private LocalDateTime dateSold;
-    private UserDTO user;
+    private CommentUserDTO user;
     private List<ProductDTO> productList;
 
 
@@ -27,11 +27,11 @@ public class ShoppingCarExtendedDTO {
         this.dateSold = dateSold;
     }
 
-    public UserDTO getUser() {
+    public CommentUserDTO getUser() {
         return user;
     }
 
-    public void setUser(UserDTO user) {
+    public void setUser(CommentUserDTO user) {
         this.user = user;
     }
 
