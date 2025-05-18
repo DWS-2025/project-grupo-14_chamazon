@@ -210,7 +210,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/products/add").hasRole("ADMIN")
                         .requestMatchers("/products/{id}/edit").hasRole("ADMIN")
                         .requestMatchers("/products/{id}/delete").hasRole("ADMIN")
-                        .requestMatchers("/users").hasRole("ADMIN")
+                        .requestMatchers("/users/").hasRole("ADMIN")
                         .requestMatchers("/users/add").hasRole("ADMIN")
 
                         .anyRequest().authenticated()
