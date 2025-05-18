@@ -4,11 +4,13 @@ import es.urjc.chamazon.configurations.SecurityUtils;
 import es.urjc.chamazon.dto.CommentDTO;
 import es.urjc.chamazon.dto.ProductDTOExtended;
 import es.urjc.chamazon.dto.UserDTO;
+import es.urjc.chamazon.jwt.JwtTokenProvider;
 import es.urjc.chamazon.models.Comment;
 import es.urjc.chamazon.models.Product;
 //import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.CommentService;
 import es.urjc.chamazon.services.ProductService;
+import es.urjc.chamazon.services.SecurityService;
 import es.urjc.chamazon.services.SanitizationService;
 import es.urjc.chamazon.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +41,25 @@ public class CommentController {
     @Autowired
     private SanitizationService sanitizationService;
 
+    @Autowired
+    private SecurityService securityService;
 
     //Create Operations: method addCommentForm(GET) and addComment(POST) to add a new comment
     @GetMapping("/add")
     public String addCommentForm(@RequestParam("productId") Long productId, Model model,  Authentication auth) {
+        String username = auth.getName();
+        Long userId = userService.findByUserName(username).get().id();
+
+        try {
+            securityService.permission(userId);
+
+        }catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("errorCode", "403");
+            return "error";
+        }
+
+
         Optional<Product> product = productService.findById(productId);
         if (product.isPresent()) {
             model.addAttribute("product", product.get());
@@ -56,8 +73,6 @@ public class CommentController {
             List<UserDTO> users = userService.getAllUsers();
             model.addAttribute("users", users);
         } else {
-            String username = auth.getName();
-            Long userId = userService.findByUserName(username).get().id();
             model.addAttribute("currentUserId", userId);
         }
 
@@ -66,7 +81,17 @@ public class CommentController {
     }
 
     @PostMapping("/add")
-    public String addComment(@RequestParam String commentTxt, @RequestParam int rating, @RequestParam Long userId , @RequestParam Long productId, Authentication auth) {
+    public String addComment(@RequestParam String commentTxt, @RequestParam int rating, @RequestParam Long userId , @RequestParam Long productId, Model model) {
+
+        try {
+            securityService.permission(userId);
+
+        }catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("errorCode", "403");
+            return "error";
+        }
+
         boolean isAdmin = SecurityUtils.isAdmin();
 
         boolean isCreated = commentService.createComment(commentTxt, rating, userId, productId);
@@ -103,6 +128,16 @@ public class CommentController {
     //Update Operations: method getEditCommentPage(GET) and updateComment(POST) to update a comment
     @GetMapping("/edit/{id}")
     public String getEditCommentPage(@PathVariable Long id, Model model) {
+
+        try {
+            securityService.commentPermission(id);
+
+        }catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("errorCode", "403");
+            return "error";
+        }
+
         CommentDTO commentDTO = commentService.findById(id);
 
         if (commentDTO != null) {
@@ -116,7 +151,16 @@ public class CommentController {
     @PostMapping("/edit/{id}")
     public String updateComment(@PathVariable Long id,
                                 @RequestParam("comment") String commentTxt,
-                                @RequestParam int rating, Authentication auth) {
+                                @RequestParam int rating, Model model) {
+
+        try {
+            securityService.commentPermission(id);
+
+        }catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("errorCode", "403");
+            return "error";
+        }
 
         CommentDTO commentDTO = commentService.findById(id);
 
@@ -140,7 +184,17 @@ public class CommentController {
 
     //Delete Operation: method deleteComment(POST) to delete a comment (delete with a button in the comment view)
     @PostMapping("/delete/{id}")
-    public String deleteComment(@PathVariable Long id, Authentication auth) {
+    public String deleteComment(@PathVariable Long id, Model model) {
+
+        try {
+            securityService.commentPermission(id);
+
+        }catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("errorCode", "403");
+            return "error";
+        }
+
         CommentDTO commentDTO = commentService.findById(id);
         boolean isAdmin = SecurityUtils.isAdmin();
 

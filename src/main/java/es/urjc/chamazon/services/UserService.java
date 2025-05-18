@@ -55,6 +55,13 @@ public class UserService {
         return userOpt.orElse(null);
     }
 
+    public User getUserByName(String name) {
+        Optional<User> userOpt = userRepository.findByUserName(name);
+        return userOpt.orElse(null);
+    }
+
+
+
     public Optional<UserDTOExtended> findByUserName(String username) {
         return userRepository.findByUserName(username)
                 .map(userMapper::toDTOExtended);
