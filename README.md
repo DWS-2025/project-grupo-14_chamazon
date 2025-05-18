@@ -101,19 +101,19 @@ Each member contributed with dedication and unique skills. Below we it is shown 
 Belén focused on the User and Category entities, developing their REST controllers and integrating DTOs and Mappers accordingly. She ensured the proper functionality of user and category-related endpoints within the API. Additionally, she contributed to debugging and improving the Product entity, collaborating closely with Mario to resolve integration issues and enhance the structure of the RESTful services. Belén also created the Postman collection used to test the endpoints, helping the team validate the API behavior efficiently.
 
 #### 📝 Notable Commits
-1. [Funcionalidad completa de Category y cambios en User, Chamazon funcional](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/8c48f807ce954124f336697fe9e76e6bb861be86)
-2. [Nueva implementación mejorada de los DTOs](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/ce782e0a718ddc2542ac7969d02530d388358f21)
-3. [Rest completo de las entidades Category y User](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/e1943b659b03d395261d53a11240db1c3d8a864c)
-4. [Cambio de las entidades Category y User a tipo de dato DTO](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/57002d6817fc6fce6c5aea4d6b91ddb006d690c9)
-5. [Operación editar solucionada en User y Category](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/5025a14d9a6338fc1fc58d928b14e61907e842c9)
+1. [Nuevo primera implementación de las APIs rest](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/ab4e2c03c6d80a73edfd510072c87c7c3abc20ae)
+2. [Arreglo de producto](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/315846d50845d0e682a094e4e95b5a1524c3075e)
+3. [Creación de archivo para producto](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/0c14a1902bacb55398730eec94ab8ddac820de46)
+4. [Nuevas redirecciones, ajustes de visualización de botones según ROL y corrección de errores](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/8da2a4821f4f4c0f5f61fa2643c68d9226c9c3ef)
+5. [Página login y creación ROLES de usuario](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/354149da2dc9cefba9c6aa95c636204adecd5a09)
 
 #### 📁 Most Contributed Files
 
-- `src/main/java/es/urjc/chamazon/restControllers/CategoryRestController.java`
+- `src/main/java/es/urjc/chamazon/configurations/SecurityConfiguration.java`
+- `src/main/java/es/urjc/chamazon/configurations/SecurityUtils.java`
+- `src/main/java/es/urjc/chamazon/services/FileStorageService.java`
+- `src/main/java/es/urjc/chamazon/restControllers/CommentRestController.java`
 - `src/main/java/es/urjc/chamazon/restControllers/UserRestController.java`
-- `src/main/java/es/urjc/chamazon/services/CategoryService.java`
-- `src/main/java/es/urjc/chamazon/services/UserService.java`
-- `src/main/java/es/urjc/chamazon/dto/CategoryMapper.java`
 
 ---
 
