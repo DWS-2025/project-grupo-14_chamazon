@@ -222,18 +222,18 @@ public class ShoppingCarService {
         }
 
 
-        public List<ProductDTO> getProductListFromActualShoppingCar(Long idUser) {
+        public List<SimpleProductDTO> getProductListFromActualShoppingCar(Long idUser) {
             ShoppingCar sc = this.getActualShoppingCarByIdUser(idUser);
             return getProductDTOListFromSC(sc);
         }
 
-        public List<ProductDTO> getProductListDTOByShoppingCarId(Long idSC) {
+        public List<SimpleProductDTO> getProductListDTOByShoppingCarId(Long idSC) {
             ShoppingCar sc = this.getShoppingCarById(idSC);
             return getProductDTOListFromSC(sc);
         }
 
-        public List<ProductDTO> getProductDTOListFromSC(ShoppingCar sc) {
-            return (List<ProductDTO>) productMapper.toDTOs(sc.getProductList());
+        public List<SimpleProductDTO> getProductDTOListFromSC(ShoppingCar sc) {
+            return (List<SimpleProductDTO>) productMapper.toDTOs(sc.getProductList());
         }
 
 

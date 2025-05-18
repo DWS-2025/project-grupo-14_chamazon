@@ -94,7 +94,7 @@ public class ProductService {
     } //findAllProducts with pagination
     */
 
-    private Collection<ProductDTO> toDTOs(Collection<Product> products) {
+    private Collection<SimpleProductDTO> toDTOs(Collection<Product> products) {
         return productMapper.toDTOs(products);
     }
     private Collection<ProductDTOExtended> toDTOsExtended(Collection<Product> products){

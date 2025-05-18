@@ -3,6 +3,7 @@ package es.urjc.chamazon.restControllers;
 import es.urjc.chamazon.dto.CategoryDTO;
 import es.urjc.chamazon.dto.CategoryDTOExtended;
 import es.urjc.chamazon.dto.ProductDTO;
+import es.urjc.chamazon.dto.SimpleProductDTO;
 import es.urjc.chamazon.services.CategoryService;
 import es.urjc.chamazon.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,9 +86,9 @@ public class CategoryRestController {
 
     // GET /api/categories/{id}/products
     @GetMapping("/{id}/products")
-    public ResponseEntity<List<ProductDTO>> getProductsFromCategory(@PathVariable long id) {
+    public ResponseEntity<List<SimpleProductDTO>> getProductsFromCategory(@PathVariable long id) {
         try {
-            List<ProductDTO> products = categoryService.getProductsByCategoryId(id);
+            List<SimpleProductDTO> products = categoryService.getProductsByCategoryId(id);
             return ResponseEntity.ok(products);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();

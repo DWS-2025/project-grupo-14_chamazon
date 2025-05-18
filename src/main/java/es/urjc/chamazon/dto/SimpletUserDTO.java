@@ -1,8 +1,6 @@
 package es.urjc.chamazon.dto;
 
-import java.util.List;
-
-public record CommentUserDTO(
+public record SimpletUserDTO(
         Long id,
         String userName
 ) {

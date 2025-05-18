@@ -5,6 +5,7 @@ import es.urjc.chamazon.configurations.SecurityConfiguration;
 import es.urjc.chamazon.configurations.SecurityUtils;
 import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.dto.UserDTOExtended;
+import es.urjc.chamazon.dto.UserIndividualDTO;
 import es.urjc.chamazon.dto.UserMapper;
 import es.urjc.chamazon.models.Comment;
 import es.urjc.chamazon.models.User;
@@ -49,6 +50,10 @@ public class UserService {
     public UserDTO getUser(Long Id) {
         return toDTO(userRepository.findById(Id).orElseThrow());
     }
+    public UserIndividualDTO getUserIndividual(Long id){
+        return toUserIndividualDTO(userRepository.findById(id).orElseThrow());
+    }
+
 
     User getUserById(Long Id) {
         Optional<User> userOpt = userRepository.findById(Id);
@@ -158,6 +163,10 @@ public class UserService {
 
     private UserDTO toDTO(User user){
         return userMapper.toDTO(user);
+    }
+
+    private UserIndividualDTO toUserIndividualDTO(User user){
+        return userMapper.toIndividualDTO(user);
     }
     private User toUser(UserDTO userDTO){
         return userMapper.toUser(userDTO);

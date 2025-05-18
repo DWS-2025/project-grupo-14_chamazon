@@ -88,7 +88,6 @@ public class SecurityConfiguration {
                                 "/api/categories/",
                                 "/api/categories/{id}",
                                 "/api/categories/{id}/products",
-                                "/api/categories/products",
                                 "/api/commentView/commentList"
                         ).permitAll()
 

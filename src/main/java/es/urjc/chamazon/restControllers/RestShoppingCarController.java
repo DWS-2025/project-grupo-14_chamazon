@@ -3,6 +3,7 @@ package es.urjc.chamazon.restControllers;
 import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.dto.ShoppingCarDTO;
 import es.urjc.chamazon.dto.ShoppingCarExtendedDTO;
+import es.urjc.chamazon.dto.SimpleProductDTO;
 import es.urjc.chamazon.services.ShoppingCarService;
 import es.urjc.chamazon.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,9 @@ public class RestShoppingCarController {
 
     // Obtener productos en el carrito por ID de carrito
     @GetMapping("/{id}/products")
-    public ResponseEntity<List<ProductDTO>> getProductListByShoppingCarId(@PathVariable long id){
+    public ResponseEntity<List<SimpleProductDTO>> getProductListByShoppingCarId(@PathVariable long id){
         try {
-            List<ProductDTO> sc = shoppingCarService.getProductListDTOByShoppingCarId(id);
+            List<SimpleProductDTO> sc = shoppingCarService.getProductListDTOByShoppingCarId(id);
             return ResponseEntity.ok(sc);
         } catch (NoSuchElementException e){
             return ResponseEntity.notFound().build();

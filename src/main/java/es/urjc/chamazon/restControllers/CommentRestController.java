@@ -52,65 +52,90 @@ public class CommentRestController {
     }
 
     // 3. CREATE COMMENT (like in POST /commentView/add)
-    /*@PostMapping("/create")
-    public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO commentDTO){
+    @PostMapping("/")
+    public ResponseEntity<String> createComment(
+            @RequestBody CommentDTO commentDTO,
+            Authentication authentication) {
 
-        boolean created = commentService.createComment(commentDTO.getComment(), commentDTO.getRating(), commentDTO.getUser().id(), commentDTO.getProduct().id());
+        String username = authentication.getName();
+        var user = userService.findByUserName(username);
+
+        if (user == null || commentDTO.getProduct() == null) {
+            return ResponseEntity.badRequest().body("Faltan datos de usuario o producto");
+        }
+
+        boolean created = commentService.createComment(
+                commentDTO.getComment(),
+                commentDTO.getRating(),
+                user.get().id(),
+                commentDTO.getProduct().id()
+        );
 
         if (created) {
             boolean isAdmin = SecurityUtils.isAdmin();
             String redirectUrl = isAdmin ?
-                    "/commentView/commentList?productId=" + productId :
-                    "/products/" + productId;
+                    "/commentView/commentList?productId=" + commentDTO.getProduct().id() :
+                    "/products/" + commentDTO.getProduct().id();
+
             return ResponseEntity.ok(redirectUrl);
         } else {
             return ResponseEntity.badRequest().body("No se pudo crear el comentario");
         }
-    }*/
+    }
+
+
 
     // 4. UPDATE COMMENT (like POST /edit/{id})
-    @PutMapping("/edit/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<String> updateComment(
             @PathVariable Long id,
-            @RequestParam("comment") String commentTxt,
-            @RequestParam int rating,
+            @RequestBody CommentDTO updatedCommentDTO,
             Authentication auth) {
 
-        CommentDTO commentDTO = commentService.findById(id);
+        CommentDTO existingCommentDTO = commentService.findById(id);
 
-        if (commentDTO != null) {
-            commentDTO.setComment(commentTxt);
-            commentDTO.setRating(rating);
-            commentService.save(commentDTO);
-
-            boolean isAdmin = SecurityUtils.isAdmin();
-            String redirectUrl = isAdmin ?
-                    "/commentView/commentList?productId=" + commentDTO.getProduct().id() :
-                    "/products/" + commentDTO.getProduct().id();
-
-            return ResponseEntity.ok(redirectUrl);
+        if (existingCommentDTO == null) {
+            return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.notFound().build();
+        String username = auth.getName();
+        var user = userService.findByUserName(username);
+
+        if (!existingCommentDTO.getUser().id().equals(user.get()) && !SecurityUtils.isAdmin()) {
+            return ResponseEntity.status(403).body("No tienes permiso para editar este comentario");
+        }
+
+        existingCommentDTO.setComment(updatedCommentDTO.getComment());
+        existingCommentDTO.setRating(updatedCommentDTO.getRating());
+        existingCommentDTO.setProduct(updatedCommentDTO.getProduct());
+        commentService.save(existingCommentDTO);
+
+        String redirectUrl = "/products/" + existingCommentDTO.getProduct().id();
+        return ResponseEntity.ok(redirectUrl);
     }
+
 
     // 5. DELETE COMMENT (like POST /delete/{id})
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteComment(@PathVariable Long id, Authentication auth) {
         CommentDTO commentDTO = commentService.findById(id);
-        if (commentDTO != null) {
-            commentService.deleteById(id);
 
-            boolean isAdmin = SecurityUtils.isAdmin();
-            String redirectUrl = isAdmin ?
-                    "/commentView/commentList?productId=" + commentDTO.getProduct().id() :
-                    "/products/" + commentDTO.getProduct().id();
-
-            return ResponseEntity.ok(redirectUrl);
+        if (commentDTO == null) {
+            return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.notFound().build();
+        String username = auth.getName();
+        var user = userService.findByUserName(username);
+
+        if (!commentDTO.getUser().id().equals(user.get().id() ) && !SecurityUtils.isAdmin()) {
+            return ResponseEntity.status(403).body("No tienes permiso para eliminar este comentario");
+        }
+
+        commentService.deleteById(id);
+        String redirectUrl = "/products/" + commentDTO.getProduct().id();
+        return ResponseEntity.ok(redirectUrl);
     }
+
 
     // 6. GET COMMENTS BY PRODUCT (paginated)
     @GetMapping("/product/{productId}")
@@ -122,15 +147,5 @@ public class CommentRestController {
         Pageable pageable = PageRequest.of(page, size);
         Page<Comment> commentPage = commentService.findByProductId(productId, pageable);
         return commentPage.map(commentMapper::toDTO);
-    }
-
-    // 7. GET COMMENT LIST (all or by productId, like commentList view)
-    @GetMapping("/list")
-    public ResponseEntity<List<CommentDTO>> getCommentList(@RequestParam(required = false) Long productId) {
-        if (productId != null) {
-            return ResponseEntity.ok(commentService.findByProductId(productId));
-        } else {
-            return ResponseEntity.ok(List.of()); // lista vacía si no hay productId
-        }
     }
 }

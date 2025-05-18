@@ -1,9 +1,7 @@
 package es.urjc.chamazon.controllers;
 
+import es.urjc.chamazon.dto.*;
 import es.urjc.chamazon.dto.ProductDTO;
-import es.urjc.chamazon.dto.ProductDTO;
-import es.urjc.chamazon.dto.ShoppingCarDTO;
-import es.urjc.chamazon.dto.ShoppingCarExtendedDTO;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.services.ShoppingCarService;
 import es.urjc.chamazon.services.UserService;
@@ -57,7 +55,7 @@ public class ShoppingCarController {
         if (sc != null) {
             model.addAttribute("ShoppingCarDTO", sc);
         }
-        List<ProductDTO> productList = shoppingCarService.getProductListDTOByShoppingCarId(id);
+        List<SimpleProductDTO> productList = shoppingCarService.getProductListDTOByShoppingCarId(id);
 
         model.addAttribute("idSC", id);
         model.addAttribute("ifNotEnd", sc.getDateSold());
