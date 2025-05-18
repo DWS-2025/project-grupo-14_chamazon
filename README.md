@@ -50,14 +50,11 @@
 
 ---
 
-## 👑 User Permissions
+## 👑 User Permissions - ROLES
 
-Currently, the platform runs in **admin-only mode**: the admin can manage all entities and perform all operations (full CRUD).
-
-### Future Roles (Planned):
 - **Admin**: Full control over the entire system.
-- **Provider**: Can create and manage their own products.
-- **Customer**: Can browse, comment, add to cart, and complete purchases.
+- **Anonymus**: Can browse products and categories.
+- **User**: Can browse, comment, add to cart, and complete purchases.
 
 ---
 
@@ -76,7 +73,7 @@ Each member contributed with dedication and unique skills. Below we it is shown 
 ### 👤 Beatriz Sanz Granados — [btrisss](https://github.com/btrisss)
 
 #### 🌟 Contribution Summary
-Developed and implemented the user registration form, ensuring proper validation and prevention of duplicate accounts. Secured user authentication by storing encrypted passwords in the database. Additionally, enhanced the comment system by integrating rich text editing, improving both frontend display and backend handling of formatted user input.
+Beatriz developed and implemented the user registration form, ensuring proper validation and prevention of duplicate accounts. Secured user authentication by storing encrypted passwords in the database. Additionally, enhanced the comment system by integrating rich text editing, improving both frontend display and backend handling of formatted user input.
 
 #### 📝 Notable Commits
 1. [Evitar usuarios duplicados](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/5e980b87103c7c3b6ed0d6234284e4b2d4b991c8)
@@ -86,7 +83,6 @@ Developed and implemented the user registration form, ensuring proper validation
 5. [Texto enriquecido en Front](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/1e649209fb403afd8a1a1f2a1a2b2a4b30cf5173)
 
 #### 📁 Most Contributed Files
-(me falta modificar esto)
 
 - `src/main/java/resources/js/quill.js`
 - `src/main/java/es/urjc/chamazon/services/CommentService.java`
