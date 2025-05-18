@@ -44,7 +44,7 @@ public class SanitizationService {
 
         // Custom whitelist quilljs
         Safelist quillSafelist = new Safelist()
-                .addTags("p", "br", "strong", "em", "ul", "ol", "li", "a")
+                .addTags("p", "br", "strong", "em", "ul", "ol", "li", "a", "u", "h1", "h3")
                 .addAttributes("a", "href")
                 .addProtocols("a", "href", "http", "https")
                 .addEnforcedAttribute("a", "target", "_blank");
