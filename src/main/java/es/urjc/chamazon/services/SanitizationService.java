@@ -7,10 +7,14 @@ import org.springframework.stereotype.Service;
 import es.urjc.chamazon.dto.UserDTO;
 import es.urjc.chamazon.dto.ProductDTO;
 import es.urjc.chamazon.dto.ProductDTOExtended;
+import es.urjc.chamazon.dto.CategoryDTOExtended;
 import es.urjc.chamazon.dto.CommentDTO;
-import es.urjc.chamazon.models.Product;
-
+import es.urjc.chamazon.dto.CategoryDTO;
 import es.urjc.chamazon.dto.ShoppingCarDTO;
+import es.urjc.chamazon.dto.FilteredDto;
+import es.urjc.chamazon.models.Product;
+import es.urjc.chamazon.models.Category;
+import es.urjc.chamazon.models.ShoppingCar;
 import es.urjc.chamazon.dto.ShoppingCarExtendedDTO;
 
 @Service
@@ -135,6 +139,33 @@ public class SanitizationService {
         commentDTO.getUser(),
         commentDTO.getProduct(),
         commentDTO.isCanEditOrDelete());
+    }
+
+    
+
+    //Sanitize categorydto
+    public CategoryDTO sanitizeCategoryDTO(CategoryDTO categoryDTO) {
+        if (categoryDTO == null) {
+            return null;
+        }
+
+        return new CategoryDTO(
+                categoryDTO.id(),
+                sanitizeNone(categoryDTO.name()),
+                sanitizeBasic(categoryDTO.description()));
+    }
+
+    // sanitize category for modifying
+    public Category sanitizeCategory(Category category) {
+        if (category == null) {
+            return null;
+        }
+
+        category.setId(category.getId());
+        category.setName(sanitizeNone(category.getName()));
+        category.setDescription(sanitizeBasic(category.getDescription()));
+
+        return category;
     }
 
 }

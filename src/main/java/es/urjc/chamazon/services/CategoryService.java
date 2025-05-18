@@ -28,6 +28,8 @@ public class CategoryService {
     @Autowired
     private ProductMapper productMapper;
 
+    @Autowired
+    private SanitizationService sanitizationService;
 
     public List<CategoryDTOExtended> getCategories() {
         return toDTOs(categoryRepository.findAll());
@@ -43,12 +45,14 @@ public class CategoryService {
     }
 
     public void createCategory(CategoryDTO categoryDTO) {
-        Category category = toCategory(categoryDTO);
+        CategoryDTO sanitizedCategoryDto = sanitizationService.sanitizeCategoryDTO(categoryDTO);
+        Category category = toCategory(sanitizedCategoryDto);
         this.save(category);
     }
 
     Category save(Category category) {
-        return categoryRepository.save(category);
+        Category sanitizedCategory = sanitizationService.sanitizeCategory(category);
+        return categoryRepository.save(sanitizedCategory);
     }
 
     public void deleteCategory(Long categoryId) {
@@ -70,10 +74,11 @@ public class CategoryService {
     public void editCategory(Long categoryId, CategoryDTO updatedCategoryDTO) {
         Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
 
+        CategoryDTO updatedSanitizedCategoryDto = sanitizationService.sanitizeCategoryDTO(updatedCategoryDTO);
         if (categoryOptional.isPresent()) {
             Category category = categoryOptional.get();
-            category.setName(updatedCategoryDTO.name());
-            category.setDescription(updatedCategoryDTO.description());
+            category.setName(updatedSanitizedCategoryDto.name());
+            category.setDescription(updatedSanitizedCategoryDto.description());
             categoryRepository.save(category);
         }
     }

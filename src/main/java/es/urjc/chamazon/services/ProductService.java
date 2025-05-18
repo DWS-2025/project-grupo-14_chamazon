@@ -160,7 +160,7 @@ public class ProductService {
         existingProduct.setName(sanitizedNewProduct.getName());
         existingProduct.setPrice(sanitizedNewProduct.getPrice());
         existingProduct.setDescription(sanitizedNewProduct.getDescription());
-        existingProduct.setRating(sanitizedNewProduct.getRating());
+        //existingProduct.setRating(sanitizedNewProduct.getRating());
 
 
         if (!imageFile.isEmpty()) {
