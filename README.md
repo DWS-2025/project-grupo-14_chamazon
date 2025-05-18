@@ -119,24 +119,23 @@ Belén focused on the User and Category entities, developing their REST controll
 
 ### 👤 Mario Martín Arriscado Santos — [M44ri0](https://github.com/M44ri0)
 
-#### 🌟 Contribution Summary (cambiar esto fase 3 - mario)
-Mario focused on enhancing the Product entity and its integration within the REST API. He developed the new Product REST controller, implemented DTOs and Mappers, and refactored the service and model layers accordingly. His work also included the implementation of dynamic queries to filter products by price, category, and rating, as well as improving filter reset and selection logic for a cleaner and more efficient user experience.
-
+#### 🌟 Contribution Summary
+Mario took responsibility for enhancing problematic elements, improving filters, securing confidential data in DTOs from phase 2, and integrating/improving new features implemented for phase 3. He implemented a sanitization service using JSOUP, fixed rich text functionality issues, and made several security improvements to protect user data. His work focused on application's stability making sure the user experience is good.
 
 #### 📝 Notable Commits
 1. [Mejora Filtro Productos - Funcional - Consulta dinamica (Commits sucesivos)](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/defc37c208b778623ae6e27719969d02447dd4e8)
 2. [Integracion Certificado - KeyStore](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/6101c3c226499d5e13855d76666d22a2145ec8cf)
 3. [JSOUP - Sanitizar Entradas](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/74b843342da9d81298e4b4d8b0cb2141b537608e)
-4. [whiteblank](blank)
-5. [blank](whiteblank)
+4. [Modificación DTOs - Seguridad (Commits sucesivos)](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/5f7b6223d1601fbe420cb76ecb92045877611de3)
+5. [Arreglos Texto Enriquecido - QuillJS (Commits sucesivos)](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/bf691fb4174a455f5051286c563dc9b53d5f05bd)
 
 #### 📁 Most Contributed Files
 
 - `src\main\java\es\urjc\chamazon\services\SanitizationService.java`
 - `src\main\java\es\urjc\chamazon\services\ProductService.java`
 - `src\main\java\es\urjc\chamazon\controllers\ProductController.java`
-- `blank`
-- `asd`
+- `src\main\resources\static\js\quill.js`
+- `src\main\java\es\urjc\chamazon\dto\CommentUserDTO.java`
 
 ---
 
