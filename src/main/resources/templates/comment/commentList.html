@@ -89,11 +89,12 @@
                         <div class="card-body">
                             <p><strong>Usuario:</strong> ${comment.user.userName}</p>
                             <p><strong>Calificación:</strong> ${comment.rating}</p>
-                            <p><strong>Comentario:</strong> ${comment.comment}</p>
+                            <p><strong>Comentario:</strong> <span class="rendered-comment"></span></p>
                             <a class="btn btn-warning me-2" href="/commentView/edit/${comment.id}">Editar</a>
                             <button class="btn btn-danger" onclick="deleteComment(${comment.id}, this)">Eliminar</button>
                         </div>
                     `;
+                    card.querySelector('.rendered-comment').innerHTML = comment.comment;
                     commentsList.appendChild(card);
                 });
 
