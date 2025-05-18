@@ -11,6 +11,7 @@ import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.services.CommentService;
 import es.urjc.chamazon.services.ProductService;
 import es.urjc.chamazon.services.SecurityService;
+import es.urjc.chamazon.services.SanitizationService;
 import es.urjc.chamazon.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -36,6 +37,10 @@ public class CommentController {
     private ProductService productService;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SanitizationService sanitizationService;
+
     @Autowired
     private SecurityService securityService;
 
@@ -160,7 +165,7 @@ public class CommentController {
         CommentDTO commentDTO = commentService.findById(id);
 
         if (commentDTO != null) {
-            commentDTO.setComment(commentTxt);
+            commentDTO.setComment(sanitizationService.sanitizeQuill(commentTxt));
             commentDTO.setRating(rating);
 
             commentService.save(commentDTO);
