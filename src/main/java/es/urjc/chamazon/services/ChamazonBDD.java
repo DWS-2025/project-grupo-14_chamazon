@@ -2,17 +2,20 @@ package es.urjc.chamazon.services;
 
 import es.urjc.chamazon.dto.CommentDTO;
 import es.urjc.chamazon.dto.CommentMapper;
-import es.urjc.chamazon.dto.CommentDTO;
 import es.urjc.chamazon.models.Category;
+import es.urjc.chamazon.models.Comment;
 import es.urjc.chamazon.models.Product;
 import es.urjc.chamazon.models.User;
-import es.urjc.chamazon.models.Comment;
-import es.urjc.chamazon.repositories.CategoryRepository;
-
 import jakarta.annotation.PostConstruct;
+import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.sql.rowset.serial.SerialBlob;
+import java.sql.Blob;
 
 @Service
 public class ChamazonBDD{
@@ -46,79 +49,84 @@ public class ChamazonBDD{
         Category books = new Category("Books", "A collection of books");
         Category travel = new Category("Travel", "Travel gear");
 
-
-        Product laptop = new Product("Laptop Premium", 999.99F,
-                "High performance laptop with 16GB RAM",
-                1F);
-
-        Product smartphone = new Product("Smartphone X", 699.99F,
-                "Latest model with AMOLED display",
-                2F);
-
-        Product tshirt = new Product("Cotton T-Shirt", 19.99F, "Cotton T-Shirt",
-                3F);
-
-        Product novel = new Product("Best Seller Novel", 14.99F,
-                "The most popular novel this year",
-                4F);
-
-        Product backpack = new Product("Travel Backpack", 49.99F,
-                "Durable backpack for travelers",
-                4.3F);
-
-
-        Product raton = new Product("Raton", 9.99F,
-                "Raton para el ordenador",
-                5F);
-
         //Safe secondary entity
         categoryService.save(electronics);
         categoryService.save(clothing);
         categoryService.save(books);
         categoryService.save(travel);
 
-        //Assing secondary entity to main entity
-        laptop.getCategoryList().add(electronics);
-        smartphone.getCategoryList().add(electronics);
-        tshirt.getCategoryList().add(clothing);
-        novel.getCategoryList().add(books);
-        backpack.getCategoryList().add(travel);
+
+        Product[] products = new Product[]{
+                new Product("Laptop Premium", 999.99F, "High performance laptop with 16GB RAM", 1F),
+                new Product("Smartphone X", 699.99F, "Latest model with AMOLED display", 2F),
+                new Product("Cotton T-Shirt", 19.99F, "Cotton T-Shirt", 3F),
+                new Product("Best Seller Novel", 14.99F, "The most popular novel this year", 4F),
+                new Product("Travel Backpack", 49.99F, "Durable backpack for travelers", 4.3F),
+                new Product("Mouse", 9.99F, "Raton para el ordenador", 5F),
+                new Product("Smart Watch", 199.99F, "Fitness tracker with notifications", 4.0F),
+                new Product("Noise Cancelling Headphones", 149.99F, "Great for travel and work", 4.5F),
+                new Product("E-book Reader", 89.99F, "Read books anywhere, any time", 4.1F),
+                new Product("Running Shoes", 79.99F, "Perfect for daily runs and casual use", 4.2F),
+                new Product("Portable Charger", 29.99F, "Charge your devices on the go", 3.8F),
+                new Product("Bluetooth Speaker", 39.99F, "Loud and compact speaker", 4.0F),
+                new Product("Leather Jacket", 129.99F, "Stylish and warm", 4.6F),
+                new Product("Fantasy Book Saga", 59.99F, "Complete 5-book fantasy series", 4.7F)
+        };
 
 
-        // Product in many categories:
-        // Optional: Product in multiple categories 
-        Product smartwatch = new Product("Smart Watch", 199.99F,
-                "Fitness tracker with notifications", 4.0F);
-        smartwatch.getCategoryList().add(clothing);
-        smartwatch.getCategoryList().add(electronics);
+        // Asignar categorias e imagenes
+        products[0].getCategoryList().add(electronics);
+        products[1].getCategoryList().add(electronics);
+        products[2].getCategoryList().add(clothing);
+        products[3].getCategoryList().add(books);
+        products[4].getCategoryList().add(travel);
+        products[5].getCategoryList().add(electronics);
+        products[6].getCategoryList().add(clothing);
+        products[6].getCategoryList().add(electronics);
+        products[7].getCategoryList().add(electronics);
+        products[7].getCategoryList().add(travel);
+        products[8].getCategoryList().add(electronics);
+        products[8].getCategoryList().add(books);
+        products[9].getCategoryList().add(clothing);
+        products[10].getCategoryList().add(electronics);
+        products[10].getCategoryList().add(travel);
+        products[11].getCategoryList().add(electronics);
+        products[12].getCategoryList().add(clothing);
+        products[13].getCategoryList().add(books);
 
 
-        try {
-
-            productService.save(laptop);
-            productService.save(smartphone);
-            productService.save(tshirt);
-            productService.save(novel);
-            productService.save(backpack);
-
-            productService.save(smartwatch);
-
-        } catch (Exception e) {
-            System.out.println("Error guardando el producto: " + e.getMessage());
+        for (Product product : products) {
+            try {
+                productService.save(product);
+            } catch (Exception e) {
+                System.out.println("Error guardando el producto: " + e.getMessage());
+            }
         }
 
 
 
+
+
         userService.saveUser(new User( "PepeAdmin", "Pepe", "Montero", "123" , "pepe@mail.com", "098", "q", "ADMIN"));
-        userService.saveUser(new User( "User2", "Maria", "Carrera ", "321",  "maria@mail.com", "100", "p", "USER"));
+        userService.saveUser(new User( "User2", "Maria", "Carrera ", "222",  "maria@mail.com", "100", "p", "USER"));
         userService.saveUser(new User( "User3", "Fernando", "Alonso", "333", "fernando@mail.com", "200", "r", "USER"));
+        userService.saveUser(new User("User4", "Laura", "Martínez", "444", "laura@mail.com", "201", "s", "USER"));
+        userService.saveUser(new User("User5", "Carlos", "Ruiz", "555", "carlos@mail.com", "202", "t", "USER"));
+        userService.saveUser(new User("User6", "Lucía", "Gómez", "666", "lucia@mail.com", "203", "u", "USER"));
+        userService.saveUser(new User("User7", "Jorge", "López", "777", "jorge@mail.com", "204", "v", "USER"));
+        userService.saveUser(new User("User8", "Marta", "Sánchez", "888", "marta@mail.com", "205", "w", "USER"));
+        userService.saveUser(new User("User9", "Raúl", "Pérez", "999", "raul@mail.com", "206", "x", "USER"));
+        userService.saveUser(new User("User10", "Ana", "Torres", "000", "ana@mail.com", "207", "y", "USER"));
 
-        //shoppingCarService.addProductToUserShoppingCar(1L,1L);
+        for (long userId = 1L; userId <= 10L; userId++) {
+            for (long productId = userId; productId <= userId + 2 && productId <= products.length; productId++) {
+                shoppingCarService.addProductToUserShoppingCar((Long) productId, (Long)userId);
+            }
+        }
 
-
-        shoppingCarService.addProductToUserShoppingCar(2L,1L);
+/*        shoppingCarService.addProductToUserShoppingCar(2L,1L);
         shoppingCarService.addProductToUserShoppingCar(3L, 1L);
-        shoppingCarService.addProductToUserShoppingCar(4L, 1L);
+        shoppingCarService.addProductToUserShoppingCar(4L, 1L);*/
 
         System.out.println("Categorías creadas correctamente.");
 
