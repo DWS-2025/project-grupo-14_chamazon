@@ -45,17 +45,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		} catch (Exception ex) {
 			log.error("Exception processing JWT Token: ", ex);
-
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			response.setContentType("application/json");
-			response.getWriter().write("""
-            {
-              "error": "Unauthorized",
-              "message": "%s",
-              "path": "%s"
-            }
-            """.formatted(ex.getMessage(), request.getRequestURI()));
-			return;
 		}
 
 		filterChain.doFilter(request, response);

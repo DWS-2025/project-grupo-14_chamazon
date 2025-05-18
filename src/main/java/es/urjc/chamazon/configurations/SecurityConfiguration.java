@@ -77,7 +77,7 @@ public class SecurityConfiguration {
 
                         // === PUBLIC API (sin login) ===
                         .requestMatchers(HttpMethod.GET,
-                                "/api/products/",
+                                "/api/products",
                                 "/api/products/filter",
                                 "/api/products/{id}",
                                 "/api/products/{id}/images",
@@ -88,6 +88,8 @@ public class SecurityConfiguration {
                                 "/api/categories/products",
                                 "/api/commentView/commentList"
                         ).permitAll()
+
+                        .requestMatchers(HttpMethod.POST, "/api/products/filter").permitAll()
 
                         // === COMMENTS (USER o ADMIN) ===
                         .requestMatchers(HttpMethod.POST, "/api/comments/**").hasAnyRole("USER", "ADMIN")
@@ -108,10 +110,12 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/cart/**").hasAnyRole("USER", "ADMIN")
 
                         // === USERS ===
-                        .requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/users/**").permitAll() // Registro público
-                        .requestMatchers(HttpMethod.PUT, "/api/users/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyRole("USER", "ADMIN") // ver tu info
+                        .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")               // ver todos los usuarios
+                        .requestMatchers(HttpMethod.GET, "/api/users/{id}").authenticated()           // ver un usuario específico (filtrado después)
+                        .requestMatchers(HttpMethod.POST, "/api/users/**").permitAll()                // registro libre
+                        .requestMatchers(HttpMethod.PUT, "/api/users/{id}").authenticated()           // puede editar (se filtra después)
+                        .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").authenticated()        // puede borrar (se filtra después)
 
                         // === Anything else in /api/** (no autorizado por defecto) ===
                         .anyRequest().permitAll()
@@ -187,7 +191,6 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
 
                 )
-
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .failureUrl("/loginerror")

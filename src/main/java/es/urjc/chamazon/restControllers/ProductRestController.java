@@ -123,21 +123,22 @@ public class ProductRestController {
     }
 
     // === FILTER PRODUCTS ===
-    @GetMapping("/filter")
+    @PostMapping("/filter")
     public ResponseEntity<List<ProductDTOExtended>> filterProducts(
-            @RequestParam(required = false) Long categoryId,
-            @RequestParam(required = false) Float minPrice,
-            @RequestParam(required = false) Float maxPrice,
-            @RequestParam(required = false) Float rating
-    ) {
-        List<Product> filtered = productService.findByFilters(categoryId, minPrice, maxPrice, rating);
+            @RequestBody FilteredDto filteredDto) {
+        List<Product> filtered = productService.findByFilters(
+                filteredDto.categoryId(),
+                filteredDto.minPrice(),
+                filteredDto.maxPrice(),
+                filteredDto.rating()
+        );
         List<ProductDTOExtended> filteredDTOs = filtered.stream()
                 .map(productMapper::toDTOExtended)
                 .toList();
         return ResponseEntity.ok(filteredDTOs);
     }
 
-    // === ADD TO CART ===
+    /* === ADD TO CART ===
     @PostMapping("/{productId}/add-to-cart/{userId}")
     public ResponseEntity<Void> addToCart(@PathVariable long productId, @PathVariable long userId) {
         Optional<Product> product = productService.findById(productId);
@@ -146,7 +147,7 @@ public class ProductRestController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
-    }
+    }*/
 
     // === ATTACH FILE TO PRODUCT ===
     @PostMapping("/{id}/file")

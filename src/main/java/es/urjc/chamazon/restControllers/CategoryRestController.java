@@ -94,22 +94,4 @@ public class CategoryRestController {
         }
     }
 
-    // GET /api/categories/{id}/fullData
-    // Opcional: similar a la vista que carga categoría, productos y usuarios (web)
-    @GetMapping("/{id}/fullData")
-    public ResponseEntity<?> getFullCategoryData(@PathVariable Long id) {
-        try {
-            CategoryDTOExtended category = categoryService.getCategory(id);
-            List<CategoryDTOExtended> allCategories = categoryService.getCategories();
-            List<ProductDTO> products = categoryService.getProductsByCategoryId(category.id());
-            return ResponseEntity.ok(new Object() {
-                public final CategoryDTOExtended selectedCategory = category;
-                public final List<CategoryDTOExtended> categories = allCategories;
-                public final List<ProductDTO> productList = products;
-                public final Object users = userService.getAllUsers();
-            });
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
 }

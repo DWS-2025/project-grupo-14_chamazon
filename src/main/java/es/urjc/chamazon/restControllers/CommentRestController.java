@@ -52,15 +52,10 @@ public class CommentRestController {
     }
 
     // 3. CREATE COMMENT (like in POST /commentView/add)
-    @PostMapping("/create")
-    public ResponseEntity<String> createComment(
-            @RequestParam String commentTxt,
-            @RequestParam int rating,
-            @RequestParam Long userId,
-            @RequestParam Long productId,
-            Authentication auth) {
+    /*@PostMapping("/create")
+    public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO commentDTO){
 
-        boolean created = commentService.createComment(commentTxt, rating, userId, productId);
+        boolean created = commentService.createComment(commentDTO.getComment(), commentDTO.getRating(), commentDTO.getUser().id(), commentDTO.getProduct().id());
 
         if (created) {
             boolean isAdmin = SecurityUtils.isAdmin();
@@ -71,7 +66,7 @@ public class CommentRestController {
         } else {
             return ResponseEntity.badRequest().body("No se pudo crear el comentario");
         }
-    }
+    }*/
 
     // 4. UPDATE COMMENT (like POST /edit/{id})
     @PutMapping("/edit/{id}")

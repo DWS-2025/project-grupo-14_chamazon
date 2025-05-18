@@ -108,10 +108,10 @@ public class UserService {
         Optional<User> userOptional = userRepository.findById(id);
 
         if (userOptional.isPresent()) {
-            User user = toUser(sanitizedUpdatedUserDTO);
-
             User existingUser = userOptional.get();
+
             String currentUsername = SecurityUtils.getCurrentUsername();
+            System.out.println("currentUsername: " + currentUsername);
             boolean isSelfEdit = currentUsername.equals(existingUser.getUserName());
             String newUsername = sanitizedUpdatedUserDTO.userName();
 
@@ -122,18 +122,22 @@ public class UserService {
                 existingUser.setUserName(newUsername);
             }
 
-            existingUser.setId(id);
-            existingUser.setFirstName(user.getFirstName());
-            existingUser.setSurName(user.getSurName());
-            existingUser.setEmail(user.getEmail());
-            existingUser.setPhone(user.getPhone());
-            existingUser.setAddress(user.getAddress());
-            String newPasswrod = updatedUserDTO.password();
-            if (newPasswrod != null && !newPasswrod.isEmpty()) {
-                String encodedPassword = passwordEncoder.encode(newPasswrod);
+            // Solo actualizamos los campos desde el DTO, sin crear una nueva instancia User
+            existingUser.setFirstName(sanitizedUpdatedUserDTO.firstName());
+            existingUser.setSurName(sanitizedUpdatedUserDTO.surName());
+            existingUser.setEmail(sanitizedUpdatedUserDTO.email());
+            existingUser.setPhone(sanitizedUpdatedUserDTO.phone());
+            existingUser.setAddress(sanitizedUpdatedUserDTO.address());
+
+            String newPassword = sanitizedUpdatedUserDTO.password();
+            if (newPassword != null && !newPassword.isEmpty()) {
+                String encodedPassword = passwordEncoder.encode(newPassword);
                 existingUser.setPassword(encodedPassword);
             }
+
             userRepository.save(existingUser);
+
+            // Si el usuario está editando su propio username, actualizamos el contexto de autenticación
             if (isSelfEdit && !currentUsername.equals(newUsername)) {
                 UserDetails updatedUserDetails = userDetailService.loadUserByUsername(newUsername);
                 Authentication newAuth = new UsernamePasswordAuthenticationToken(
