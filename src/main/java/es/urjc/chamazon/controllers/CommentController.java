@@ -9,6 +9,7 @@ import es.urjc.chamazon.models.Product;
 //import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.CommentService;
 import es.urjc.chamazon.services.ProductService;
+import es.urjc.chamazon.services.SanitizationService;
 import es.urjc.chamazon.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -34,6 +35,9 @@ public class CommentController {
     private ProductService productService;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SanitizationService sanitizationService;
 
 
     //Create Operations: method addCommentForm(GET) and addComment(POST) to add a new comment
@@ -117,7 +121,7 @@ public class CommentController {
         CommentDTO commentDTO = commentService.findById(id);
 
         if (commentDTO != null) {
-            commentDTO.setComment(commentTxt);
+            commentDTO.setComment(sanitizationService.sanitizeQuill(commentTxt));
             commentDTO.setRating(rating);
 
             commentService.save(commentDTO);
