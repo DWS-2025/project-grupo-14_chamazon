@@ -146,19 +146,19 @@ Mario focused on enhancing the Product entity and its integration within the RES
 Víctor was responsible for the ShoppingCar entity, implementing its model, service, and full REST controller, along with the corresponding DTOs and Mappers. He enabled the logic behind adding and removing products from the shopping cart and ensured seamless integration with other entities like Product and User. Furthermore, he contributed to the migration process to a persistent database, helping the team transition smoothly from in-memory data. He also played a key role in debugging and fixing critical issues throughout the project.
 
 #### 📝 Notable Commits
-1. [Relacción de entidades para BDD](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/38a996216d4a11ae64d1106968bc5bdf3e1f87df)
-2. [Cambio de generación de objetos en ChamazonBDD. Creacion de carrito al crear un usuario.](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/372f14db3420a9f2fb54484f14968a3f5d853a17)
-3. [Creacion DTO para shoppingCar](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/ff812628487efd6dea7f50ed156fe863fc9fca30)
-4. [Modificacion para uso de ShoppingCar](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/d5789e2521cabfa8c3bf7001db31932269833ff3)
-5. [Funcionalidad ShoppingCar con DTO por fin funcionando](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/242945a1f600e4c62e8660ca232782dab444cdf9)
+1. [Relacción de entidades para BDD](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/c2a10969af1bef81659ec8d51d623f89468de46f)
+2. [Configuración CSRF](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/d37ab07539494f438b7305ba2a1d55f1430e6dcb)
+3. [etiguetas CSRF para el formulario](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/1eec9e1c1eb84cf779ceb8bdafacd1af5391b37e)
+4. [Control de token web](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/f2aef2a6f31e6b17d65c199974d026377dbc58f9 )
+5. [Base de datos extendida](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/c0d33972c33faa836b0b980a87f7c49815f08970 )
 
 #### 📁 Most Contributed Files
 
-- `src/main/java/es/urjc/chamazon/services/UserService.java`
+- `src/main/java/es/urjc/chamazon/services/SecurityService.java`
 - `src/main/java/es/urjc/chamazon/services/ShoppingCarService.java`
+- `src/main/java/es/urjc/chamazon/controllers/WebController.java`
 - `src/main/java/es/urjc/chamazon/restControllers/RestShoppingCarController.java`
-- `src/main/java/es/urjc/chamazon/dto/ShoppingCarDTO.java`
-- `src/main/java/es/urjc/chamazon/controllers/ShoppingCarController.java`
+- `src/main/java/es/urjc/chamazon/configurations/SecurityConfiguration.java`
 
 ---
 
