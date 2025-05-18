@@ -8,6 +8,7 @@ import es.urjc.chamazon.dto.UserDTOExtended;
 import es.urjc.chamazon.models.Comment;
 import es.urjc.chamazon.models.User;
 import es.urjc.chamazon.services.CommentService;
+import es.urjc.chamazon.services.SecurityService;
 import es.urjc.chamazon.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,10 @@ public class UserController {
     private UserService userService;
     @Autowired
     private CommentService commentService;
+
+    @Autowired
+    private SecurityService securityService;
+
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
@@ -77,10 +82,17 @@ public class UserController {
 
     @GetMapping("/user")
     public String user(Model model, HttpServletRequest request) {
+        try {
+            securityService.permission();
+
+        }catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("errorCode", "403");
+            return "error";
+        }
+
         try{
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String username = auth.getName();
-            UserDTOExtended userDTOExtended = userService.findByUserName(username).get();
+            UserDTOExtended userDTOExtended = userService.findByUserName(SecurityUtils.getCurrentUsername()).orElseThrow();
             model.addAttribute("user", userDTOExtended);
             return "/user/userIndividual";
         }catch (NoSuchElementException e){
@@ -130,12 +142,26 @@ public class UserController {
             return "/user/addUser";
         }
 
+        if (userService.userNameExists(newUserDTO.userName())) {
+            model.addAttribute("error", "Ten más imaginación, el nombre de usuario ya está en uso");
+            return "user/register";
+        }
+
         userService.saveNewUser(newUserDTO);
         return "redirect:/users";
     }
 
-    @GetMapping("user/delete")
-    public String deleteUser(@RequestParam long id, HttpServletRequest request) {
+    @GetMapping("/user/delete")
+    public String deleteUser(@RequestParam long id, HttpServletRequest request, Model model) {
+        try {
+            securityService.permission(id);
+
+        }catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("errorCode", "403");
+            return "error";
+        }
+
         boolean isAdmin = SecurityUtils.isAdmin();
         userService.deleteUser(id, request);
         commentService.deleteCommentsWithoutUser();
@@ -157,6 +183,15 @@ public class UserController {
 
     @GetMapping("users/edit")
     public String editUser(@RequestParam Long id, Model model) {
+        try {
+            securityService.permission(id);
+
+        }catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("errorCode", "403");
+            return "error";
+        }
+
         try{
             UserDTO userDTO = userService.getUser(id);
             model.addAttribute("user", userDTO);
@@ -167,7 +202,16 @@ public class UserController {
     }
 
     @PostMapping("/users/edit")
-    public String editUser(@RequestParam Long id, UserDTO userDTO) {
+    public String editUser(@RequestParam Long id, UserDTO userDTO, Model model) {
+        try {
+            securityService.permission(id);
+
+        }catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("errorCode", "403");
+            return "error";
+        }
+
         boolean isAdmin = SecurityUtils.isAdmin();
         try {
             userService.updateUser(userDTO.id(), userDTO);

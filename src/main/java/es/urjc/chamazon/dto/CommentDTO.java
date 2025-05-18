@@ -1,17 +1,19 @@
 package es.urjc.chamazon.dto;
 
+import es.urjc.chamazon.models.Comment;
+
 public class CommentDTO {
     private Long id;
     private String comment;
     private int rating;
-    private UserDTO user;
+    private CommentUserDTO user;
     private ProductDTO product;
     private boolean canEditOrDelete; // NUEVO
 
 
     public CommentDTO() {}
 
-    public CommentDTO(Long id, String comment, int rating, UserDTO user, ProductDTO product, boolean canEditOrDelete) {
+    public CommentDTO(Long id, String comment, int rating, CommentUserDTO user, ProductDTO product, boolean canEditOrDelete) {
         this.id = id;
         this.comment = comment;
         this.rating = rating;
@@ -45,11 +47,11 @@ public class CommentDTO {
         this.rating = rating;
     }
 
-    public UserDTO getUser() {
+    public CommentUserDTO getUser() {
         return user;
     }
 
-    public void setUser(UserDTO user) {
+    public void setUser(CommentUserDTO user) {
         this.user = user;
     }
 

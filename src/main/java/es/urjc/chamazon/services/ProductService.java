@@ -76,7 +76,7 @@ public class ProductService {
     }
 
     public ProductDTOExtended getProduct(long id) {   //findById with DTO
-        Optional<Product> productOpt = productRepository.findById(id);
+        Optional<Product> productOpt = productRepository.findByIdWithComments(id);
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
             return productMapper.toDTOExtended(product);

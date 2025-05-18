@@ -12,6 +12,7 @@ import java.util.Collection;
 @Component
 public interface ProductMapper {
     @Mapping(source = "categoryList", target = "categoryDTOList")
+    @Mapping(source = "commentList", target = "commentDTOList")
     ProductDTOExtended toDTOExtended(Product product);
     ProductDTO toDTO(Product product);
     Product toProduct(ProductDTO productDTO);
