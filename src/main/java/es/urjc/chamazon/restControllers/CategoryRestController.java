@@ -86,9 +86,9 @@ public class CategoryRestController {
 
     // GET /api/categories/{id}/products
     @GetMapping("/{id}/products")
-    public ResponseEntity<List<SimpleProductDTO>> getProductsFromCategory(@PathVariable long id) {
+    public ResponseEntity<List<ProductDTO>> getProductsFromCategory(@PathVariable long id) {
         try {
-            List<SimpleProductDTO> products = categoryService.getProductsByCategoryId(id);
+            List<ProductDTO> products = categoryService.getProductsByCategoryId(id);
             return ResponseEntity.ok(products);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();

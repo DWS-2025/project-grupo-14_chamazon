@@ -83,7 +83,7 @@ public class CategoryService {
         }
     }
 
-    public List<SimpleProductDTO> getProductsByCategoryId(Long id) {
+    public List<ProductDTO> getProductsByCategoryId(Long id) {
         Optional<List<Product>> products = categoryRepository.findProductsByCategoryId(id);
         if (products.isPresent()) {
             productMapper.toDTOs(products.get());
@@ -91,7 +91,7 @@ public class CategoryService {
         for (Product product : products.get()) {
             productMapper.toDTO(product);
         }
-        return (List<SimpleProductDTO>) productMapper.toDTOs(products.get());
+        return (List<ProductDTO>) productMapper.toProductDTOs(products.get());
 
     }
 
