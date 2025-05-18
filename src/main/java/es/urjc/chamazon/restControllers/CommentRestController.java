@@ -36,8 +36,8 @@ public class CommentRestController {
 
     // 1. GET ALL COMMENTS
     @GetMapping
-    public List<CommentDTO> getAllComments() {
-        return commentService.findAll();
+    public ResponseEntity<List<CommentDTO>> getAllComments() {
+        return ResponseEntity.ok(commentService.findAll());
     }
 
     // 2. GET COMMENT BY ID
@@ -134,18 +134,5 @@ public class CommentRestController {
         commentService.deleteById(id);
         String redirectUrl = "/products/" + commentDTO.getProduct().id();
         return ResponseEntity.ok(redirectUrl);
-    }
-
-
-    // 6. GET COMMENTS BY PRODUCT (paginated)
-    @GetMapping("/product/{productId}")
-    public Page<CommentDTO> getCommentsByProduct(
-            @PathVariable Long productId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Comment> commentPage = commentService.findByProductId(productId, pageable);
-        return commentPage.map(commentMapper::toDTO);
     }
 }
