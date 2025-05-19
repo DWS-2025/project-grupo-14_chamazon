@@ -88,7 +88,6 @@ public class FileStorageService {
                         try {
                             Files.deleteIfExists(path);
                         } catch (IOException e) {
-                            // Podrías registrar un warning aquí si falla
                             e.printStackTrace();
                         }
                     });

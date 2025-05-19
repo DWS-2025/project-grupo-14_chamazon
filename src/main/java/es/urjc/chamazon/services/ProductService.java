@@ -60,9 +60,6 @@ public class ProductService {
     @Autowired
     private CategoryMapper categoryMapper;
 
-    @Value("${file.upload-dir}")
-    private String uploadDir;
-    private final Set<String> ALLOWED_EXTENSIONS = Set.of("pdf", "doc", "docx");
     @Autowired
     private SanitizationService sanitizationService;
 
