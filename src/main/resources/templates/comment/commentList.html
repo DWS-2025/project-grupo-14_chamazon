@@ -117,11 +117,12 @@
 
     function deleteComment(commentId, button) {
         if (!confirm('¿Estás seguro de que deseas eliminar este comentario?')) return;
-
+        const csrfToken = document.querySelector('input[name="_csrf"]').value;
         fetch(`/commentView/delete/${commentId}`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
             }
         }).then(response => {
             if (response.ok) {

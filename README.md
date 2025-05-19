@@ -50,14 +50,11 @@
 
 ---
 
-## 👑 User Permissions
+## 👑 User Permissions - ROLES
 
-Currently, the platform runs in **admin-only mode**: the admin can manage all entities and perform all operations (full CRUD).
-
-### Future Roles (Planned):
 - **Admin**: Full control over the entire system.
-- **Provider**: Can create and manage their own products.
-- **Customer**: Can browse, comment, add to cart, and complete purchases.
+- **Anonymus**: Can browse products and categories.
+- **User**: Can browse, comment, add to cart, and complete purchases.
 
 ---
 
@@ -76,20 +73,20 @@ Each member contributed with dedication and unique skills. Below we it is shown 
 ### 👤 Beatriz Sanz Granados — [btrisss](https://github.com/btrisss)
 
 #### 🌟 Contribution Summary
-(me falta modificar esto)Beatriz worked extensively on the Comment entity, focusing on its full integration within the REST API. She developed the Comment REST controller, implemented DTOs and Mappers, and adapted both the service and model layers to align with RESTful standards. Additionally, she implemented AJAX-based pagination to dynamically load comments on demand, enhancing performance and improving the overall user experience.
+Beatriz developed and implemented the user registration form, ensuring proper validation and prevention of duplicate accounts. Secured user authentication by storing encrypted passwords in the database. Additionally, enhanced the comment system by integrating rich text editing, improving both frontend display and backend handling of formatted user input.
 
 #### 📝 Notable Commits
 1. [Evitar usuarios duplicados](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/5e980b87103c7c3b6ed0d6234284e4b2d4b991c8)
 2. [Form de Registro](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/1f4db0cdbe4d70a25a8aca7ae5cd31f7a02caf51)
 3. [Guardar password cifrada en BD al guardar usuario en BD](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/42686d6cbdd93e36d4e7274e288c58b77bbc74d0)
-
+4. [Texto Enriquecido Completo](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/407a1d6e4d2580c5fc73423e1cb3bc922c1ef49d)
+5. [Texto enriquecido en Front](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/1e649209fb403afd8a1a1f2a1a2b2a4b30cf5173)
 
 #### 📁 Most Contributed Files
-(me falta modificar esto)
 
-- `src/main/java/es/urjc/chamazon/models/Comment.java`
+- `src/main/java/resources/js/quill.js`
 - `src/main/java/es/urjc/chamazon/services/CommentService.java`
-- `src/main/java/es/urjc/chamazon/restControllers/CommentRestController.java`
+- `src/main/resources/templates/comment/commentForm.html`
 - `src/main/java/es/urjc/chamazon/controllers/CommentController.java`
 - `src/main/resources/templates/comment/commentList.html`
 
@@ -145,19 +142,19 @@ Mario took responsibility for enhancing problematic elements, improving filters,
 Víctor was responsible for the ShoppingCar entity, implementing its model, service, and full REST controller, along with the corresponding DTOs and Mappers. He enabled the logic behind adding and removing products from the shopping cart and ensured seamless integration with other entities like Product and User. Furthermore, he contributed to the migration process to a persistent database, helping the team transition smoothly from in-memory data. He also played a key role in debugging and fixing critical issues throughout the project.
 
 #### 📝 Notable Commits
-1. [Relacción de entidades para BDD](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/38a996216d4a11ae64d1106968bc5bdf3e1f87df)
-2. [Cambio de generación de objetos en ChamazonBDD. Creacion de carrito al crear un usuario.](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/372f14db3420a9f2fb54484f14968a3f5d853a17)
-3. [Creacion DTO para shoppingCar](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/ff812628487efd6dea7f50ed156fe863fc9fca30)
-4. [Modificacion para uso de ShoppingCar](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/d5789e2521cabfa8c3bf7001db31932269833ff3)
-5. [Funcionalidad ShoppingCar con DTO por fin funcionando](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/242945a1f600e4c62e8660ca232782dab444cdf9)
+1. [Relacción de entidades para BDD](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/c2a10969af1bef81659ec8d51d623f89468de46f)
+2. [Configuración CSRF](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/d37ab07539494f438b7305ba2a1d55f1430e6dcb)
+3. [etiguetas CSRF para el formulario](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/1eec9e1c1eb84cf779ceb8bdafacd1af5391b37e)
+4. [Control de token web](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/f2aef2a6f31e6b17d65c199974d026377dbc58f9 )
+5. [Base de datos extendida](https://github.com/DWS-2025/project-grupo-14_chamazon/commit/c0d33972c33faa836b0b980a87f7c49815f08970 )
 
 #### 📁 Most Contributed Files
 
-- `src/main/java/es/urjc/chamazon/services/UserService.java`
+- `src/main/java/es/urjc/chamazon/services/SecurityService.java`
 - `src/main/java/es/urjc/chamazon/services/ShoppingCarService.java`
+- `src/main/java/es/urjc/chamazon/controllers/WebController.java`
 - `src/main/java/es/urjc/chamazon/restControllers/RestShoppingCarController.java`
-- `src/main/java/es/urjc/chamazon/dto/ShoppingCarDTO.java`
-- `src/main/java/es/urjc/chamazon/controllers/ShoppingCarController.java`
+- `src/main/java/es/urjc/chamazon/configurations/SecurityConfiguration.java`
 
 ---
 
