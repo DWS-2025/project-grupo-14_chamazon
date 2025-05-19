@@ -99,7 +99,7 @@ public class ChamazonBDD{
             try {
                 productService.save(product);
             } catch (Exception e) {
-                System.out.println("Error guardando el producto: " + e.getMessage());
+                System.out.println("Error saving product: " + e.getMessage());
             }
         }
 
@@ -128,7 +128,6 @@ public class ChamazonBDD{
         shoppingCarService.addProductToUserShoppingCar(3L, 1L);
         shoppingCarService.addProductToUserShoppingCar(4L, 1L);*/
 
-        System.out.println("Categorías creadas correctamente.");
 
         User user1 = userService.getUserById(1L);
         User user2 = userService.getUserById(2L);
