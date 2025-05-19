@@ -73,23 +73,27 @@ public class UserService {
     }
 
     public void deleteUser(Long id, HttpServletRequest request) {
-
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
 
-            for (Comment comment : user.getComments()) {
-                comment.setUser(null);
+            // Eliminate comments associated with the user
+            if (user.getComments() != null) {
+                for (Comment comment : user.getComments()) {
+                    comment.setUser(null);
+                }
             }
-            user.getComments().clear();
-
-            userRepository.save(user);
-
+            
             userRepository.delete(user);
-        }
-        SecurityUtils.logout(request);
 
+            // Close session only if the current user is being deleted
+            String currentUsername = SecurityUtils.getCurrentUsername();
+            if (currentUsername.equals(user.getUserName())) {
+                SecurityUtils.logout(request);
+            }
+        }
     }
+
 
     public void saveNewUser(UserDTO userDTO) {
         UserDTO sanitizedUserDTO = sanitizationService.sanitizeUserDTO(userDTO);
