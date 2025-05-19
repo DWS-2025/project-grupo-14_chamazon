@@ -75,7 +75,6 @@ public class ProductController {
         ProductDTOExtended productDTO = productService.getProduct(id);
         List<CategoryDTO> categories = productDTO.categoryDTOList();
 
-        // Verificación mejorada del archivo
         boolean hasFile = false;
         String originalFilename = null;
 
@@ -88,7 +87,6 @@ public class ProductController {
                 model.addAttribute("fileName", originalFilename);
             }
         } catch (Exception e) {
-            // No hacer nada, hasFile sigue siendo false
         }
 
         boolean isAuthenticated = SecurityUtils.isAuthenticated();

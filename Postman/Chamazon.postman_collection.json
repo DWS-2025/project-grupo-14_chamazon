@@ -65,6 +65,14 @@
 					"response": []
 				},
 				{
+					"name": "GET_Image",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
 					"name": "Filter",
 					"request": {
 						"method": "POST",
@@ -94,11 +102,26 @@
 				{
 					"name": "CREATE_Product",
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"nuevo producto API\",\r\n    \"price\":34,\r\n    \"description\":\"nuevo producto que estamos metiendo desde API\",\r\n    \"rating\":3,\r\n    \"categoryDTOList\": [\r\n\r\n    ]\r\n}",
+							"raw": "{\r\n    \"name\":\"nuevo producto API\",\r\n    \"price\":34,\r\n    \"description\":\"nuevo producto que estamos metiendo desde API\",\r\n    \"rating\":3,\r\n    \"categoryDTOList\": [\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -106,13 +129,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseURL}}/products/",
+							"raw": "{{baseURL}}/products",
 							"host": [
 								"{{baseURL}}"
 							],
 							"path": [
-								"products",
-								""
+								"products"
 							]
 						}
 					},
@@ -129,7 +151,7 @@
 								{
 									"key": "imageFile",
 									"type": "file",
-									"src": "/C:/Users/Victor_URJC/Downloads/chamazon.jpg"
+									"src": "/C:/Users/BCT/Downloads/Captura de pantalla 2025-04-08 173414.png"
 								}
 							]
 						},
@@ -261,6 +283,25 @@
 								"products",
 								"{{productID}}",
 								"image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE_File_From_Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/products/{{productID}}/file",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products",
+								"{{productID}}",
+								"file"
 							]
 						}
 					},
